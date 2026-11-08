@@ -5,15 +5,18 @@ import { Picture } from 'astro:assets';
 import Layout from '../layouts/layout.astro';
 import Logo from '../components/logo.astro';
 import Icon from '../components/icon.astro';
+import { getT } from '../i18n/t';
 import { links, photos } from '../data/nami';
+
+const t = getT();
 ---
 
-<Layout title="Página no encontrada · Nami" description="Esta página no existe." noindex header={false}>
+<Layout title={t('seo.notFoundTitle')} description={t('page404.description')} noindex header={false}>
   <section class="flex min-h-svh flex-col items-center justify-center gap-12 px-4 py-24 text-center md:flex-row md:text-left">
     <div data-reveal class="w-48 md:w-64">
       <Picture
         src={photos.vinos}
-        alt="Pasillo de vinotecas que termina en una puerta de cristal"
+        alt={t('page404.photoAlt')}
         formats={['avif', 'webp']}
         widths={[320, 512]}
         sizes="256px"
@@ -23,13 +26,13 @@ import { links, photos } from '../data/nami';
       />
     </div>
     <div class="flex max-w-md flex-col items-center gap-6 md:items-start">
-      <a href="/" aria-label="Nami, volver al inicio"><Logo class="text-2xl" /></a>
-      <p data-reveal class="text-sm text-teja">Error 404</p>
-      <h1 data-reveal style="--d:100ms" class="text-4xl lg:text-5xl">Este pasillo no lleva a ninguna mesa</h1>
-      <p data-reveal style="--d:200ms" class="text-base text-crema/70">La página que buscas no existe o ha cambiado de sitio.</p>
+      <a href="/" aria-label={t('common.backHome')}><Logo class="text-2xl" /></a>
+      <p data-reveal class="text-sm text-teja">{t('page404.kicker')}</p>
+      <h1 data-reveal style="--d:100ms" class="text-4xl lg:text-5xl">{t('page404.heading')}</h1>
+      <p data-reveal style="--d:200ms" class="text-base text-crema/70">{t('page404.body')}</p>
       <div data-reveal style="--d:300ms" class="flex flex-wrap items-center justify-center gap-4">
-        <a href="/" class="btn btn-ghost"><Icon name="arrowLeft" class="size-5" /><span>Volver al inicio</span></a>
-        <a href={links.reservar} class="btn btn-primary"><span>Reservar mesa</span></a>
+        <a href="/" class="btn btn-ghost"><Icon name="arrowLeft" class="size-5" /><span>{t('page404.backHome')}</span></a>
+        <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
       </div>
     </div>
   </section>

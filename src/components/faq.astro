@@ -1,35 +1,41 @@
 ---
 import Icon from './icon.astro';
 import Pending from './pending.astro';
-import { faqs, faqsPendientes, links } from '../data/nami';
+import { getT, hasKey } from '../i18n/t';
+import { contacto, faqIds, links, pendingFaqs } from '../data/nami';
+
+const t = getT();
 ---
 
 <section id="preguntas" data-spy="#preguntas" aria-labelledby="faq-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto grid max-w-6xl gap-12 lg:grid-cols-[1fr_1.6fr]">
     <div>
-      <p data-reveal class="text-sm text-teja">Preguntas frecuentes</p>
-      <h2 id="faq-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">Antes de venir</h2>
+      <p data-reveal class="text-sm text-teja">{t('faq.eyebrow')}</p>
+      <h2 id="faq-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('faq.title')}</h2>
       <p data-reveal style="--d:200ms" class="mt-6 max-w-sm text-base text-crema/70">
-        ¿Te queda alguna duda? Llámanos al <a href={links.telefono} class="link whitespace-nowrap">+34 931 27 08 15</a>.
+        {t('faq.reachUs')} <a href={links.telefono} class="link whitespace-nowrap">{contacto.telefono}</a>.
       </p>
     </div>
 
     <div class="divide-y divide-crema/10">
       {
-        faqs.map((faq) => (
-          <details data-reveal class="faq group">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 rounded-xl py-6 text-left text-lg transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-teja">
-              <h3 class="font-sans text-lg">{faq.pregunta}</h3>
-              <Icon name="plus" class="faq-icon size-6 shrink-0 text-teja" />
-            </summary>
-            <div class="pb-6">
-              <p class="max-w-2xl text-base text-crema/70">{faq.respuesta}</p>
-              {faq.pending && <Pending class="mt-4">{faq.pending}</Pending>}
-            </div>
-          </details>
-        ))
+        faqIds.map((id) => {
+          const pendingKey = `faq.items.${id}.pending`;
+          return (
+            <details data-reveal class="faq group">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 rounded-xl py-6 text-left text-lg transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-teja">
+                <h3 class="font-sans text-lg">{t(`faq.items.${id}.q`)}</h3>
+                <Icon name="plus" class="faq-icon size-6 shrink-0 text-teja" />
+              </summary>
+              <div class="pb-6">
+                <p class="max-w-2xl text-base text-crema/70">{t(`faq.items.${id}.a`)}</p>
+                {hasKey(pendingKey) && <Pending class="mt-4">{t(pendingKey)}</Pending>}
+              </div>
+            </details>
+          );
+        })
       }
-      {faqsPendientes.map((texto) => <Pending class="my-4">{texto}</Pending>)}
+      {pendingFaqs.map((id) => <Pending class="my-4">{t(`pending.${id}`)}</Pending>)}
     </div>
   </div>
 </section>

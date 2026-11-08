@@ -5,6 +5,7 @@ import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { fotosPublicas, ogImage } from './src/data/imagenes.ts';
+import { getT } from './src/i18n/t.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -20,9 +21,14 @@ export default defineConfig({
       // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
       serialize(item) {
         if (new URL(item.url).pathname !== '/') return item;
+        const t = getT();
         const images = [
-          { src: ogImage.src, title: ogImage.title, caption: ogImage.alt },
-          ...fotosPublicas.map((foto) => ({ src: foto.src, title: `${foto.lugar} · Nami`, caption: foto.alt })),
+          { src: ogImage.src, title: t('og.title'), caption: t('og.imageAlt') },
+          ...fotosPublicas.map((foto) => ({
+            src: foto.src,
+            title: `${t(`photos.${foto.id}.label`)} · Nami`,
+            caption: t(`photos.${foto.id}.alt`),
+          })),
         ];
         return { ...item, img: images.map(({ src, ...rest }) => ({ url: new URL(src, item.url).href, ...rest })) };
       },

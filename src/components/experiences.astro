@@ -1,16 +1,19 @@
 ---
 import { Picture } from 'astro:assets';
 import Pending from './pending.astro';
+import { getT, formatPrice, formatPairing } from '../i18n/t';
 import { experiencias, links, maridaje, photos } from '../data/nami';
+
+const t = getT();
 ---
 
 <section id="experiencias" data-spy="#experiencias" aria-labelledby="exp-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-xl">
-      <p data-reveal class="text-sm text-teja">Experiencias para dos</p>
-      <h2 id="exp-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">Dos menús, precio cerrado</h2>
+      <p data-reveal class="text-sm text-teja">{t('experiences.eyebrow')}</p>
+      <h2 id="exp-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('experiences.title')}</h2>
       <p data-reveal style="--d:200ms" class="mt-6 text-base text-crema/70 lg:text-lg">
-        Elige cuánto quieres recorrer de la carta. También puedes pedir a la carta.
+        {t('experiences.body')}
       </p>
     </div>
 
@@ -22,23 +25,23 @@ import { experiencias, links, maridaje, photos } from '../data/nami';
             style={`--d:${i * 100}ms`}
             class:list={[
               'relative flex flex-col rounded-3xl p-6 ring-1 lg:p-8',
-              exp.etiqueta ? 'ring-teja/60' : 'ring-crema/15',
+              exp.popular ? 'ring-teja/60' : 'ring-crema/15',
             ]}
           >
-            {exp.etiqueta && (
+            {exp.popular && (
               <p class="absolute -top-3 left-6 rounded-full bg-teja px-3 py-1 text-xs font-medium text-bg lg:left-8">
-                {exp.etiqueta}
+                {t('experiences.popularBadge')}
               </p>
             )}
-            <h3 class="text-2xl">{exp.nombre}</h3>
-            <p class="mt-2 text-base text-crema/70">{exp.descripcion}</p>
+            <h3 class="text-2xl">{t(`experiences.${exp.id}.name`)}</h3>
+            <p class="mt-2 text-base text-crema/70">{t(`experiences.${exp.id}.description`)}</p>
             <p class="mt-8 flex items-baseline gap-2">
-              <span class="font-display text-5xl">{exp.precio}</span>
-              <span class="text-sm text-crema/50">para dos</span>
+              <span class="font-display text-5xl">{formatPrice(exp.price)}</span>
+              <span class="text-sm text-crema/50">{t('experiences.forTwo')}</span>
             </p>
-            <p class="mt-1 text-sm text-crema/50">{exp.porPersona}</p>
+            <p class="mt-1 text-sm text-crema/50">{t('experiences.perPerson', { price: formatPrice(exp.price / 2) })}</p>
             <div class="mt-8 flex flex-1 items-end">
-              <a href={links.reservar} class="btn btn-primary"><span>Reservar mesa</span></a>
+              <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
             </div>
           </article>
         ))
@@ -48,7 +51,7 @@ import { experiencias, links, maridaje, photos } from '../data/nami';
         <div class="mirror-frame mask-oval w-40 lg:w-48">
           <Picture
             src={photos.vinos}
-            alt="Pasillo de vinotecas iluminadas bajo una bóveda blanca"
+            alt={t('experiences.pairingPhotoAlt')}
             formats={['avif', 'webp']}
             widths={[320, 480]}
             sizes="192px"
@@ -59,13 +62,13 @@ import { experiencias, links, maridaje, photos } from '../data/nami';
           />
         </div>
         <div>
-          <h3 class="text-2xl">{maridaje.nombre}</h3>
-          <p class="mt-2 text-base text-crema/70">{maridaje.descripcion}</p>
+          <h3 class="text-2xl">{t('experiences.pairing.name')}</h3>
+          <p class="mt-2 text-base text-crema/70">{t('experiences.pairing.description')}</p>
         </div>
-        <p class="font-display text-4xl">{maridaje.precio}</p>
+        <p class="font-display text-4xl">{formatPairing(maridaje.price)}</p>
       </article>
     </div>
 
-    <Pending class="mt-8 max-w-xl">¿Las experiencias se piden al reservar o en la mesa? Según la respuesta, el botón de cada tarjeta puede llevar ya el menú elegido.</Pending>
+    <Pending class="mt-8 max-w-xl">{t('experiences.pending')}</Pending>
   </div>
 </section>

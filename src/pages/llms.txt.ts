@@ -1,37 +1,44 @@
 import type { APIRoute } from 'astro';
-import { contacto, experiencias, faqs, links, maridaje, seo } from '../data/nami';
+import { getT, formatPrice, formatPairing } from '../i18n/t';
+import { contacto, experiencias, faqIds, links, maridaje } from '../data/nami';
 
 export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
   if (!site) throw new Error('Falta site en astro.config.mjs');
+  const t = getT();
   const home = new URL('/', site).href;
   const experienceLines = experiencias
-    .map((exp) => `- ${exp.nombre}: ${exp.precio} (${exp.porPersona}). ${exp.descripcion}`)
+    .map(
+      (exp) =>
+        `- ${t(`experiences.${exp.id}.name`)}: ${formatPrice(exp.price)} (${t('experiences.perPerson', { price: formatPrice(exp.price / 2) })}). ${t(`experiences.${exp.id}.description`)}`,
+    )
     .join('\n');
-  const questions = faqs.map((faq) => `### ${faq.pregunta}\n\n${faq.respuesta}`).join('\n\n');
+  const questions = faqIds
+    .map((id) => `### ${t(`faq.items.${id}.q`)}\n\n${t(`faq.items.${id}.a`)}`)
+    .join('\n\n');
   const body = `# Nami
 
-> ${seo.description}
+> ${t('seo.description')}
 
-Cocina japonesa con alma mediterránea. La disciplina japonesa dialoga con el producto mediterráneo y la herencia peruana.
+${t('llms.intro')}
 
-## Datos
+## ${t('llms.facts')}
 
-- Dirección: ${contacto.calle}, ${contacto.ciudad} (${contacto.barrio})
-- Horario: ${contacto.horario}. ${contacto.cocina}.
-- Teléfono: ${contacto.telefono}
-- Email: ${contacto.email}
-- Cocina: nikkei. Técnica japonesa, producto mediterráneo y herencia peruana.
+- ${t('llms.address')}: ${contacto.calle}, ${contacto.ciudad} (${contacto.barrio})
+- ${t('llms.hours')}: ${t('contact.hoursText')}. ${t('contact.kitchenUntil')}.
+- ${t('llms.phone')}: ${contacto.telefono}
+- ${t('llms.email')}: ${contacto.email}
+- ${t('llms.cuisine')}
 ${experienceLines}
-- ${maridaje.nombre}: ${maridaje.precio}. ${maridaje.descripcion}
-- Carta: ${links.carta}
-- Reservas: ${links.reservar}
-- Regalar: ${links.regalar}
+- ${t('experiences.pairing.name')}: ${formatPairing(maridaje.price)}. ${t('experiences.pairing.description')}
+- ${t('llms.menu')}: ${links.carta}
+- ${t('llms.reservations')}: ${links.reservar}
+- ${t('llms.gifting')}: ${links.regalar}
 - Instagram: ${links.instagram}
-- Página: ${home}
+- ${t('llms.page')}: ${home}
 
-## Preguntas frecuentes
+## ${t('faq.eyebrow')}
 
 ${questions}
 `;

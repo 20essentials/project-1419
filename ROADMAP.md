@@ -33,6 +33,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
   - [x] step-02 ejecutado y commiteado: smoke 200 con credenciales reales (locations OK); pendiente 200 en `reservationLocations` cuando se instale la app Table Reservations (step-06)
 - [ ] **Fase 1 — i18n (el dashboard manda)**
   - [ ] [step-03-translations-extraction](.opencode/commands/step-03-translations-extraction.md)
+  - [x] step-03 ejecutado y commiteado: `src/translations.json` verificado en inglés, `t()` en `src/i18n/t.ts`, `nami.ts` solo estructura, baseline español en `.opencode/references/spanish-copy-baseline.md`; pendiente step-04 rellenar es/it
   - [ ] [step-04-multilingual-flow](.opencode/commands/step-04-multilingual-flow.md)
   - [ ] [step-05-language-routing](.opencode/commands/step-05-language-routing.md)
 - [ ] **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**

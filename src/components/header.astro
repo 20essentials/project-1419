@@ -1,14 +1,17 @@
 ---
 import Logo from './logo.astro';
 import Icon from './icon.astro';
+import { getT } from '../i18n/t';
 import { contacto, links, nav } from '../data/nami';
+
+const t = getT();
 ---
 
 <a
   href="#contenido"
   class="btn btn-primary btn-sm fixed top-4 left-4 z-[60] -translate-y-24 focus-visible:translate-y-0"
 >
-  <span>Saltar al contenido</span>
+  <span>{t('common.skipToContent')}</span>
 </a>
 
 <header
@@ -17,11 +20,11 @@ import { contacto, links, nav } from '../data/nami';
   <div
     class="pointer-events-auto flex w-max items-center gap-6 rounded-full bg-bg/60 p-2 pl-6 ring-1 ring-crema/10 backdrop-blur-xl lg:gap-5"
   >
-    <a href="#inicio" class="flex h-9 items-center rounded-full text-crema" aria-label="Nami, volver al inicio">
+    <a href="#inicio" class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
       <Logo class="text-xl" />
     </a>
 
-    <nav aria-label="Principal" class="relative hidden lg:block">
+    <nav aria-label={t('nav.main')} class="relative hidden lg:block">
       <span aria-hidden="true" class="nav-indicator absolute top-0 left-0 h-9 rounded-full bg-crema/[0.07]"></span>
       <ul class="relative flex items-center text-sm">
         {
@@ -32,7 +35,7 @@ import { contacto, links, nav } from '../data/nami';
                 data-nav-link
                 class="flex h-9 items-center rounded-full px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-crema aria-[current=true]:text-crema"
               >
-                <span class="text-trim">{item.label}</span>
+                <span class="text-trim">{t(`nav.${item.id}`)}</span>
               </a>
             </li>
           ))
@@ -42,14 +45,16 @@ import { contacto, links, nav } from '../data/nami';
 
     <div class="flex items-center gap-1">
       <a href={links.reservar} class="btn btn-primary btn-sm px-4">
-        <span>Reservar</span>
+        <span>{t('common.reserve')}</span>
       </a>
       <button
         type="button"
         class="menu-toggle relative size-9 rounded-full text-crema transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 lg:hidden"
         aria-expanded="false"
         aria-controls="menu"
-        aria-label="Abrir menú"
+        aria-label={t('common.openMenu')}
+        data-label-open={t('common.openMenu')}
+        data-label-close={t('common.closeMenu')}
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -63,19 +68,19 @@ import { contacto, links, nav } from '../data/nami';
   class="menu invisible fixed inset-0 z-40 flex flex-col justify-between bg-bg/80 px-4 pt-32 pb-12 opacity-0 backdrop-blur-3xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden"
   inert
 >
-  <nav aria-label="Menú móvil">
+  <nav aria-label={t('nav.mobileMenu')}>
     <ul class="flex flex-col items-center gap-6 text-center">
       {
         nav.map((item, i) => (
           <li class="menu-item" style={`--i:${i}`}>
             <a href={item.href} data-menu-link class="font-display text-4xl text-crema">
-              {item.label}
+              {t(`nav.${item.id}`)}
             </a>
           </li>
         ))
       }
       <li class="menu-item pt-6" style={`--i:${nav.length}`}>
-        <a href={links.reservar} class="btn btn-primary"><span>Reservar mesa</span></a>
+        <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
       </li>
     </ul>
   </nav>
@@ -85,7 +90,7 @@ import { contacto, links, nav } from '../data/nami';
       <Icon name="phone" />
       {contacto.telefono}
     </a>
-    <p>{contacto.calle} · {contacto.horario}</p>
+    <p>{contacto.calle} · {t('contact.hoursText')}</p>
   </div>
 </div>
 
@@ -166,7 +171,7 @@ import { contacto, links, nav } from '../data/nami';
   const setOpen = (open: boolean) => {
     if (!toggle || !menu) return;
     toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    toggle.setAttribute('aria-label', open ? (toggle.dataset.labelClose ?? '') : (toggle.dataset.labelOpen ?? ''));
     menu.toggleAttribute('data-open', open);
     menu.inert = !open;
     if (main) main.inert = open;

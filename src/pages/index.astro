@@ -10,15 +10,16 @@ import Experiences from '../components/experiences.astro';
 import Faq from '../components/faq.astro';
 import Gift from '../components/gift.astro';
 import FinalCta from '../components/final-cta.astro';
-import { seo } from '../data/nami';
+import { getT } from '../i18n/t';
 import { structuredData } from '../data/schema';
 
+const t = getT();
 const site = Astro.site;
 if (!site) throw new Error('Falta site en astro.config.mjs');
 const jsonLd = JSON.stringify(structuredData(site)).replaceAll('<', '\\u003c');
 ---
 
-<Layout title={seo.title} description={seo.description}>
+<Layout title={t('seo.title')} description={t('seo.description')}>
   <script slot="head" type="application/ld+json" set:html={jsonLd} />
   <ScrollWorld />
   <Tagline />

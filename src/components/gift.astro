@@ -1,7 +1,10 @@
 ---
 import { Picture } from 'astro:assets';
 import Icon from './icon.astro';
+import { getT } from '../i18n/t';
 import { links, photos } from '../data/nami';
+
+const t = getT();
 ---
 
 <section id="regala" aria-labelledby="regala-title" class="px-4 py-24 md:px-12 xl:px-24">
@@ -9,7 +12,7 @@ import { links, photos } from '../data/nami';
     <div data-reveal class="mirror-frame mask-mirror mx-auto w-full max-w-sm">
       <Picture
         src={photos.mesaEspecial}
-        alt="Mesa redonda para dos con banco de piel bajo una lámpara cálida"
+        alt={t('gift.photoAlt')}
         formats={['avif', 'webp']}
         widths={[400, 640, 800]}
         sizes="(min-width: 768px) 384px, 90vw"
@@ -20,16 +23,15 @@ import { links, photos } from '../data/nami';
       />
     </div>
     <div>
-      <p data-reveal class="text-sm text-teja">Regala Nami</p>
-      <h2 id="regala-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">El mejor regalo es una mesa</h2>
+      <p data-reveal class="text-sm text-teja">{t('gift.eyebrow')}</p>
+      <h2 id="regala-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('gift.title')}</h2>
       <p data-reveal style="--d:200ms" class="mt-6 max-w-md text-base text-crema/70 lg:text-lg">
-        Un voucher digital para vivir la Short o la Full Experience. Válido 12 meses, sin fecha fija, y llega por email al
-        momento.
+        {t('gift.body')}
       </p>
       <div data-reveal style="--d:300ms" class="mt-8">
         <a href={links.regalar} class="btn btn-ghost" rel="noopener">
           <Icon name="gift" class="size-5" />
-          <span>Regalar una experiencia</span>
+          <span>{t('gift.cta')}</span>
         </a>
       </div>
     </div>

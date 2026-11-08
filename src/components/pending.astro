@@ -1,17 +1,19 @@
 ---
-// Marca de contenido pendiente. Solo se renderiza en desarrollo.
+import { getT } from '../i18n/t';
+
 interface Props {
   class?: string;
 }
 
 const { class: className = '' } = Astro.props;
 const dev = import.meta.env.DEV;
+const t = getT();
 ---
 
 {
   dev && (
     <p class:list={['rounded-xl px-3 py-2 text-xs text-teja ring-1 ring-teja/60', className]}>
-      <span class="font-medium">Pendiente:</span> <slot />
+      <span class="font-medium">{t('pending.label')}</span> <slot />
     </p>
   )
 }

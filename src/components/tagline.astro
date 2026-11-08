@@ -1,12 +1,13 @@
 ---
 import Spiral from './spiral.astro';
+import { getT } from '../i18n/t';
 
-// Frase de su web, partida en líneas por donde se parte la idea.
-const lines = ['Sin concesiones:', 'técnica nipona,', 'ingredientes del mar y del mercado,', 'sabor de Barcelona.'];
+const t = getT();
+const lines = [t('tagline.line1'), t('tagline.line2'), t('tagline.line3'), t('tagline.line4')];
 const text = lines.join(' ');
 ---
 
-<section aria-label="Nuestra filosofía" class="relative overflow-hidden px-4 py-24 md:px-12 xl:px-24">
+<section aria-label={t('tagline.ariaLabel')} class="relative overflow-hidden px-4 py-24 md:px-12 xl:px-24">
   <Spiral
     draw
     rings={16}

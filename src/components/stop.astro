@@ -1,5 +1,8 @@
 ---
+import { getT } from '../i18n/t';
 import { paseo } from '../data/nami';
+
+const t = getT();
 
 // Una parada del paseo. El artículo marca la distancia de scroll; el texto se queda abajo a la izquierda
 // mientras la cámara avanza y sale empujado por la parada siguiente.
@@ -28,7 +31,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <p class="flex items-center gap-2 text-xs tracking-widest text-crema/60 uppercase">
       <span class="tabular-nums">{pad(index + 1)} / {pad(paseo.paradas.length)}</span>
       <span aria-hidden="true" class="size-1 rounded-full bg-teja"></span>
-      <span>{parada.lugar}</span>
+      <span>{t(`stop.${parada.id}.place`)}</span>
     </p>
     {eyebrow && <p class="mt-4 text-xs font-medium tracking-widest text-teja uppercase">{eyebrow}</p>}
     <slot />

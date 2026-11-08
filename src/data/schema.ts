@@ -1,4 +1,5 @@
-import { contacto, experiencias, faqs, links, maridaje, platos, seo } from './nami';
+import { getT, formatPrice } from '../i18n/t';
+import { contacto, experiencias, faqIds, links, maridaje, platos } from './nami';
 import { fotosPublicas, ogImage } from './imagenes';
 
 const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -13,21 +14,17 @@ function abs(site: URL, path: string) {
   return new URL(path, site).href;
 }
 
-function euros(label: string) {
-  const match = label.match(/\d+/);
-  if (!match) throw new Error(`Precio sin cifra: ${label}`);
-  return match[0];
-}
-
 export function pageImages(site: URL): PageImage[] {
+  const t = getT();
   return fotosPublicas.map((foto) => ({
     loc: abs(site, foto.src),
-    title: `${foto.lugar} · Nami`,
-    caption: foto.alt,
+    title: `${t(`photos.${foto.id}.label`)} · Nami`,
+    caption: t(`photos.${foto.id}.alt`),
   }));
 }
 
 export function structuredData(site: URL) {
+  const t = getT();
   const home = new URL('/', site).href;
   const restaurantId = new URL('/#restaurant', site).href;
   const websiteId = new URL('/#website', site).href;
@@ -38,7 +35,7 @@ export function structuredData(site: URL) {
     url: abs(site, ogImage.src),
     width: 1200,
     height: 630,
-    caption: ogImage.alt,
+    caption: t('og.imageAlt'),
   };
 
   return {
@@ -49,9 +46,8 @@ export function structuredData(site: URL) {
         '@id': restaurantId,
         name: 'Nami',
         alternateName: ['Nami Restaurant', 'Nami Barcelona'],
-        slogan: 'Cocina japonesa con alma mediterránea',
-        description:
-          'Cocina japonesa con alma mediterránea y herencia peruana. Sushi, nigiri y cocina nikkei en el Eixample de Barcelona.',
+        slogan: t('seo.slogan'),
+        description: t('seo.schemaDescription'),
         url: home,
         image: [
           shareImage,
@@ -63,39 +59,42 @@ export function structuredData(site: URL) {
         telephone,
         email: contacto.email,
         priceRange: '€€€',
-        servesCuisine: ['Japonesa', 'Nikkei', 'Mediterránea'],
+        servesCuisine: [t('seo.cuisineJapanese'), t('seo.cuisineNikkei'), t('seo.cuisineMediterranean')],
         currenciesAccepted: 'EUR',
         acceptsReservations: true,
         menu: links.carta,
         hasMenu: {
           '@type': 'Menu',
-          name: 'Carta de Nami',
+          name: t('seo.menuName'),
           url: links.carta,
           hasMenuSection: [
             {
               '@type': 'MenuSection',
-              name: 'Platos destacados',
-              hasMenuItem: platos.map((plato) => ({
-                '@type': 'MenuItem',
-                name: plato.nombre,
-                ...(plato.detalle ? { description: plato.detalle } : {}),
-              })),
+              name: t('carta.eyebrow'),
+              hasMenuItem: platos.map((id) => {
+                const detail = t(`carta.dishes.${id}.detail`);
+                return {
+                  '@type': 'MenuItem',
+                  name: t(`carta.dishes.${id}.name`),
+                  ...(detail ? { description: detail } : {}),
+                };
+              }),
             },
             {
               '@type': 'MenuSection',
-              name: 'Experiencias para dos',
+              name: t('experiences.eyebrow'),
               hasMenuItem: [
                 ...experiencias.map((exp) => ({
                   '@type': 'MenuItem',
-                  name: exp.nombre,
-                  description: `${exp.descripcion} ${exp.porPersona}.`,
-                  offers: { '@type': 'Offer', price: euros(exp.precio), priceCurrency: 'EUR' },
+                  name: t(`experiences.${exp.id}.name`),
+                  description: `${t(`experiences.${exp.id}.description`)} ${t('experiences.perPerson', { price: formatPrice(exp.price / 2) })}.`,
+                  offers: { '@type': 'Offer', price: String(exp.price), priceCurrency: 'EUR' },
                 })),
                 {
                   '@type': 'MenuItem',
-                  name: maridaje.nombre,
-                  description: maridaje.descripcion,
-                  offers: { '@type': 'Offer', price: euros(maridaje.precio), priceCurrency: 'EUR' },
+                  name: t('experiences.pairing.name'),
+                  description: t('experiences.pairing.description'),
+                  offers: { '@type': 'Offer', price: String(maridaje.price), priceCurrency: 'EUR' },
                 },
               ],
             },
@@ -128,7 +127,7 @@ export function structuredData(site: URL) {
             inLanguage: 'es',
             actionPlatform: ['https://schema.org/DesktopWebPlatform', 'https://schema.org/MobileWebPlatform'],
           },
-          result: { '@type': 'FoodEstablishmentReservation', name: 'Reserva de mesa en Nami' },
+          result: { '@type': 'FoodEstablishmentReservation', name: t('seo.reservationName') },
         },
       },
       {
@@ -137,7 +136,7 @@ export function structuredData(site: URL) {
         url: home,
         name: 'Nami',
         alternateName: 'Nami Barcelona',
-        description: seo.description,
+        description: t('seo.description'),
         inLanguage: 'es-ES',
         publisher: { '@id': restaurantId },
       },
@@ -145,8 +144,8 @@ export function structuredData(site: URL) {
         '@type': 'WebPage',
         '@id': webpageId,
         url: home,
-        name: seo.title,
-        description: seo.description,
+        name: t('seo.title'),
+        description: t('seo.description'),
         inLanguage: 'es-ES',
         isPartOf: { '@id': websiteId },
         about: { '@id': restaurantId },
@@ -159,10 +158,10 @@ export function structuredData(site: URL) {
         url: new URL('/#preguntas', site).href,
         inLanguage: 'es-ES',
         isPartOf: { '@id': webpageId },
-        mainEntity: faqs.map((faq) => ({
+        mainEntity: faqIds.map((id) => ({
           '@type': 'Question',
-          name: faq.pregunta,
-          acceptedAnswer: { '@type': 'Answer', text: faq.respuesta },
+          name: t(`faq.items.${id}.q`),
+          acceptedAnswer: { '@type': 'Answer', text: t(`faq.items.${id}.a`) },
         })),
       },
     ],
