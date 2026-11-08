@@ -17,6 +17,7 @@
     "@astrojs/sitemap": "3.7.4",
     "@phosphor-icons/core": "2.1.1",
     "@tailwindcss/vite": "4.3.3",
+    "@wix/business-tools": "1.0.234",
     "@wix/ecom": "1.0.2648",
     "@wix/members": "1.0.541",
     "@wix/redirects": "1.0.133",

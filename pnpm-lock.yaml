@@ -20,6 +20,9 @@ importers:
       '@tailwindcss/vite':
         specifier: 4.3.3
         version: 4.3.3(vite@8.3.6(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.7.0)(yaml@2.9.1))
+      '@wix/business-tools':
+        specifier: 1.0.234
+        version: 1.0.234
       '@wix/ecom':
         specifier: 1.0.2648
         version: 1.0.2648(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
@@ -1488,6 +1491,12 @@ packages:
   '@wix/auto_sdk_atlas_places@1.0.19':
     resolution: {integrity: sha512-EFeZHjPA3MiD+hKm1nm6PjM2wzIdJJ0RhDZVXmcQ6OokoYP9D1hge0COFtb+QO8rePDDKqVaDz5q6QOjEeUZag==}
 
+  '@wix/auto_sdk_business-tools_locations@1.0.64':
+    resolution: {integrity: sha512-A8cB9THnzComUw9meFUyQE68ZzweBOzs0w/eUq2sZY+6Sr2zY++zskdreiV7nDll/eb38S6gV9VG+hqSbTuqKw==}
+
+  '@wix/auto_sdk_business-tools_site-properties@1.0.118':
+    resolution: {integrity: sha512-io5pPfaTuC++/48z9kXbhgaFMc9MXwAK+wU7GZZaO+zdJtJyXF8Fslq+ASKdGEXBlVkxVFZDCfvksJlfpvJXrQ==}
+
   '@wix/auto_sdk_ecom_abandoned-checkouts@1.0.90':
     resolution: {integrity: sha512-puWrLoqL+LXj/DF4h+5JxHsYBZwqXxEV45jG+Q1OtXmOn29hySMVuCD4yOHhOwrxo8E0uteHiL28qE+9AzAPBQ==}
 
@@ -1826,6 +1835,9 @@ packages:
 
   '@wix/auto_sdk_table-reservations_time-slots@1.0.55':
     resolution: {integrity: sha512-WoHqlN6/PuncLtRfkGt7ZzfWaplKpah7viKM9gwy1vKk8SabNVpkn8ry2jzuxCVQeCBsgXVBcv6IOdui/OnsKg==}
+
+  '@wix/business-tools@1.0.234':
+    resolution: {integrity: sha512-rljy7EY/7Nh7XLRRamxgJzQ0WQkiTJuUPN9CEbzeznSTUzkhvdDfKeFKtcIw1h1NgWm3HH8I71lFIgW4Ml49rA==}
 
   '@wix/ecom@1.0.2648':
     resolution: {integrity: sha512-gm9K6alDEx4LEEqTcdI3TaAcwxQhoNptAaoOXHtrPSbAwEnyJj1fc+DkxaUb6CPaJbjUmW8hjsIsW/WshPpJiQ==}
@@ -4241,6 +4253,16 @@ snapshots:
       '@wix/sdk-runtime': 1.0.31
       '@wix/sdk-types': 1.17.12
 
+  '@wix/auto_sdk_business-tools_locations@1.0.64':
+    dependencies:
+      '@wix/sdk-runtime': 1.0.31
+      '@wix/sdk-types': 1.17.12
+
+  '@wix/auto_sdk_business-tools_site-properties@1.0.118':
+    dependencies:
+      '@wix/sdk-runtime': 1.0.31
+      '@wix/sdk-types': 1.17.12
+
   '@wix/auto_sdk_ecom_abandoned-checkouts@1.0.90':
     dependencies:
       '@wix/sdk-runtime': 1.0.31
@@ -4538,7 +4560,7 @@ snapshots:
 
   '@wix/auto_sdk_headless-site-assets_scripts@1.0.15':
     dependencies:
-      '@wix/sdk-runtime': 1.0.25
+      '@wix/sdk-runtime': 1.0.31
       '@wix/sdk-types': 1.17.12
 
   '@wix/auto_sdk_identity_authentication@1.0.79':
@@ -4806,6 +4828,11 @@ snapshots:
       '@wix/sdk-runtime': 1.0.31
       '@wix/sdk-types': 1.17.12
 
+  '@wix/business-tools@1.0.234':
+    dependencies:
+      '@wix/auto_sdk_business-tools_locations': 1.0.64
+      '@wix/auto_sdk_business-tools_site-properties': 1.0.118
+
   '@wix/ecom@1.0.2648(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))':
     dependencies:
       '@wix/auto_sdk_ecom_abandoned-checkouts': 1.0.90
@@ -5022,9 +5049,12 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
+      - '@wix/fe-essentials'
       - '@wix/services-manager'
       - react
       - react-dom
+      - react-native
+      - typescript
       - use-sync-external-store
 
   '@wix/headless-restaurants-olo@0.0.50(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))':
