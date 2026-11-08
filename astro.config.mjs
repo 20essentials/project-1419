@@ -7,10 +7,10 @@ import { fotosPublicas, ogImage } from './src/data/imagenes.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  base: import.meta.env.DEV ? undefined : '/project-1020/',
+  base: import.meta.env.DEV ? undefined : '/project-1419/',
   site: import.meta.env.DEV
     ? 'http://localhost:4321/'
-    : 'https://20essentials.github.io/project-1020/',
+    : 'https://20essentials.github.io/project-1419/',
 
   // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
   integrations: [
@@ -20,7 +20,7 @@ export default defineConfig({
         if (new URL(item.url).pathname !== '/') return item;
         const images = [
           { src: ogImage.src, title: ogImage.title, caption: ogImage.alt },
-          ...fotosPublicas.map((foto) => ({ src: foto.src, title: `${foto.lugar} · Arko`, caption: foto.alt })),
+          ...fotosPublicas.map((foto) => ({ src: foto.src, title: `${foto.lugar} · Nami`, caption: foto.alt })),
         ];
         return { ...item, img: images.map(({ src, ...rest }) => ({ url: new URL(src, item.url).href, ...rest })) };
       },
