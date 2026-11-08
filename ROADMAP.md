@@ -1,0 +1,71 @@
+# ROADMAP — Nami (project-1419)
+
+Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
+
+- Referencia técnica: `20essentials/project-1415` (reusar sus recetas, no su integración `@wix/astro`).
+  - `.opencode/skills/.../inline-recipes/setup-restaurant-reservations.md`
+  - `.opencode/skills/.../inline-recipes/how-to-code-restaurant-reservations.md`
+  - `.opencode/skills/.../inline-recipes/how-to-code-members-custom-login.md`
+  - `.opencode/skills/.../inline-recipes/how-to-code-restaurant-orders.md`
+- Docs clave:
+  - https://dev.wix.com/docs/go-headless/self-managed-headless/about-self-managed-headless.md
+  - https://dev.wix.com/docs/go-headless/authentication/members/identity-providers/sign-in-with-google-or-facebook-js-sdk.md
+  - https://docs.astro.build/en/guides/integrations-guide/cloudflare/
+
+## Decisiones cerradas
+
+| Tema | Decisión |
+|---|---|
+| Modelo | Self-managed headless (SDK `@wix/sdk`, sin `@wix/astro`, sin hosting Wix) |
+| Hosting | Astro 7 `output: 'server'` + `@astrojs/cloudflare` en Cloudflare Workers (se abandona gh-pages) |
+| Auth visita/admin | `OAuthStrategy({ clientId })` público para visitante/miembro + `ApiKeyStrategy` server-side para operaciones admin (`createReservation`, menús) |
+| Miembros | Login **custom** (email/contraseña y botones Google/Facebook con `getAuthUrl({ idp })`), tokens en cookies HttpOnly, `/account/` con orders (`@wix/ecom`) |
+| i18n | Inglés default sin prefijo + `/es/` + `/it/` con slugs idénticos. Copy en `src/translations.json`; traducciones editables en el **Translation Manager** del dashboard Wix vía `wix translation push/pull` (CLI) |
+| Contenido dinámico | Menú de `/carta/` y disponibilidad de `/reserve/` desde **Wix Restaurants** (`@wix/restaurants`, `@wix/table-reservations`) con API key SSR + caché |
+| Pasos | `.opencode/commands/step-XX-*.md`, un paso por sesión/día, commit tras cada paso |
+
+## Fases
+
+- [ ] **Fase 0 — Cimientos de infraestructura**
+  - [ ] [step-01-cloudflare-migration](.opencode/commands/step-01-cloudflare-migration.md)
+  - [ ] [step-02-wix-env-and-client](.opencode/commands/step-02-wix-env-and-client.md)
+- [ ] **Fase 1 — i18n (el dashboard manda)**
+  - [ ] [step-03-translations-extraction](.opencode/commands/step-03-translations-extraction.md)
+  - [ ] [step-04-multilingual-flow](.opencode/commands/step-04-multilingual-flow.md)
+  - [ ] [step-05-language-routing](.opencode/commands/step-05-language-routing.md)
+- [ ] **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**
+  - [ ] [step-06-restaurants-setup](.opencode/commands/step-06-restaurants-setup.md)
+  - [ ] [step-07-reserve-api](.opencode/commands/step-07-reserve-api.md)
+  - [ ] [step-08-reserve-page](.opencode/commands/step-08-reserve-page.md)
+  - [ ] [step-09-reserve-e2e](.opencode/commands/step-09-reserve-e2e.md)
+- [ ] **Fase 3 — Carta y páginas de contenido**
+  - [ ] [step-10-menu-from-restaurants](.opencode/commands/step-10-menu-from-restaurants.md)
+  - [ ] [step-11-legal-static-pages](.opencode/commands/step-11-legal-static-pages.md)
+- [ ] **Fase 4 — Miembros / Account (login custom)**
+  - [ ] [step-12-auth-core](.opencode/commands/step-12-auth-core.md)
+  - [ ] [step-13-custom-login-pages](.opencode/commands/step-13-custom-login-pages.md)
+  - [ ] [step-14-account-orders](.opencode/commands/step-14-account-orders.md)
+- [ ] **Fase 5 — Regalar / pagos**
+  - [ ] [step-15-gift-cards-checkout](.opencode/commands/step-15-gift-cards-checkout.md)
+- [ ] **Extras futuros** (no planificados aún)
+  - [ ] Deploy hook / cron rebuild para `wix translation pull` tras ediciones en dashboard
+  - [ ] Redirect 301 `/reservar/` → `/reserve/` (slugs idénticos; el link histórico era español)
+  - [ ] Dominio `namicrestaurant.com` (crear cuentas y registrar dominio cuando exista el proyecto real)
+
+## Convenciones obligatorias (de AGENTS.md, aplicarlas en cada paso)
+
+- Gestor: **pnpm**; dependencias **exactas** (sin caret `^`).
+- Todo asset llamado desde TS/JSX de Astro: `baseUrl(...)`. CSS no (`url(/assets/logo.svg)`). El CSS no necesita baseUrl para background-image.
+- Archivos en `src/` en kebab-case (sin CamelCase, `_` ni espacios). Tests en `src/tests/`.
+- Prohibido `export default`, salvo API routes y `.astro` (usar `export const`).
+- Sin comentarios en el código.
+- Al probar (`astro dev`, Playwright, `wrangler dev`), cerrar siempre el servidor y liberar el puerto 4321 (`taskkill` del PID LISTENING) antes de terminar.
+- Sin `hreflang`/SEO inconsistente: cada página actualiza canonical canonical + hreflang de su locale.
+
+## Riesgos y notas
+
+1. **Premium**: activar `onlineReservationsEnabled` (reservas online) y el checkout de gift cards requieren sitio Wix premium; en trial se espera `428 PREMIUM_ONLY` (no fatal). Importante: las fases 0/1/3/4 no dependen del premium; la Fase 2/5 degradan con mensajes claros mientras no se pague.
+2. **Scopes de API key**: la API key debe tener permisos "Manage restaurant reservations" (+ lectura de menús); si algún endpoint rechaza API key → usar OAuth client_credentials como backend backend.
+3. **Fragment en social login**: Google/Facebook devuelven `code`/`state` en el fragment (`#...`), invisible para el servidor → el callback es página client-side + `POST` a `/api/auth/session` para cookies HttpOnly. Requiere **allow-list de redirect URIs** en Headless Settings (precondición de step-02).
+4. **Traducciones → deploy**: editar en dashboard obliga `wix translation pull` + rebuild. Mitigación futura: deploy hook.
+5. **Trial de `wrangler dev` y `@wix/sdk`**: `@wix/sdk` usa fetch estándar, compatible con Workers; verificar en step-02 con una llamada de humo (lista de ubicaciones de localización).
