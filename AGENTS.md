@@ -1,0 +1,7 @@
+- Usa pnpm
+- Instala paquetes exactos sin caret ^ en el package.json
+- Todo asset: (imagen, video, etc) adentro de typescript o adentro de jsx de Astro debera ser llamado con baseUrl(...), por ejemplo el css no lo necesita (ejemplo -> background-image: url(/assets/logo.svg))
+- No pongas comentarios en el codigo.
+- Despues de probar (astro dev, playwright, etc.) cierra siempre el servidor y libera el puerto 4321 (taskkill en el PID del proceso LISTENING). Nunca dejarlo abierto al terminar.
+- Todo archivo dentro de src/ debe ser kebab-case (minsuclas, sin CamelCase, sin _ ni espacios). Los tests viven en su carpeta aparte (src/tests/), no junto a los componentes.
+- Prohibido usar export default, excepto para API routes y los .astro. Usa siempre export nombrado (export const).
