@@ -30,7 +30,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
   - [ ] [step-01-cloudflare-migration](.opencode/commands/step-01-cloudflare-migration.md)
   - [x] step-01 ejecutado y commiteado (`build(cloudflare)`)
   - [ ] [step-02-wix-env-and-client](.opencode/commands/step-02-wix-env-and-client.md)
-  - [x] step-02 ejecutado y commiteado: smoke 200 con credenciales reales (locations OK); pendiente 200 en `reservationLocations` cuando se instale la app Table Reservations (step-06)
+  - [x] step-02 ejecutado y commiteado: smoke 200 con credenciales reales (locations OK); app Table Reservations instalada después vía Apps Installer API (appInstance c9d6a76e-ad6e-460a-9bab-d125ec7b90a8) y smoke 200 en ambos clientes (admin + public). Nota: `astro dev` falla con el adapter cloudflare (`./assets/image-asset` no exporta bajo workerd) — usar `pnpm build && pnpm preview` para probar endpooints en dev.
 - [ ] **Fase 1 — i18n (el dashboard manda)**
   - [ ] [step-03-translations-extraction](.opencode/commands/step-03-translations-extraction.md)
   - [x] step-03 ejecutado y commiteado: `src/translations.json` verificado en inglés, `t()` en `src/i18n/t.ts`, `nami.ts` solo estructura, baseline español en `.opencode/references/spanish-copy-baseline.md`; pendiente step-04 rellenar es/it
