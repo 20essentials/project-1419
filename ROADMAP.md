@@ -28,7 +28,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
 
 - [ ] **Fase 0 — Cimientos de infraestructura**
   - [ ] [step-01-cloudflare-migration](.opencode/commands/step-01-cloudflare-migration.md)
-  - [ ] [step-01b-deploy](.opencode/commands/step-01b-deploy.md) *(deferido: `wrangler login` + `wrangler deploy`, se ejecuta a futuro cuando se quiera publicar)*
+  - [x] step-01 ejecutado y commiteado (`build(cloudflare)`)
   - [ ] [step-02-wix-env-and-client](.opencode/commands/step-02-wix-env-and-client.md)
 - [ ] **Fase 1 — i18n (el dashboard manda)**
   - [ ] [step-03-translations-extraction](.opencode/commands/step-03-translations-extraction.md)
@@ -50,8 +50,9 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
   - [ ] [step-15-gift-cards-checkout](.opencode/commands/step-15-gift-cards-checkout.md)
 - [ ] **Extras futuros** (no planificados aún)
   - [ ] Deploy hook / cron rebuild para `wix translation pull` tras ediciones en dashboard
+  - [ ] [step-100-deploy](.opencode/commands/step-100-deploy.md) *(deferido: `wrangler login` + `wrangler deploy`, se ejecuta cuando se quiera publicar o cambiar de dominio)*
   - [ ] Redirect 301 `/reservar/` → `/reserve/` (slugs idénticos; el link histórico era español)
-  - [ ] Dominio `namicrestaurant.com` (registrar el dominio y añadirlo como custom domain en Cloudflare: ver step-01b, paso 4)
+  - [ ] Dominio `namicrestaurant.com` (registrar el dominio y añadirlo como custom domain en Cloudflare: ver step-100, paso 4)
 
 ## Convenciones obligatorias (de AGENTS.md, aplicarlas en cada paso)
 

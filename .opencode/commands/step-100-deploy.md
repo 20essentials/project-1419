@@ -1,9 +1,9 @@
 ---
-name: "Step 01b — Deploy a Cloudflare (publish del sitio)"
+name: "Step 100 — Deploy a Cloudflare (publish del sitio)"
 goal: "Publicar el sitio en Cloudflare: wrangler login + wrangler deploy, validar la URL real y (a futuro) el dominio namicrestaurant.com."
 ---
 
-# Step 01b — Deploy a Cloudflare (publish del sitio)
+# Step 100 — Deploy a Cloudflare (publish del sitio)
 
 Paso **deferido**: se ejecuta cuando el owner quiera publicar; no bloquea steps 02–15. Puede repetirse tras cualquier cambio o cada vez que se despliega contenido nuevo (es el único "deploy" del proyecto).
 
