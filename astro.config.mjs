@@ -1,16 +1,18 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 
+import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { fotosPublicas, ogImage } from './src/data/imagenes.ts';
 
 // https://astro.build/config
 export default defineConfig({
-  base: import.meta.env.DEV ? undefined : '/project-1419/',
+  output: 'server',
+  adapter: cloudflare({ imageService: { build: 'compile' }, prerenderEnvironment: 'node' }),
   site: import.meta.env.DEV
     ? 'http://localhost:4321/'
-    : 'https://20essentials.github.io/project-1419/',
+    : 'https://namicrestaurant.com/',
 
   // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
   integrations: [

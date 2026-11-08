@@ -10,9 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "deploy": "pnpm build && pnpm gh-pages -d dist/"
+    "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "14.4.6",
     "@astrojs/sitemap": "3.7.4",
     "@phosphor-icons/core": "2.1.1",
     "@tailwindcss/vite": "4.3.3",
@@ -23,6 +24,6 @@
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
-    "gh-pages": "6.3.0"
+    "wrangler": "4.158.0"
   }
 }

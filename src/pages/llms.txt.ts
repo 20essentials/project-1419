@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { contacto, experiencias, faqs, links, maridaje, seo } from '../data/nami';
 
+export const prerender = true;
+
 export const GET: APIRoute = ({ site }) => {
   if (!site) throw new Error('Falta site en astro.config.mjs');
   const home = new URL('/', site).href;
