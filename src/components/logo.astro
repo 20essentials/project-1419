@@ -3,9 +3,7 @@ interface Props {
   class?: string;
 }
 
-const { class: className = 'h-5 w-auto' } = Astro.props;
+const { class: className = 'text-2xl' } = Astro.props;
 ---
 
-<svg viewBox="0 0 4504 1204" fill="currentColor" class={className} role="img" aria-label="Arko">
-  <use href="#arko-wordmark"></use>
-</svg>
+<span class={`font-display leading-none tracking-[0.08em] ${className}`} aria-label="Nami">Nami<span aria-hidden="true" class="ml-2 text-[0.9em] text-teja">波</span></span>

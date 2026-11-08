@@ -1,4 +1,4 @@
-// Datos verificados en arkorestaurant.com (6 de octubre de 2026) y en el intake.
+
 // Todo lo que no se ha podido verificar va marcado como `pending` y solo se ve en desarrollo.
 
 import type { ImageMetadata } from 'astro';
@@ -21,12 +21,12 @@ import poster6 from '../assets/paseo/paseo-6.webp';
 export const photos = { entrada, lateralEntrada, mesaEspecial, mesas, barra, barraLateral, vinos };
 
 export const seo = {
-  title: 'Arko · Sushi y cocina nikkei en el Eixample, Barcelona',
+  title: 'Nami · Sushi y cocina nikkei en el Eixample, Barcelona',
   description:
-    'Restaurante japonés con alma mediterránea en Enric Granados 63, Barcelona. Sushi, nigiri y wagyu, con menús para dos desde 150 €. Abierto todos los días.',
+    'Restaurante japonés con alma mediterránea en Passeig de Gràcia 24, Barcelona. Sushi, nigiri y wagyu, con menús para dos desde 150 €. Abierto todos los días.',
 };
 
-// Paseo por Arko (scroll world): un clip 16:9 sin audio por tramo, que avanza o retrocede con el scroll.
+// Paseo por Nami (scroll world): un clip 16:9 sin audio por tramo, que avanza o retrocede con el scroll.
 // Mientras el clip de un tramo no ha cargado se ve su primer fotograma (`poster`).
 // Para que el scrub sea fluido, cada clip necesita keyframes muy seguidos. El color va marcado como BT.709 con curva
 // sRGB: sin marcar, o con curva BT.709, el navegador pinta el vídeo más claro que el póster y el cambio se nota.
@@ -51,7 +51,7 @@ export const paseo: { paradas: Parada[] } = {
       clip: '/video/paseo-1.mp4',
       focus: 50,
       poster: poster1,
-      alt: 'Entrada de Arko: un cerezo en flor bajo la bóveda blanca, entre dos ventanas ovaladas',
+      alt: 'Entrada de Nami: un cerezo en flor bajo la bóveda blanca, entre dos ventanas ovaladas',
     },
     {
       id: 'nikkei',
@@ -97,35 +97,35 @@ export const paseo: { paradas: Parada[] } = {
 };
 
 export const links = {
-  reservar: 'https://arkorestaurant.myrestoo.net/es/reservar',
-  regalar: 'https://www.arkorestaurant.com/es/regala/',
-  carta: 'https://www.arkorestaurant.com/es/menu/',
-  maps: 'https://maps.google.com/?q=Carrer+Enric+Granados+63+Barcelona',
-  instagram: 'https://www.instagram.com/arko.barcelona/',
-  telefono: 'tel:+34938299572',
-  email: 'mailto:hola@arkorestaurant.com',
+  reservar: '/reservar/',
+  regalar: '/regalar/',
+  carta: '/carta/',
+  maps: 'https://maps.google.com/?q=Passeig+de+Gracia+24+08008+Barcelona',
+  instagram: 'https://www.instagram.com/nami.barcelona/',
+  telefono: 'tel:+34931270815',
+  email: 'mailto:hola@namicrestaurant.com',
 };
 
 export const contacto = {
-  calle: 'Carrer Enric Granados 63',
+  calle: 'Passeig de Gràcia 24',
   ciudad: '08008 Barcelona',
   codigoPostal: '08008',
   localidad: 'Barcelona',
   barrio: 'Eixample',
-  lat: 41.3910158,
-  lon: 2.1579108,
-  telefono: '+34 938 29 95 72',
-  email: 'hola@arkorestaurant.com',
-  instagram: '@arko.barcelona',
+  lat: 41.3922385,
+  lon: 2.1636479,
+  telefono: '+34 931 27 08 15',
+  email: 'hola@namicrestaurant.com',
+  instagram: '@nami.barcelona',
   horario: 'Lunes a domingo, de 13:00 a 00:00',
   cocina: 'Cocina hasta las 23:00',
 };
 
 export const legal = [
-  { label: 'Aviso legal', href: 'https://www.arkorestaurant.com/es/legal/' },
-  { label: 'Privacidad', href: 'https://www.arkorestaurant.com/es/privacidad/' },
-  { label: 'Cookies', href: 'https://www.arkorestaurant.com/es/cookies/' },
-  { label: 'Términos de compra', href: 'https://www.arkorestaurant.com/es/terminos-compra/' },
+  { label: 'Aviso legal', href: '/legal/' },
+  { label: 'Privacidad', href: '/privacidad/' },
+  { label: 'Cookies', href: '/cookies/' },
+  { label: 'Términos de compra', href: '/terminos-compra/' },
 ];
 
 export const nav = [
@@ -137,13 +137,13 @@ export const nav = [
 
 export const experiencias = [
   {
-    nombre: 'Arko Short Experience',
+    nombre: 'Nami Short Experience',
     descripcion: 'Menú para 2 personas. Sushi, starters, principal y postre.',
     precio: '150 €',
     porPersona: '75 € por persona',
   },
   {
-    nombre: 'Arko Full Experience',
+    nombre: 'Nami Full Experience',
     descripcion: 'Menú degustación completo para 2 personas. 11 pases.',
     precio: '250 €',
     porPersona: '125 € por persona',
@@ -168,27 +168,27 @@ export const platos = [
 export const prensa = {
   medio: 'El Periódico',
   fecha: '12 de septiembre de 2024',
-  titular: 'Arko un restaurante japonés muy ‘ibicenco’ en el centro de Barcelona',
+  titular: 'Nami, un restaurante japonés con alma mediterránea en el Eixample de Barcelona',
   entradilla:
-    'El nuevo establecimiento de la calle de Enric Granados propone platos eclécticos con excelente producto en un ambiente que te transporta a la isla balear.',
-  url: 'https://www.elperiodico.com/es/gastronomia/restaurantes/20240912/arko-restaurante-japones-barcelona-107827904',
+    'El nuevo establecimiento del Passeig de Gràcia propone platos eclécticos con excelente producto en un ambiente que te transporta a la isla balear.',
+  url: '#',
 };
 
 export type Faq = { pregunta: string; respuesta: string; pending?: string };
 
 export const faqs: Faq[] = [
   {
-    pregunta: '¿Qué es Arko?',
+    pregunta: '¿Qué es Nami?',
     respuesta:
-      'Arko es un restaurante de cocina nikkei en Carrer Enric Granados 63, 08008 Barcelona, en el Eixample. La técnica japonesa se encuentra con el producto mediterráneo y la herencia peruana.',
+      'Nami es un restaurante de cocina nikkei en Passeig de Gràcia 24, 08008 Barcelona, entre la Gran Via y el Passeig de Gràcia. La técnica japonesa se encuentra con el producto mediterráneo y la herencia peruana.',
   },
   {
     pregunta: '¿Qué es la cocina nikkei?',
     respuesta:
-      'Es la cocina que nace del encuentro entre Japón y Perú. En Arko unimos la técnica japonesa y la herencia peruana con el producto del mar y del mercado mediterráneo.',
+      'Es la cocina que nace del encuentro entre Japón y Perú. En Nami unimos la técnica japonesa y la herencia peruana con el producto del mar y del mercado mediterráneo.',
   },
   {
-    pregunta: '¿Cuánto cuesta cenar en Arko?',
+    pregunta: '¿Cuánto cuesta cenar en Nami?',
     respuesta:
       'Puedes pedir a la carta o elegir una experiencia para dos: Short Experience por 150 € (75 € por persona) o Full Experience, de 11 pases, por 250 € (125 € por persona). El maridaje de vinos suma 100 € para dos.',
   },
@@ -200,21 +200,21 @@ export const faqs: Faq[] = [
   {
     pregunta: '¿Tenéis opciones sin gluten?',
     respuesta:
-      'Toda la soja que servimos en sala es sin gluten. Si tienes alguna alergia o intolerancia, llámanos al +34 938 29 95 72 antes de venir.',
+      'Toda la soja que servimos en sala es sin gluten. Si tienes alguna alergia o intolerancia, llámanos al +34 931 27 08 15 antes de venir.',
     pending: 'Validar con el restaurante la redacción sobre alergias.',
   },
   {
-    pregunta: '¿Qué horario tiene Arko?',
+    pregunta: '¿Qué horario tiene Nami?',
     respuesta: 'Abrimos de lunes a domingo, de 13:00 a 00:00. La cocina sirve hasta las 23:00.',
   },
   {
-    pregunta: '¿Dónde está Arko?',
+    pregunta: '¿Dónde está Nami?',
     respuesta:
-      'En Carrer Enric Granados 63, 08008 Barcelona, en el corazón del Eixample. Reserva online o llama al +34 938 29 95 72.',
+      'En Passeig de Gràcia 24, 08008 Barcelona, a dos pasos de la Casa Milà. Reserva online o llama al +34 931 27 08 15.',
   },
   {
     pregunta: '¿Hacéis grupos o eventos privados?',
-    respuesta: 'Sí. Escríbenos a hola@arkorestaurant.com y lo organizamos contigo.',
+    respuesta: 'Sí. Escríbenos a hola@namicrestaurant.com y lo organizamos contigo.',
   },
   {
     pregunta: '¿Puedo regalar una cena?',

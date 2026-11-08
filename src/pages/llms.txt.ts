@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { contacto, experiencias, faqs, links, maridaje, seo } from '../data/arko';
+import { contacto, experiencias, faqs, links, maridaje, seo } from '../data/nami';
 
 export const GET: APIRoute = ({ site }) => {
   if (!site) throw new Error('Falta site en astro.config.mjs');
@@ -8,7 +8,7 @@ export const GET: APIRoute = ({ site }) => {
     .map((exp) => `- ${exp.nombre}: ${exp.precio} (${exp.porPersona}). ${exp.descripcion}`)
     .join('\n');
   const questions = faqs.map((faq) => `### ${faq.pregunta}\n\n${faq.respuesta}`).join('\n\n');
-  const body = `# Arko
+  const body = `# Nami
 
 > ${seo.description}
 

@@ -1,4 +1,4 @@
-import { contacto, experiencias, faqs, links, maridaje, platos, seo } from './arko';
+import { contacto, experiencias, faqs, links, maridaje, platos, seo } from './nami';
 import { fotosPublicas, ogImage } from './imagenes';
 
 const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -22,7 +22,7 @@ function euros(label: string) {
 export function pageImages(site: URL): PageImage[] {
   return fotosPublicas.map((foto) => ({
     loc: abs(site, foto.src),
-    title: `${foto.lugar} · Arko`,
+    title: `${foto.lugar} · Nami`,
     caption: foto.alt,
   }));
 }
@@ -47,8 +47,8 @@ export function structuredData(site: URL) {
       {
         '@type': 'Restaurant',
         '@id': restaurantId,
-        name: 'Arko',
-        alternateName: ['Arko Restaurant', 'Arko Barcelona'],
+        name: 'Nami',
+        alternateName: ['Nami Restaurant', 'Nami Barcelona'],
         slogan: 'Cocina japonesa con alma mediterránea',
         description:
           'Cocina japonesa con alma mediterránea y herencia peruana. Sushi, nigiri y cocina nikkei en el Eixample de Barcelona.',
@@ -69,7 +69,7 @@ export function structuredData(site: URL) {
         menu: links.carta,
         hasMenu: {
           '@type': 'Menu',
-          name: 'Carta de Arko',
+          name: 'Carta de Nami',
           url: links.carta,
           hasMenuSection: [
             {
@@ -118,7 +118,7 @@ export function structuredData(site: URL) {
           closes: '00:00',
         },
         contactPoint: { '@type': 'ContactPoint', telephone, contactType: 'reservations' },
-        sameAs: [links.instagram, 'https://www.arkorestaurant.com/'],
+        sameAs: [links.instagram, 'https://www.namicrestaurant.com/'],
         mainEntityOfPage: { '@id': webpageId },
         potentialAction: {
           '@type': 'ReserveAction',
@@ -128,15 +128,15 @@ export function structuredData(site: URL) {
             inLanguage: 'es',
             actionPlatform: ['https://schema.org/DesktopWebPlatform', 'https://schema.org/MobileWebPlatform'],
           },
-          result: { '@type': 'FoodEstablishmentReservation', name: 'Reserva de mesa en Arko' },
+          result: { '@type': 'FoodEstablishmentReservation', name: 'Reserva de mesa en Nami' },
         },
       },
       {
         '@type': 'WebSite',
         '@id': websiteId,
         url: home,
-        name: 'Arko',
-        alternateName: 'Arko Barcelona',
+        name: 'Nami',
+        alternateName: 'Nami Barcelona',
         description: seo.description,
         inLanguage: 'es-ES',
         publisher: { '@id': restaurantId },

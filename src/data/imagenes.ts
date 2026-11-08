@@ -3,8 +3,8 @@
 
 export const ogImage = {
   src: '/og-image.jpg',
-  title: 'Arko · Cocina japonesa con alma mediterránea',
-  alt: 'Arko: cocina japonesa con alma mediterránea, junto a la entrada del restaurante',
+  title: 'Nami · Cocina japonesa con alma mediterránea',
+  alt: 'Nami: cocina japonesa con alma mediterránea, junto a la entrada del restaurante',
 };
 
 // Las mismas fotos del local en JPG con URL fija en public/photos: el sitemap de imágenes y el JSON-LD necesitan
@@ -13,7 +13,7 @@ export const fotosPublicas = [
   {
     src: '/photos/0-entrada.jpg',
     lugar: 'La entrada',
-    alt: 'La entrada de Arko: un cerezo en flor sobre la puerta de cristal, ventanas ovaladas y mesas de nogal',
+    alt: 'La entrada de Nami: un cerezo en flor sobre la puerta de cristal, ventanas ovaladas y mesas de nogal',
   },
   {
     src: '/photos/1-lateral-entrada.jpg',
@@ -43,6 +43,6 @@ export const fotosPublicas = [
   {
     src: '/photos/6-vinos.jpg',
     lugar: 'Los vinos',
-    alt: 'El pasillo de las vitrinas de vino de Arko, con una puerta de espejo al fondo',
+    alt: 'El pasillo de las vitrinas de vino de Nami, con una puerta de espejo al fondo',
   },
 ];

@@ -51,7 +51,7 @@ const robots = noindex
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
-    <meta property="og:site_name" content="Arko Restaurant" />
+    <meta property="og:site_name" content="Nami Restaurant" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
@@ -61,7 +61,7 @@ const robots = noindex
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogImage.alt} />
-    {/* Sin twitter:site: su web no enlaza ninguna cuenta de X y @arko.barcelona es su Instagram. */}
+    {/* Sin twitter:site: no hay cuenta de X enlazada y @nami.barcelona (inventado) es su Instagram. */}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -75,7 +75,6 @@ const robots = noindex
     <slot name="head" />
   </head>
   <body class="min-h-svh overflow-x-clip">
-    <LogoSymbol />
     {header && <Header />}
     <main id="contenido" tabindex="-1" class="outline-none">
       <slot />
