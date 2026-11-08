@@ -28,6 +28,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
 
 - [ ] **Fase 0 — Cimientos de infraestructura**
   - [ ] [step-01-cloudflare-migration](.opencode/commands/step-01-cloudflare-migration.md)
+  - [ ] [step-01b-deploy](.opencode/commands/step-01b-deploy.md) *(deferido: `wrangler login` + `wrangler deploy`, se ejecuta a futuro cuando se quiera publicar)*
   - [ ] [step-02-wix-env-and-client](.opencode/commands/step-02-wix-env-and-client.md)
 - [ ] **Fase 1 — i18n (el dashboard manda)**
   - [ ] [step-03-translations-extraction](.opencode/commands/step-03-translations-extraction.md)
@@ -50,7 +51,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
 - [ ] **Extras futuros** (no planificados aún)
   - [ ] Deploy hook / cron rebuild para `wix translation pull` tras ediciones en dashboard
   - [ ] Redirect 301 `/reservar/` → `/reserve/` (slugs idénticos; el link histórico era español)
-  - [ ] Dominio `namicrestaurant.com` (crear cuentas y registrar dominio cuando exista el proyecto real)
+  - [ ] Dominio `namicrestaurant.com` (registrar el dominio y añadirlo como custom domain en Cloudflare: ver step-01b, paso 4)
 
 ## Convenciones obligatorias (de AGENTS.md, aplicarlas en cada paso)
 
@@ -65,7 +66,7 @@ Migración de Nami a **Wix Headless self-managed** + **Cloudflare Workers**.
 ## Riesgos y notas
 
 1. **Premium**: activar `onlineReservationsEnabled` (reservas online) y el checkout de gift cards requieren sitio Wix premium; en trial se espera `428 PREMIUM_ONLY` (no fatal). Importante: las fases 0/1/3/4 no dependen del premium; la Fase 2/5 degradan con mensajes claros mientras no se pague.
-2. **Scopes de API key**: la API key debe tener permisos "Manage restaurant reservations" (+ lectura de menús); si algún endpoint rechaza API key → usar OAuth client_credentials como backend backend.
+2. **Scopes de API key**: la API key debe tener permisos "Manage restaurant reservations" (+ lectura de menús); si algún endpoint rechaza API key → usar OAuth client_credentials como fallback backend.
 3. **Fragment en social login**: Google/Facebook devuelven `code`/`state` en el fragment (`#...`), invisible para el servidor → el callback es página client-side + `POST` a `/api/auth/session` para cookies HttpOnly. Requiere **allow-list de redirect URIs** en Headless Settings (precondición de step-02).
 4. **Traducciones → deploy**: editar en dashboard obliga `wix translation pull` + rebuild. Mitigación futura: deploy hook.
 5. **Trial de `wrangler dev` y `@wix/sdk`**: `@wix/sdk` usa fetch estándar, compatible con Workers; verificar en step-02 con una llamada de humo (lista de ubicaciones de localización).
