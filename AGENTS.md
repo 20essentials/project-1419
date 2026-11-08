@@ -5,3 +5,7 @@
 - Despues de probar (astro dev, playwright, etc.) cierra siempre el servidor y libera el puerto 4321 (taskkill en el PID del proceso LISTENING). Nunca dejarlo abierto al terminar.
 - Todo archivo dentro de src/ debe ser kebab-case (minsuclas, sin CamelCase, sin _ ni espacios). Los tests viven en su carpeta aparte (src/tests/), no junto a los componentes.
 - Prohibido usar export default, excepto para API routes y los .astro. Usa siempre export nombrado (export const).
+
+## Siguientes pasos
+- La marca del restaurante es Nami (inventada): hay que construir las paginas que apuntan con URLs relativas en src/data/nami.ts y aun no existen: /reservar/, /regalar/, /carta/, /legal/, /privacidad/, /cookies/, /terminos-compra/.
+- El dominio inventado es namicrestaurant.com (email hola@namicrestaurant.com, Instagram @nami.barcelona): registrar dominio y cuentas cuando exista el proyecto real.
