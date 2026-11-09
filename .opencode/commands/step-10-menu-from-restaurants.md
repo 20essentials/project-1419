@@ -20,8 +20,8 @@ La carta se edita desde el dashboard de Wix (el usuario cambia platos sin deploy
    - Crear/definir el menú de Nami en el app Wix Restaurants: secciones (Entrantes, Nigiris, Rolls, Postres...), items con nombre/descripción/precio/notas.
    - En inglés como fuente; los `alt`/descripciones por traducir en el Translation Manager si se quiere (o austeramente, en inglés para la demo inicial).
 2. **Feature server**
-   - `src/wix/menu-client.ts` con `menus.listMenus` / `sections.listSections` / `items.listItems` (admin ApiKey) + ensamblado en orden de `sectionIds`/`itemIds` (igual que project-1415).
-   - Parser en `src/data/menu-mapper.ts` → estructura propia estable (`{ sections: [{ id, title, items: [{ id, title, description, price }] }] }`).
+   - `src/shared/wix/menu-client.ts` con `menus.listMenus` / `sections.listSections` / `items.listItems` (admin ApiKey) + ensamblado en orden de `sectionIds`/`itemIds` (igual que project-1415).
+   - Parser en `src/shared/site/menu-mapper.ts` → estructura propia estable (`{ sections: [{ id, title, items: [{ id, title, description, price }] }] }`).
 3. **Página /carta/**
    - SSR: llama al parser y renderiza la carta estilo Nami (desktop dos columnas / mobile lista), precios con `Intl.NumberFormat` en EUR con el locale de la página.
    - Traducción de títulos de secciones: si Wix devuelve copy fijo, claves `carta.section.*` con `t()`; items quedan como-Wix (inglés) + fallback.

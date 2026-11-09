@@ -2,11 +2,11 @@
 export const prerender = true;
 
 import { Picture } from 'astro:assets';
-import Layout from '../layouts/layout.astro';
-import Logo from '../components/logo.astro';
-import Icon from '../components/icon.astro';
-import { getT } from '../i18n/t';
-import { links, photos } from '../data/nami';
+import Layout from '@/app/layout.astro';
+import Logo from '@/app/logo.astro';
+import Icon from '@/shared/ui/icon.astro';
+import { getT } from '@/shared/i18n/t';
+import { links, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---

@@ -1,8 +1,8 @@
 ---
 import { Picture } from 'astro:assets';
-import Spiral from './spiral.astro';
-import { getT } from '../i18n/t';
-import { contacto, links, photos } from '../data/nami';
+import Spiral from '@/shared/ui/spiral.astro';
+import { getT } from '@/shared/i18n/t';
+import { contacto, links, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---

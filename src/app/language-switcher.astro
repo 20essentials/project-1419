@@ -1,6 +1,6 @@
 ---
-import { locales, type Locale } from '../i18n/t';
-import { localeFromPathname, localizedPathname } from '../i18n/routing';
+import { locales, type Locale } from '@/shared/i18n/t';
+import { localeFromPathname, localizedPathname } from '@/shared/i18n/routing';
 
 const pathname = Astro.url.pathname;
 const current = (Astro.currentLocale as Locale | undefined) ?? localeFromPathname(pathname);

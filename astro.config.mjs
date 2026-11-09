@@ -4,8 +4,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import { fotosPublicas, ogImage } from './src/data/imagenes.ts';
-import { getT, locales, defaultLocale } from './src/i18n/t.ts';
+import { fotosPublicas, ogImage } from './src/shared/site/imagenes.ts';
+import { getT, locales, defaultLocale } from './src/shared/i18n/t.ts';
 
 // https://astro.build/config
 export default defineConfig({

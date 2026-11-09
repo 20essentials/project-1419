@@ -1,9 +1,9 @@
 ---
 import Logo from './logo.astro';
-import Icon from './icon.astro';
+import Icon from '@/shared/ui/icon.astro';
 import LanguageSwitcher from './language-switcher.astro';
-import { getT } from '../i18n/t';
-import { contacto, links, nav } from '../data/nami';
+import { getT } from '@/shared/i18n/t';
+import { contacto, links, nav } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---

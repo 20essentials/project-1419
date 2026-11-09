@@ -1,9 +1,9 @@
 ---
 import { Picture } from 'astro:assets';
-import Pending from './pending.astro';
+import Pending from '@/shared/ui/pending.astro';
 import Stop from './stop.astro';
-import { getT, formatPrice, formatPairing } from '../i18n/t';
-import { links, paseo } from '../data/nami';
+import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
+import { links, paseo } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 const { paradas } = paseo;

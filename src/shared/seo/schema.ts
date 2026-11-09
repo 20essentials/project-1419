@@ -1,7 +1,7 @@
-import { getT, formatPrice, defaultLocale, type Locale } from '../i18n/t';
-import { localizedPathname } from '../i18n/routing';
-import { contacto, experiencias, faqIds, links, maridaje, platos } from './nami';
-import { fotosPublicas, ogImage } from './imagenes';
+import { getT, formatPrice, defaultLocale, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
+import { contacto, experiencias, faqIds, links, maridaje, platos } from '@/shared/site/nami';
+import { fotosPublicas, ogImage } from '@/shared/site/imagenes';
 
 const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 

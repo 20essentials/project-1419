@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getAdminClient } from '@/wix/admin-client';
-import { getPublicClient } from '@/wix/public-client';
+import { getAdminClient } from '@/shared/wix/admin-client';
+import { getPublicClient } from '@/shared/wix/public-client';
 
 export const GET: APIRoute = async ({ request }) => {
   const variant = new URL(request.url).searchParams.get('client') === 'public' ? 'public' : 'admin';

@@ -1,17 +1,17 @@
 ---
 export const prerender = true;
 
-import Layout from '../layouts/layout.astro';
-import ScrollWorld from '../components/scroll-world.astro';
-import Tagline from '../components/tagline.astro';
-import Dishes from '../components/dishes.astro';
-import Press from '../components/press.astro';
-import Experiences from '../components/experiences.astro';
-import Faq from '../components/faq.astro';
-import Gift from '../components/gift.astro';
-import FinalCta from '../components/final-cta.astro';
-import { getT, type Locale } from '../i18n/t';
-import { structuredData } from '../data/schema';
+import Layout from '@/app/layout.astro';
+import ScrollWorld from '@/features/home/scroll-world.astro';
+import Tagline from '@/features/home/tagline.astro';
+import Dishes from '@/features/menu/dishes.astro';
+import Press from '@/features/press/press.astro';
+import Experiences from '@/features/experiences/experiences.astro';
+import Faq from '@/features/faq/faq.astro';
+import Gift from '@/features/gift/gift.astro';
+import FinalCta from '@/features/final-cta/final-cta.astro';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { structuredData } from '@/shared/seo/schema';
 
 const t = getT(Astro.currentLocale);
 const site = Astro.site;

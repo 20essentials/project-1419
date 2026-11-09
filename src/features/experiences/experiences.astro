@@ -1,8 +1,8 @@
 ---
 import { Picture } from 'astro:assets';
-import Pending from './pending.astro';
-import { getT, formatPrice, formatPairing } from '../i18n/t';
-import { experiencias, links, maridaje, photos } from '../data/nami';
+import Pending from '@/shared/ui/pending.astro';
+import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
+import { experiencias, links, maridaje, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---

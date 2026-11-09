@@ -1,6 +1,6 @@
-import translations from '../translations.json' with { type: 'json' };
-import esTranslations from '../../.wix/multilingual/translations/es.json' with { type: 'json' };
-import itTranslations from '../../.wix/multilingual/translations/it.json' with { type: 'json' };
+import translations from '../../translations.json' with { type: 'json' };
+import esTranslations from '../../../.wix/multilingual/translations/es.json' with { type: 'json' };
+import itTranslations from '../../../.wix/multilingual/translations/it.json' with { type: 'json' };
 
 export const locales = ['en', 'es', 'it'] as const;
 

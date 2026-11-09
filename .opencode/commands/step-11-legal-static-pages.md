@@ -11,7 +11,7 @@ goal: "/legal/, /privacidad/, /cookies/ y /terminos-compra/ publicadas en los 3 
 
 ## Objetivo
 
-Las rutas reservadas en `src/data/nami.ts#legal` y `links.regalar` existen con copy real en inglés/es/it.
+Las rutas reservadas en `src/shared/site/nami.ts#legal` y `links.regalar` existen con copy real en inglés/es/it.
 
 ## Pasos
 

@@ -1,19 +1,19 @@
 // Todo lo que no se ha podido verificar va marcado como `pending` y solo se ve en desarrollo.
 
 import type { ImageMetadata } from 'astro';
-import entrada from '../assets/photos/0-entrada.webp';
-import lateralEntrada from '../assets/photos/1-lateral-entrada.webp';
-import mesaEspecial from '../assets/photos/2-mesa-especial.webp';
-import mesas from '../assets/photos/3-mesas.webp';
-import barra from '../assets/photos/4-barra.webp';
-import barraLateral from '../assets/photos/5-barra-lateral.webp';
-import vinos from '../assets/photos/6-vinos.webp';
-import poster1 from '../assets/paseo/paseo-1.webp';
-import poster2 from '../assets/paseo/paseo-2.webp';
-import poster3 from '../assets/paseo/paseo-3.webp';
-import poster4 from '../assets/paseo/paseo-4.webp';
-import poster5 from '../assets/paseo/paseo-5.webp';
-import poster6 from '../assets/paseo/paseo-6.webp';
+import entrada from '../../assets/photos/0-entrada.webp';
+import lateralEntrada from '../../assets/photos/1-lateral-entrada.webp';
+import mesaEspecial from '../../assets/photos/2-mesa-especial.webp';
+import mesas from '../../assets/photos/3-mesas.webp';
+import barra from '../../assets/photos/4-barra.webp';
+import barraLateral from '../../assets/photos/5-barra-lateral.webp';
+import vinos from '../../assets/photos/6-vinos.webp';
+import poster1 from '../../assets/paseo/paseo-1.webp';
+import poster2 from '../../assets/paseo/paseo-2.webp';
+import poster3 from '../../assets/paseo/paseo-3.webp';
+import poster4 from '../../assets/paseo/paseo-4.webp';
+import poster5 from '../../assets/paseo/paseo-5.webp';
+import poster6 from '../../assets/paseo/paseo-6.webp';
 
 export const photos = { entrada, lateralEntrada, mesaEspecial, mesas, barra, barraLateral, vinos };
 

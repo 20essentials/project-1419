@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
-import { getT, formatPrice, formatPairing } from '../i18n/t';
-import { contacto, experiencias, faqIds, links, maridaje } from '../data/nami';
+import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
+import { contacto, experiencias, faqIds, links, maridaje } from '@/shared/site/nami';
 
 export const prerender = true;
 

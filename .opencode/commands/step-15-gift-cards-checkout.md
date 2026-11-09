@@ -19,7 +19,7 @@ Guest puede comprar un gift card y recibirlo; member lo ve en sus órdenes.
 
 1. **Producto**
    - Crear el producto/gift voucher en el dashboard Wix (importes fijos; decidir 3 opciones con el owner).
-   - `src/wix/catalog` (opcional): leer el producto real (`products.queryProducts` admin ApiKey) para que precios no estén hardcodeados.
+   - `src/shared/wix/catalog` (opcional): leer el producto real (`products.queryProducts` admin ApiKey) para que precios no estén hardcodeados.
 2. **Add to cart (member o visitante)**
    - Visitor client (OAuthStrategy) → `cart.addItems(...)` de `@wix/ecom` client-side o en `/api/gift/cart` server con tokens de cookie si ya hay sesión.
 3. **Checkout redirect**

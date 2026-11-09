@@ -1,6 +1,6 @@
 ---
-import Spiral from './spiral.astro';
-import { getT } from '../i18n/t';
+import Spiral from '@/shared/ui/spiral.astro';
+import { getT } from '@/shared/i18n/t';
 
 const t = getT(Astro.currentLocale);
 const lines = [t('tagline.line1'), t('tagline.line2'), t('tagline.line3'), t('tagline.line4')];
