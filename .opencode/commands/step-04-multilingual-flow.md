@@ -41,6 +41,16 @@ goal: "Las traducciones se gestionan desde el Translation Manager del dashboard 
 - `es.json` con el copy inicial completo; `it.json` presente (aunque sea auto-translate por pulir).
 - Build verde en un clone limpio tras `pnpm install` (pull incluido).
 
+## Ejecución (2026-11-08)
+
+- CLI: `@wix/cli@1.2.9`, Node >= 24.22.1 (portable Node 24 + `.nvmrc`). `wix.config.json` enlaza el proyecto (appId = WIX_CLIENT_ID, siteId).
+- App Wix Multilingual instalada via Apps Installer API; multilingual mode ON; primario it→en; locales es/it.
+- Push/pull con `--json` para evitar los prompts Ink (shell sin TTY).
+- Seed es: script REST (`translation-content/v1/bulk/contents/create`, ~187 ítems desde `spanish-copy-baseline.md` + 22 claves manuales). Seed it: machine-translation/v3 en→it.
+- Integración: `getT()` importa `.wix/multilingual/translations/{es,it}.json` (it limpio; es con spread sobre el copy fuente para las claves vacías); `build` = pull + astro build.
+- Roundtrip verificado: PATCH `translation-content/v1/contents/by-key` (equivale a editar en el dashboard) → pull → el JSON commiteado cambia.
+- El criterio "se refleja en la web" queda completo en step-05 (envolver el sitio con Astro.i18n y render por locale).
+
 ## Notas
 
 - Documentar en el README el flujo "editor no técnico": dashboard → guardas traducción → (automático en CI) pull+deploy.
