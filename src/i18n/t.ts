@@ -18,8 +18,8 @@ const dictionaries: Record<Locale, Dictionary> = {
 
 export type TFunc = (key: string, params?: Record<string, string | number>) => string;
 
-export function getT(locale: Locale = defaultLocale): TFunc {
-  const dictionary = dictionaries[locale] ?? dictionaries[defaultLocale];
+export function getT(locale?: string): TFunc {
+  const dictionary = locales.includes(locale as Locale) ? dictionaries[locale as Locale] : dictionaries[defaultLocale];
   return (key, params = {}) => {
     let value = dictionary[key] ?? dictionaries[defaultLocale][key] ?? key;
     for (const [name, param] of Object.entries(params)) {

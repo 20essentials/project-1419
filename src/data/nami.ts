@@ -37,7 +37,7 @@ export const paseo: { paradas: Parada[] } = {
 };
 
 export const links = {
-  reservar: '/reservar/',
+  reservar: '/reserve/',
   regalar: '/regalar/',
   carta: '/carta/',
   maps: 'https://maps.google.com/?q=Passeig+de+Gracia+24+08008+Barcelona',

@@ -5,7 +5,7 @@ import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { fotosPublicas, ogImage } from './src/data/imagenes.ts';
-import { getT } from './src/i18n/t.ts';
+import { getT, locales, defaultLocale } from './src/i18n/t.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,9 +15,20 @@ export default defineConfig({
     ? 'http://localhost:4321/'
     : 'https://namicrestaurant.com/',
 
+  i18n: {
+    defaultLocale,
+    locales: [...locales],
+    fallback: { es: defaultLocale, it: defaultLocale },
+    routing: { prefixDefaultLocale: false, fallbackType: 'rewrite' },
+  },
+
   // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
   integrations: [
     sitemap({
+      i18n: {
+        defaultLocale,
+        locales: Object.fromEntries(locales.map((locale) => [locale, locale])),
+      },
       // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
       serialize(item) {
         if (new URL(item.url).pathname !== '/') return item;

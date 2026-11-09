@@ -5,7 +5,7 @@ import Stop from './stop.astro';
 import { getT, formatPrice, formatPairing } from '../i18n/t';
 import { links, paseo } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 const { paradas } = paseo;
 const body = 'mt-4 max-w-md text-base text-crema/80 lg:text-lg';
 const title = 'mt-4 max-w-xl text-4xl lg:text-5xl xl:text-6xl';

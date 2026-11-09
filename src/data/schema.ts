@@ -1,4 +1,5 @@
-import { getT, formatPrice } from '../i18n/t';
+import { getT, formatPrice, defaultLocale, type Locale } from '../i18n/t';
+import { localizedPathname } from '../i18n/routing';
 import { contacto, experiencias, faqIds, links, maridaje, platos } from './nami';
 import { fotosPublicas, ogImage } from './imagenes';
 
@@ -23,12 +24,13 @@ export function pageImages(site: URL): PageImage[] {
   }));
 }
 
-export function structuredData(site: URL) {
-  const t = getT();
-  const home = new URL('/', site).href;
-  const restaurantId = new URL('/#restaurant', site).href;
-  const websiteId = new URL('/#website', site).href;
-  const webpageId = new URL('/#webpage', site).href;
+export function structuredData(site: URL, locale: Locale = defaultLocale) {
+  const t = getT(locale);
+  const localizedHome = localizedPathname('/', locale);
+  const home = new URL(localizedHome, site).href;
+  const restaurantId = new URL(`${localizedHome}#restaurant`, site).href;
+  const websiteId = new URL(`${localizedHome}#website`, site).href;
+  const webpageId = new URL(`${localizedHome}#webpage`, site).href;
   const telephone = links.telefono.replace('tel:', '');
   const shareImage = {
     '@type': 'ImageObject',
@@ -87,7 +89,7 @@ export function structuredData(site: URL) {
                 ...experiencias.map((exp) => ({
                   '@type': 'MenuItem',
                   name: t(`experiences.${exp.id}.name`),
-                  description: `${t(`experiences.${exp.id}.description`)} ${t('experiences.perPerson', { price: formatPrice(exp.price / 2) })}.`,
+                  description: `${t(`experiences.${exp.id}.description`)} ${t('experiences.perPerson', { price: formatPrice(exp.price / 2, locale) })}.`,
                   offers: { '@type': 'Offer', price: String(exp.price), priceCurrency: 'EUR' },
                 })),
                 {
@@ -124,7 +126,7 @@ export function structuredData(site: URL) {
           target: {
             '@type': 'EntryPoint',
             urlTemplate: links.reservar,
-            inLanguage: 'es',
+            inLanguage: locale,
             actionPlatform: ['https://schema.org/DesktopWebPlatform', 'https://schema.org/MobileWebPlatform'],
           },
           result: { '@type': 'FoodEstablishmentReservation', name: t('seo.reservationName') },
@@ -137,7 +139,7 @@ export function structuredData(site: URL) {
         name: 'Nami',
         alternateName: 'Nami Barcelona',
         description: t('seo.description'),
-        inLanguage: 'es-ES',
+        inLanguage: locale,
         publisher: { '@id': restaurantId },
       },
       {
@@ -146,7 +148,7 @@ export function structuredData(site: URL) {
         url: home,
         name: t('seo.title'),
         description: t('seo.description'),
-        inLanguage: 'es-ES',
+        inLanguage: locale,
         isPartOf: { '@id': websiteId },
         about: { '@id': restaurantId },
         mainEntity: { '@id': restaurantId },
@@ -154,9 +156,9 @@ export function structuredData(site: URL) {
       },
       {
         '@type': 'FAQPage',
-        '@id': new URL('/#faq', site).href,
-        url: new URL('/#preguntas', site).href,
-        inLanguage: 'es-ES',
+        '@id': new URL(`${localizedHome}#faq`, site).href,
+        url: new URL(`${localizedHome}#preguntas`, site).href,
+        inLanguage: locale,
         isPartOf: { '@id': webpageId },
         mainEntity: faqIds.map((id) => ({
           '@type': 'Question',

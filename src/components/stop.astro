@@ -2,7 +2,7 @@
 import { getT } from '../i18n/t';
 import { paseo } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 
 // Una parada del paseo. El artículo marca la distancia de scroll; el texto se queda abajo a la izquierda
 // mientras la cámara avanza y sale empujado por la parada siguiente.

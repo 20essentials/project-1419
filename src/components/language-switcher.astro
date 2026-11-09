@@ -1,0 +1,29 @@
+---
+import { locales, type Locale } from '../i18n/t';
+import { localeFromPathname, localizedPathname } from '../i18n/routing';
+
+const pathname = Astro.url.pathname;
+const current = (Astro.currentLocale as Locale | undefined) ?? localeFromPathname(pathname);
+const names: Record<Locale, string> = { en: 'English', es: 'Español', it: 'Italiano' };
+const codes: Record<Locale, string> = { en: 'EN', es: 'ES', it: 'IT' };
+const items = locales.map((l) => ({ locale: l, href: localizedPathname(pathname, l), code: codes[l], name: names[l], active: l === current }));
+---
+
+<ul class="flex items-center gap-0.5 text-[11px] font-sans uppercase">
+  {
+    items.map((item) => (
+      <li>
+        <a
+          href={item.href}
+          lang={item.locale}
+          hreflang={item.locale}
+          aria-current={item.active ? 'true' : undefined}
+          aria-label={item.name}
+          class="block rounded-full px-1.5 py-1 tracking-widest text-crema/60 transition-colors duration-300 hover:text-crema aria-[current=true]:bg-crema/10 aria-[current=true]:text-crema"
+        >
+          {item.code}
+        </a>
+      </li>
+    ))
+  }
+</ul>

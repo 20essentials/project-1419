@@ -1,10 +1,11 @@
 ---
 import Logo from './logo.astro';
 import Icon from './icon.astro';
+import LanguageSwitcher from './language-switcher.astro';
 import { getT } from '../i18n/t';
 import { contacto, links, nav } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 ---
 
 <a
@@ -43,7 +44,10 @@ const t = getT();
       </ul>
     </nav>
 
-    <div class="flex items-center gap-1">
+    <div class="flex items-center gap-1.5">
+      <div class="hidden sm:block">
+        <LanguageSwitcher />
+      </div>
       <a href={links.reservar} class="btn btn-primary btn-sm px-4">
         <span>{t('common.reserve')}</span>
       </a>
@@ -79,13 +83,16 @@ const t = getT();
           </li>
         ))
       }
-      <li class="menu-item pt-6" style={`--i:${nav.length}`}>
+      <li class="menu-item pt-2" style={`--i:${nav.length}`}>
         <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+      </li>
+      <li class="menu-item" style={`--i:${nav.length + 1}`}>
+        <LanguageSwitcher />
       </li>
     </ul>
   </nav>
 
-  <div class="menu-item flex flex-col items-center gap-2 text-sm text-crema/70" style={`--i:${nav.length + 1}`}>
+  <div class="menu-item flex flex-col items-center gap-2 text-sm text-crema/70" style={`--i:${nav.length + 2}`}>
     <a href={links.telefono} class="link inline-flex items-center gap-2">
       <Icon name="phone" />
       {contacto.telefono}

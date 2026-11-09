@@ -4,7 +4,7 @@ import Pending from './pending.astro';
 import { getT } from '../i18n/t';
 import { links, platos } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 ---
 
 <section id="carta" data-spy="#carta" aria-labelledby="carta-title" class="px-4 py-24 md:px-12 xl:px-24">

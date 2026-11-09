@@ -8,7 +8,7 @@ import Icon from '../components/icon.astro';
 import { getT } from '../i18n/t';
 import { links, photos } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 ---
 
 <Layout title={t('seo.notFoundTitle')} description={t('page404.description')} noindex header={false}>

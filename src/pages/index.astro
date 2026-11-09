@@ -10,13 +10,13 @@ import Experiences from '../components/experiences.astro';
 import Faq from '../components/faq.astro';
 import Gift from '../components/gift.astro';
 import FinalCta from '../components/final-cta.astro';
-import { getT } from '../i18n/t';
+import { getT, type Locale } from '../i18n/t';
 import { structuredData } from '../data/schema';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 const site = Astro.site;
 if (!site) throw new Error('Falta site en astro.config.mjs');
-const jsonLd = JSON.stringify(structuredData(site)).replaceAll('<', '\\u003c');
+const jsonLd = JSON.stringify(structuredData(site, Astro.currentLocale as Locale)).replaceAll('<', '\\u003c');
 ---
 
 <Layout title={t('seo.title')} description={t('seo.description')}>

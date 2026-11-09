@@ -4,7 +4,7 @@ import Icon from './icon.astro';
 import { getT } from '../i18n/t';
 import { contacto, legal, links, nav } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 const year = new Date().getFullYear();
 ---
 
@@ -18,7 +18,7 @@ const year = new Date().getFullYear();
           {
             nav.map((item) => (
               <li>
-                <a href={`/${item.href}`} class="link">
+                <a href={item.href} class="link">
                   {t(`nav.${item.id}`)}
                 </a>
               </li>

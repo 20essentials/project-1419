@@ -4,7 +4,7 @@ import Pending from './pending.astro';
 import { getT } from '../i18n/t';
 import { prensa } from '../data/nami';
 
-const t = getT();
+const t = getT(Astro.currentLocale);
 ---
 
 <section id="prensa" aria-labelledby="prensa-title" class="px-4 py-24 md:px-12 xl:px-24">
