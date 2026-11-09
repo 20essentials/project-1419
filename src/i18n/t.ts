@@ -1,4 +1,6 @@
 import translations from '../translations.json' with { type: 'json' };
+import esTranslations from '../../.wix/multilingual/translations/es.json' with { type: 'json' };
+import itTranslations from '../../.wix/multilingual/translations/it.json' with { type: 'json' };
 
 export const locales = ['en', 'es', 'it'] as const;
 
@@ -10,8 +12,8 @@ type Dictionary = Record<string, string>;
 
 const dictionaries: Record<Locale, Dictionary> = {
   en: translations as Dictionary,
-  es: {},
-  it: {},
+  es: { ...(translations as Dictionary), ...esTranslations },
+  it: itTranslations,
 };
 
 export type TFunc = (key: string, params?: Record<string, string | number>) => string;

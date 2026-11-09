@@ -34,3 +34,6 @@ media/**/*.webm
 media/**/*.jpg
 media/**/*.log
 media/scroll-world/pruebas/*.json
+
+# wix cli debug
+.wix/debug.log
