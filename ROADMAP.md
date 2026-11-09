@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 7 |
-| ⏳ pendiente | 8 |
+| ✅ done | 8 |
+| ⏳ pendiente | 7 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-07-reserve-api` (Fase 2 — Reservas)
+**Siguiente:** `step-08-reserve-page` (Fase 2 — Reservas)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -26,7 +26,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 04 · Multilingual flow | ✅ done | `step-04-multilingual-flow.md` | 189 claves push/pull; seed es + it auto-traducido; roundtrip verificado |
 | 05 · Routing de idioma + SEO | ✅ done | `step-05-language-routing.md` | `/es/` `/it/` con fallback rewrite; hreflang; switcher; sitemap i18n |
 | 06 · Restaurants setup | ✅ done | `step-06-restaurants-setup.md` | location + reservation config (LUN–DOM 13:00–23:00); 428 premium esperado |
-| 07 · Reserve API | ⏳ pending | `step-07-reserve-api.md` | slots → hold → reserve con API key SSR |
+| 07 · Reserve API | ✅ done | `step-07-reserve-api.md` | `/api/reserve/*` (setup/slots/POST) verificados con humo real; contrato en `reserve-api-contract.md` |
 | 08 · Reserve page | ⏳ pending | `step-08-reserve-page.md` | `/reserve/` con UI de reservas |
 | 09 · Reserve E2E | ⏳ pending | `step-09-reserve-e2e.md` | Playwright sobre el flujo de reserva |
 | 10 · Carta desde restaurants | ⏳ pending | `step-10-menu-from-restaurants.md` | `@wix/restaurants` → `/carta/` |
@@ -41,7 +41,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 - **Fase 0 — Cimientos de infraestructura**: step-01, step-02 → ✅ 2/2
 - **Fase 1 — i18n (el dashboard manda)**: step-03, step-04, step-05 → ✅ 3/3
-- **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06 → ✅ · step-07, step-08, step-09 → ⏳ 0/3
+- **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07 → ✅ · step-08, step-09 → ⏳ 0/2
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ⏳ 0/2
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ⏳ 0/3
 - **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
@@ -90,3 +90,4 @@ Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado
 - **step-04**: `wix.config.json` (projectType Site, appId=WIX_CLIENT_ID dcb89266, siteId 51f83d7e). La CLI exige Node >= 24.22.1 (portable Node en /tmp/opencode/node24; `.nvmrc`). App Wix Multilingual instalada vía Apps Installer API (appInstance 01e02c85-…, appDefId 14d84998-…) — locale-settings/v2; primario migrado it→en, locales es/it creados. `wix translation push` (189 claves, schemaId e2aa6aa7-…) sin TTY requiere `--json`. Seed: es desde `spanish-copy-baseline.md` (187 publicadas), it auto-traducido. `pnpm build` = `wix translation pull --json && astro build`; `getT()` consume `.wix/multilingual/*.json` con spread es + fallback en. Roundtrip probado (PATCH → pull → JSON).
 - **step-05**: páginas planas con `Astro.currentLocale` (páginas es/it prerenderizadas por fallback tipo `rewrite`); `shared/i18n/routing.ts`; switcher EN/ES/IT en header (sm+) y menú móvil; `html lang`, canonical por locale, hreflang + x-default, og:locale y alternates; sitemap i18n con alternates de las 3 locales; schema.org locale-aware e IDs localizados (`/es/#restaurant`); `links.reservar` → `/reserve/`; fix footer nav para anchors en otras locales.
 - **step-06**: location default → Nami (Passeig de Gràcia 24, 08008 Barcelona, Europe/Madrid, rev 2); reservation-location default (mismo id f3291845) con rev 2: approval AUTOMATIC, partySize 1–8, minimumReservationNotice 60 MIN, defaultTurnoverTime 90, timeSlotInterval 15, schedule LUN–DOM 13:00–23:00. `onlineReservationsEnabled: true` respondió 428 PREMIUM_ONLY (la lectura da true). Smoke: time-slots 200 con slots AVAILABLE. Gotchas → `references/reservations-config.md`.
+- **step-07**: `src/features/reserve/` (site-time TZ Madrid con doble pasada DST; reservation-context lee `configuration.onlineReservations.*` — anidado en el SDK real, no aplanado; slots con `timeSlots.getTimeSlots(id, new Date(date+'T12:00:00Z'), partySize, { slotsBefore: 50, slotsAfter: 50 })` — args posicionales, ancla es una hora, máx 50/lado; error map: 400/404/409/428/502, nunca 500; API key server-side + `console.info` con email maskado). Rutas: `pages/api/reserve.ts` (POST) + `api/reserve/setup.ts` (cache 600s) + `api/reserve/slots.ts` (no-store). Smoke real: setup 200 con config de step-06; slots 96 slots (41 libres 13:00–23:00); POST → 200 `RESERVED` (trial abre create, premium-gate solo cambiará a 428 si Wix lo impone); 10:00 → 409; email mal → 400; experienceId desconocido → 404. Contrato JSON → `references/reserve-api-contract.md` (fuente para step-08/09). `@wix/table-reservations` timeSlots añadido al admin-client.
