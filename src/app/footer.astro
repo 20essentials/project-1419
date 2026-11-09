@@ -1,10 +1,15 @@
 ---
 import Logo from './logo.astro';
 import Icon from '@/shared/ui/icon.astro';
-import { getT } from '@/shared/i18n/t';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
 import { contacto, legal, links, nav } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
+const locale = Astro.currentLocale as Locale;
+const homeHref = localizedPathname('/', locale);
+const onHome = Astro.url.pathname === homeHref;
+const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}${href}` : href);
 const year = new Date().getFullYear();
 ---
 
@@ -18,7 +23,7 @@ const year = new Date().getFullYear();
           {
             nav.map((item) => (
               <li>
-                <a href={item.href} class="link">
+                <a href={anchor(item.href)} class="link">
                   {t(`nav.${item.id}`)}
                 </a>
               </li>

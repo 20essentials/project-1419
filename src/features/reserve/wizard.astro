@@ -1,0 +1,314 @@
+---
+import Icon from '@/shared/ui/icon.astro';
+import Spiral from '@/shared/ui/spiral.astro';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
+import { contacto, links } from '@/shared/site/nami';
+import { MAX_ADVANCE_DAYS } from './site-time';
+
+const locale = Astro.currentLocale as Locale;
+const t = getT(locale);
+const homeHref = localizedPathname('/', locale);
+
+const payload = JSON.stringify({
+  locale,
+  home: localizedPathname('/', locale),
+  back: t('reserve.back'),
+  next: t('reserve.next'),
+  submit: t('reserve.cta'),
+  loading: t('reserve.loading'),
+  window: t('reserve.window', { days: MAX_ADVANCE_DAYS }),
+  slotsEmpty: t('reserve.slotsEmpty'),
+  retry: t('reserve.retry'),
+  guests: t('reserve.confirm.guests'),
+  errors: {
+    NO_AVAILABILITY: t('reserve.errors.noAvailability'),
+    INVALID_INPUT: t('reserve.errors.invalid'),
+    PREMIUM_ONLY: t('reserve.errors.notPremium'),
+    RESERVATION_UNAVAILABLE: t('reserve.errors.generic'),
+    EXPERIENCE_NOT_FOUND: t('reserve.errors.generic'),
+    fallback: t('reserve.errors.generic'),
+  },
+  form: {
+    required: t('reserve.form.required'),
+    email: t('reserve.form.email'),
+    phone: t('reserve.form.phone'),
+    summary: t('reserve.form.summary'),
+  },
+  done: {
+    reservedTitle: t('reserve.confirm.title.reserved'),
+    requestedTitle: t('reserve.confirm.title.requested'),
+    reservedBody: t('reserve.confirm.body.reserved'),
+    requestedBody: t('reserve.confirm.body.requested'),
+  },
+}).replaceAll('<', '\\u003c');
+
+const steps = [
+  { id: 'people', label: t('reserve.steps.people') },
+  { id: 'date', label: t('reserve.steps.date') },
+  { id: 'time', label: t('reserve.steps.time') },
+  { id: 'details', label: t('reserve.steps.details') },
+];
+
+const weekShort = [...Array(7)].map((_, i) =>
+  new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(Date.UTC(2023, 0, 2 + i))),
+);
+const pulse = [
+  1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+];
+---
+
+<section id="reservar" class="relative overflow-hidden px-4 pt-40 pb-24 md:px-12 xl:px-24">
+  <Spiral
+    rings={12}
+    class="pointer-events-none absolute top-0 right-0 w-[560px] translate-x-1/3 -translate-y-1/3 text-crema/10"
+  />
+  <div class="relative mx-auto max-w-[680px] text-center">
+    <p data-reveal class="text-sm text-teja">{t('reserve.eyebrow')}</p>
+    <h1 data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-5xl">{t('reserve.title')}</h1>
+    <p data-reveal style="--d:200ms" class="mx-auto mt-6 max-w-lg text-base text-crema/70 lg:text-lg">
+      {t('reserve.body')}
+    </p>
+  </div>
+
+  <div
+    data-wizard
+    data-reveal
+    style="--d:300ms"
+    class="relative mx-auto mt-16 max-w-2xl rounded-3xl bg-bg/60 p-6 ring-1 ring-crema/10 backdrop-blur-xl md:p-10"
+  >
+    <script type="application/json" is:inline set:html={payload} data-wizard-data></script>
+    <p data-live class="sr-only" aria-live="polite"></p>
+
+    <div data-state="boot">
+      <p class="sr-only">{t('reserve.loading')}</p>
+      <div class="flex items-center justify-center gap-3" aria-hidden="true">
+        <span class="h-8 w-36 animate-pulse rounded-full bg-crema/10"></span>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-3" aria-hidden="true">
+        {pulse.map(() => <span class="h-10 w-16 animate-pulse rounded-full bg-crema/5"></span>)}
+      </div>
+    </div>
+
+    <div data-state="premium" hidden class="text-center">
+      <h2 tabindex="-1" class="text-3xl lg:text-4xl">{t('reserve.disabled.title')}</h2>
+      <p class="mx-auto mt-4 max-w-md text-base text-crema/70">{t('reserve.disabled.body')}</p>
+      <a href={links.telefono} class="btn btn-ghost mt-8">
+        <Icon name="phone" class="size-5" />
+        <span>{t('reserve.call', { phone: contacto.telefono })}</span>
+      </a>
+    </div>
+
+    <div data-state="fatal" hidden class="text-center">
+      <p data-fatal class="text-base text-crema/70">{t('reserve.errors.generic')}</p>
+      <button type="button" data-retry class="btn btn-ghost mt-8">
+        <Icon name="clock" class="size-5" />
+        <span>{t('reserve.retry')}</span>
+      </button>
+    </div>
+
+    <div data-state="wizard" hidden>
+      <ol class="flex items-center justify-center gap-3 sm:gap-5" aria-label={t('reserve.steps')}>
+        {
+          steps.map((step, i) => (
+            <li data-step={step.id} class="flex items-center gap-2 text-crema/50" aria-current={i === 0 ? 'step' : undefined}>
+              <span
+                class="grid size-7 place-items-center rounded-full text-xs transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ring-1 ring-crema/20"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <span class="hidden text-sm sm:block">{step.label}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <form data-form novalidate class="mt-8">
+        <section data-panel="1" hidden>
+          <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.people.title')}</h2>
+          <div data-party class="mt-8 flex flex-wrap justify-center gap-3"></div>
+          <p data-panel-error hidden class="mt-6 text-center text-sm text-teja"></p>
+          <div class="mt-10 flex items-center justify-between gap-4">
+            <span aria-hidden="true" class="block h-10"></span>
+            <button type="button" data-next data-go="2" class="btn btn-primary" disabled><span>{t('reserve.next')}</span></button>
+          </div>
+        </section>
+
+        <section data-panel="2" hidden>
+          <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.date.title')}</h2>
+          <div class="mx-auto mt-8 flex max-w-md items-center justify-between">
+            <button
+              type="button"
+              data-month-prev
+              aria-label={t('reserve.monthPrev')}
+              class="grid size-10 place-items-center rounded-full text-crema/70 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 disabled:pointer-events-none disabled:opacity-30"
+            >
+              <Icon name="arrowLeft" class="size-5" />
+            </button>
+            <p data-month class="font-display text-xl text-crema first-letter:uppercase"></p>
+            <button
+              type="button"
+              data-month-next
+              aria-label={t('reserve.monthNext')}
+              class="grid size-10 place-items-center rounded-full text-crema/70 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 disabled:pointer-events-none disabled:opacity-30"
+            >
+              <Icon name="arrowRight" class="size-5" />
+            </button>
+          </div>
+          <div class="mx-auto mt-4 grid max-w-md grid-cols-7 gap-1 text-center text-xs text-crema/40 uppercase">
+            {weekShort.map((day) => <span class="py-2">{day}</span>)}
+          </div>
+          <div data-calendar class="mx-auto grid max-w-md grid-cols-7 gap-1"></div>
+          <p class="mx-auto mt-4 max-w-md text-center text-sm text-crema/50" data-window></p>
+          <p data-panel-error hidden class="mt-6 text-center text-sm text-teja"></p>
+          <div class="mt-10 flex items-center justify-between gap-4">
+            <button type="button" data-prev data-go="1" class="btn btn-ghost">
+              <Icon name="arrowLeft" class="size-5" />
+              <span>{t('reserve.back')}</span>
+            </button>
+            <button type="button" data-next data-go="3" class="btn btn-primary" disabled><span>{t('reserve.next')}</span></button>
+          </div>
+        </section>
+
+        <section data-panel="3" hidden>
+          <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.time.title')}</h2>
+          <div data-slots class="mt-8 flex flex-wrap justify-center gap-3" aria-live="polite"></div>
+          <div data-slots-skeleton hidden class="mt-8 flex flex-wrap justify-center gap-3" aria-hidden="true">
+            {pulse.map(() => <span class="h-10 w-16 animate-pulse rounded-full bg-crema/5 ring-1 ring-crema/10"></span>)}
+          </div>
+          <p data-panel-error hidden class="mt-6 text-center text-sm text-teja"></p>
+          <button type="button" data-slots-retry hidden class="btn btn-ghost mx-auto mt-6">
+            <Icon name="clock" class="size-5" />
+            <span>{t('reserve.retry')}</span>
+          </button>
+          <div class="mt-10 flex items-center justify-between gap-4">
+            <button type="button" data-prev data-go="2" class="btn btn-ghost">
+              <Icon name="arrowLeft" class="size-5" />
+              <span>{t('reserve.back')}</span>
+            </button>
+            <button type="button" data-next data-go="4" class="btn btn-primary" disabled><span>{t('reserve.next')}</span></button>
+          </div>
+        </section>
+
+        <section data-panel="4" hidden>
+          <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.details.title')}</h2>
+          <p data-summary class="mx-auto mt-4 max-w-md text-center text-sm text-crema/60" aria-live="polite"></p>
+          <div class="mx-auto mt-8 grid max-w-md gap-5 text-left sm:grid-cols-2">
+            <div>
+              <label for="reserve-first-name" class="block text-sm text-crema/70">{t('reserve.firstName')}</label>
+              <input
+                id="reserve-first-name"
+                name="firstName"
+                type="text"
+                autocomplete="given-name"
+                required
+                placeholder={t('reserve.firstName.ph')}
+                aria-describedby="reserve-first-name-error"
+                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.72,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
+              />
+              <p id="reserve-first-name-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
+            </div>
+            <div>
+              <label for="reserve-last-name" class="block text-sm text-crema/70">{t('reserve.lastName')}</label>
+              <input
+                id="reserve-last-name"
+                name="lastName"
+                type="text"
+                autocomplete="family-name"
+                placeholder={t('reserve.lastName.ph')}
+                aria-describedby="reserve-last-name-error"
+                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
+              />
+              <p id="reserve-last-name-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
+            </div>
+            <div>
+              <label for="reserve-email" class="block text-sm text-crema/70">{t('reserve.email')}</label>
+              <input
+                id="reserve-email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder={t('reserve.email.ph')}
+                aria-describedby="reserve-email-error"
+                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
+              />
+              <p id="reserve-email-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
+            </div>
+            <div>
+              <label for="reserve-phone" class="block text-sm text-crema/70">{t('reserve.phone')}</label>
+              <input
+                id="reserve-phone"
+                name="phone"
+                type="tel"
+                inputmode="tel"
+                autocomplete="tel"
+                required
+                placeholder={t('reserve.phone.ph')}
+                aria-describedby="reserve-phone-error"
+                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
+              />
+              <p id="reserve-phone-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
+            </div>
+            <div class="sm:col-span-2">
+              <label for="reserve-note" class="block text-sm text-crema/70">
+                {t('reserve.note')}
+                <span aria-hidden="true" class="ml-1 text-xs text-crema/40">· {t('reserve.optional')}</span>
+              </label>
+              <textarea
+                id="reserve-note"
+                name="note"
+                rows="3"
+                maxlength="500"
+                placeholder={t('reserve.note.ph')}
+                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"></textarea>
+            </div>
+          </div>
+          <p data-panel-error hidden class="mt-6 text-center text-sm text-teja"></p>
+          <div class="mt-10 flex items-center justify-between gap-4">
+            <button type="button" data-prev data-go="3" class="btn btn-ghost">
+              <Icon name="arrowLeft" class="size-5" />
+              <span>{t('reserve.back')}</span>
+            </button>
+            <button type="submit" data-submit class="btn btn-primary">
+              <Icon name="arrowRight" class="size-5" />
+              <span>{t('reserve.cta')}</span>
+            </button>
+          </div>
+        </section>
+      </form>
+    </div>
+
+    <div data-state="done" hidden class="text-center">
+      <h2 tabindex="-1" data-done-title class="text-3xl lg:text-4xl"></h2>
+      <p data-done-body class="mx-auto mt-4 max-w-md text-base text-crema/70"></p>
+      <dl class="mx-auto mt-8 grid max-w-sm gap-3 text-left text-sm">
+        <div class="flex justify-between gap-6">
+          <dt class="text-crema/50">{t('reserve.confirm.when')}</dt>
+          <dd data-done-when class="text-crema"></dd>
+        </div>
+        <div class="flex justify-between gap-6">
+          <dt class="text-crema/50">{t('reserve.steps.people')}</dt>
+          <dd data-done-party class="text-crema"></dd>
+        </div>
+        <div class="flex justify-between gap-6">
+          <dt class="text-crema/50">{t('reserve.confirm.reference')}</dt>
+          <dd data-done-ref class="text-crema/70 break-all"></dd>
+        </div>
+      </dl>
+      <a href={homeHref} class="btn btn-ghost mt-10">
+        <Icon name="arrowLeft" class="size-5" />
+        <span>{t('reserve.backHome')}</span>
+      </a>
+    </div>
+  </div>
+
+  <p data-reveal class="relative mx-auto mt-6 max-w-2xl text-center text-sm text-crema/50">
+    {t('contact.hoursText')}
+  </p>
+</section>
+
+<script>
+  import '@/features/reserve/wizard-client';
+</script>

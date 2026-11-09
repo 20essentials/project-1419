@@ -46,3 +46,35 @@ Página de reservas de Nami con el estilo del sitio (píldora del header, tipogr
 
 - Si el owner no ha activado online reservations (trial), mostrar pantalla explicativa (plan B mostrada en step-07) — dejamos la posible compra de premium fuera de este step.
 - Liberar 4321/8787 al cerrar sesión de pruebas.
+
+## Resultado
+
+✅ Ejecutado (2026-11-09). Wizard vanilla JS, sin framework ni paquetes nuevos.
+
+**Live**
+
+- `src/pages/reserve/index.astro` (thin, prerender, una página para en/es/it gracias al fallback rewrite de step-05).
+- `src/features/reserve/wizard.astro`: markup + payload JSON (todo el copy `t()`) en `data-wizard-data`.
+- `src/features/reserve/wizard-client.ts`: estados boot/premium/fatal/wizard/done; paso 1 pills `aria-pressed`; paso 2 calendario mensual (`Intl` months + weekdays desde `schedule`, hoy→+60d); paso 3 slots con skeleton + retry; paso 4 form con validación por campo y `aria-live`; errores mapeados del contrato expuesto en `wizard.astro`; done distingue `RESERVED`/`REQUESTED`.
+- `src/features/reserve/reserve-schema.ts`: JSON-LD (Restaurant `@id …#restaurant` con `acceptsReservations: true` + ReserveAction/EntryPoint/hreflang, WebPage sobre la página).
+- `src/shared/ui/icon.astro`: icono `arrowRight`.
+
+**Copy/i18n (53+2 claves nuevas)**
+
+- `reserve.*` (53) + `seo.reserve.title/description` en `src/translations.json` (242 total).
+- Gotcha: `wix translation push` crea claves EN **sin auto-traducir**, y `pull` solo devuelve las claves con contenido es/it **creado** → seed es + it (manual, desde script) vía REST `translation-content/v1/bulk/contents/create` (header `Authorization: WIX_API_KEY` + `wix-site-id`; schemaId `e2aa6aa7-52f4-46e9-8723-8608207d19b6`), luego `pnpm translations:pull`. Chunks de ~25 keys.
+- Fix colateral: PATCH `/contents/by-key` pide body `{ content: { schemaId, entityId, locale, fields } }` (el 400 "content must not be empty" era body sin wrapper). Usado para `footer.rights` it (la MT del dashboard había cambiado `{year}` → `{anno}`; `t()` dejaba el placeholder sin sustituir).
+
+**Fixes colaterales**
+
+- `src/app/header.astro` tenía `href` **duplicado** en los nav links (quedó el original + el de `anchor()` de step-05); eliminado el primero.
+- HTML final verificado: un solo `href="/{locale}/#anchor"` por link, `© {year} …` renderiza el año en las 3 locales.
+
+**Smoke (`pnpm build && pnpm preview`, puerto 4321, cerrado al terminar)**
+
+- `/reserve/`, `/es/reserve/`, `/it/reserve/` → 200; title/description/copy correctos por locale; canonical + hreflang + x-default OK; JSON-LD OK.
+- `GET /api/reserve/setup` 200 (experiencias: `[]` — trial del dashboard sin tablas/experiencias configuradas; el wizard degrada a tabla por defecto).
+- `GET /api/reserve/slots?date=…&partySize=2` sin `experienceId` → 200 (96 slots con `timeSlots`); POST smoke de errores coherente (experienceId desconocido → 404, campo `slot` en vez de `time` → 400 INVALID_INPUT).
+- Reserva E2E completa diferida a step-09 (Playwright) — el step-07 ya validó POST → 200 RESERVED con estos mismos endpoints.
+
+Siguiente: `step-09-reserve-e2e`.

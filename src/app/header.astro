@@ -2,10 +2,15 @@
 import Logo from './logo.astro';
 import Icon from '@/shared/ui/icon.astro';
 import LanguageSwitcher from './language-switcher.astro';
-import { getT } from '@/shared/i18n/t';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
 import { contacto, links, nav } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
+const locale = Astro.currentLocale as Locale;
+const homeHref = localizedPathname('/', locale);
+const onHome = Astro.url.pathname === homeHref;
+const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}${href}` : href);
 ---
 
 <a
@@ -21,7 +26,7 @@ const t = getT(Astro.currentLocale);
   <div
     class="pointer-events-auto flex w-max items-center gap-6 rounded-full bg-bg/60 p-2 pl-6 ring-1 ring-crema/10 backdrop-blur-xl lg:gap-5"
   >
-    <a href="#inicio" class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
+    <a href={anchor('#inicio')} class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
       <Logo class="text-xl" />
     </a>
 
@@ -32,8 +37,8 @@ const t = getT(Astro.currentLocale);
           nav.map((item) => (
             <li>
               <a
-                href={item.href}
                 data-nav-link
+                href={anchor(item.href)}
                 class="flex h-9 items-center rounded-full px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-crema aria-[current=true]:text-crema"
               >
                 <span class="text-trim">{t(`nav.${item.id}`)}</span>
@@ -77,7 +82,7 @@ const t = getT(Astro.currentLocale);
       {
         nav.map((item, i) => (
           <li class="menu-item" style={`--i:${i}`}>
-            <a href={item.href} data-menu-link class="font-display text-4xl text-crema">
+            <a href={anchor(item.href)} data-menu-link class="font-display text-4xl text-crema">
               {t(`nav.${item.id}`)}
             </a>
           </li>
