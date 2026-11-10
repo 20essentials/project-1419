@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 10 |
-| ⏳ pendiente | 5 |
+| ✅ done | 11 |
+| ⏳ pendiente | 4 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-10-menu-from-restaurants` (Fase 3 — Carta y contenido)
+**Siguiente:** `step-11-legal-static-pages` (Fase 3 — Carta y páginas de contenido)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -29,7 +29,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 07 · Reserve API | ✅ done | `step-07-reserve-api.md` | `/api/reserve/*` (setup/slots/POST) verificados con humo real; contrato en `reserve-api-contract.md` |
 | 08 · Reserve page | ✅ done | `step-08-reserve-page.md` | wizard `/reserve/` (en/es/it) con copy t(); 53 claves + seed es/it vía translation-content REST |
 | 09 · Reserve E2E | ✅ done | `step-09-reserve-e2e.md` | Playwright mock: wizard success/409/428/móvil (10 verdes) + contract real opt-in |
-| 10 · Carta desde restaurants | ⏳ pending | `step-10-menu-from-restaurants.md` | `@wix/restaurants` → `/carta/` |
+| 10 · Carta desde restaurants | ✅ done | `step-10-menu-from-restaurants.md` | `/carta/` desde Wix Restaurants (menú Nami 5×16); caché 600s + fallback estático; es/it vía fallback rewrite (fix astro 7.4.10) |
 | 11 · Legal estáticas | ⏳ pending | `step-11-legal-static-pages.md` | `/legal/` `/privacidad/` `/cookies/` `/terminos-compra/` |
 | 12 · Auth core | ⏳ pending | `step-12-auth-core.md` | OAuth visitante/miembro + sessions en cookies |
 | 13 · Custom login pages | ⏳ pending | `step-13-custom-login-pages.md` | email/pass + Google/Facebook |
@@ -42,7 +42,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 0 — Cimientos de infraestructura**: step-01, step-02 → ✅ 2/2
 - **Fase 1 — i18n (el dashboard manda)**: step-03, step-04, step-05 → ✅ 3/3
 - **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07, step-08, step-09 → ✅ 4/4
-- **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ⏳ 0/2
+- **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 1/2 (step-11 pendiente)
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ⏳ 0/3
 - **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
