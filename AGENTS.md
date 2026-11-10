@@ -1,4 +1,5 @@
 - Usa pnpm
+- No usamos python, solo nodejs
 - Instala paquetes exactos sin caret ^ en el package.json
 - Todo asset: (imagen, video, etc) adentro de typescript o adentro de jsx de Astro debera ser llamado con baseUrl(...), por ejemplo el css no lo necesita (ejemplo -> background-image: url(/assets/logo.svg))
 - No pongas comentarios en el codigo.
