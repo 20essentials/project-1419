@@ -12,6 +12,7 @@
     "astro": "astro",
     "translations:push": "wix translation push --json",
     "translations:pull": "wix translation pull --json",
+    "test:e2e": "playwright test && node src/tests/free-port-4321.cjs",
     "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
@@ -33,6 +34,7 @@
     "tailwindcss": "4.3.3"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.0",
     "@wix/cli": "1.2.9",
     "wrangler": "4.158.0"
   }

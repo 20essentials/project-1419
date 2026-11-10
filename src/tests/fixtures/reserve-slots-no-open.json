@@ -1,0 +1,28 @@
+{
+  "slots": [
+    {
+      "time": "13:00",
+      "available": false
+    },
+    {
+      "time": "13:30",
+      "available": false
+    },
+    {
+      "time": "14:00",
+      "available": false
+    },
+    {
+      "time": "19:00",
+      "available": false
+    },
+    {
+      "time": "19:30",
+      "available": false
+    },
+    {
+      "time": "20:00",
+      "available": false
+    }
+  ]
+}

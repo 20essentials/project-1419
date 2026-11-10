@@ -46,6 +46,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const STEP_NAMES = ['people', 'date', 'time', 'details'];
 
+const setPillVariant = (element: HTMLElement, variant: string) => {
+  element.classList.remove(...PILL_ON.split(' '), ...PILL_OFF.split(' '), ...PILL_DIM.split(' '));
+  element.classList.add(...variant.split(' '));
+};
+
 const wizard = document.querySelector<HTMLElement>('[data-wizard]');
 const payloadBox = document.querySelector<HTMLScriptElement>('[data-wizard-data]');
 
@@ -89,9 +94,12 @@ if (wizard && payloadBox && payloadBox.textContent) {
   r.panels.forEach((panel) => {
     const index = Number(panel.dataset.panel);
     if (index) {
-      nextButtons.set(index, panel.querySelector<HTMLButtonElement>('[data-next]')!);
-      prevButtons.set(index, panel.querySelector<HTMLButtonElement>('[data-prev]')!);
-      panelErrors.set(index, panel.querySelector<HTMLElement>('[data-panel-error]')!);
+      const next = panel.querySelector<HTMLButtonElement>('[data-next]');
+      const prev = panel.querySelector<HTMLButtonElement>('[data-prev]');
+      const error = panel.querySelector<HTMLElement>('[data-panel-error]');
+      if (next) nextButtons.set(index, next);
+      if (prev) prevButtons.set(index, prev);
+      if (error) panelErrors.set(index, error);
     }
   });
 
@@ -156,8 +164,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
     r.party.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
       const active = Number(button.textContent) === state.party;
       button.setAttribute('aria-pressed', String(active));
-      button.classList.toggle(PILL_ON, active);
-      button.classList.toggle(PILL_OFF, !active);
+      setPillVariant(button, active ? PILL_ON : PILL_OFF);
     });
     const next = nextButtons.get(1);
     if (next) next.disabled = state.party === 0;
@@ -186,8 +193,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
     r.calendar.querySelectorAll<HTMLButtonElement>('button[data-date]').forEach((button) => {
       const active = button.dataset.date === state.date;
       button.setAttribute('aria-pressed', String(active));
-      button.classList.toggle(PILL_ON, active);
-      button.classList.toggle(PILL_OFF, !active);
+      setPillVariant(button, active ? PILL_ON : PILL_OFF);
     });
     const next = nextButtons.get(2);
     if (next) next.disabled = !state.date;
@@ -218,8 +224,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
       button.setAttribute('aria-label', fmtDay.format(new Date(`${date}T12:00:00Z`)));
       button.className = `grid size-10 place-items-center justify-self-center rounded-full text-sm ring-1 ${EASE}`;
       if (open && within) {
-        if (state.date === date) button.classList.add(PILL_ON);
-        else button.classList.add(PILL_OFF);
+        setPillVariant(button, state.date === date ? PILL_ON : PILL_OFF);
         button.addEventListener('click', () => {
           if (state.date !== date) {
             state.date = date;
@@ -229,7 +234,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
         });
       } else {
         button.disabled = true;
-        button.classList.add(PILL_DIM);
+        setPillVariant(button, PILL_DIM);
       }
       r.calendar.append(button);
     }
@@ -256,8 +261,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
     r.slots.querySelectorAll<HTMLButtonElement>('button[data-time]').forEach((button) => {
       const active = button.dataset.time === state.time;
       button.setAttribute('aria-pressed', String(active));
-      button.classList.toggle(PILL_ON, active);
-      button.classList.toggle(PILL_OFF, !active);
+      if (!button.disabled) setPillVariant(button, active ? PILL_ON : PILL_OFF);
     });
     const next = nextButtons.get(3);
     if (next) next.disabled = !state.time;
@@ -272,14 +276,14 @@ if (wizard && payloadBox && payloadBox.textContent) {
       button.textContent = slot.time;
       button.className = `${PILL}`;
       if (slot.available) {
-        button.classList.add(PILL_OFF);
+        setPillVariant(button, PILL_OFF);
         button.addEventListener('click', () => {
           state.time = slot.time;
           paintTime();
         });
       } else {
         button.disabled = true;
-        button.classList.add(PILL_DIM);
+        setPillVariant(button, PILL_DIM);
       }
       r.slots.append(button);
     });
@@ -334,7 +338,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
   };
 
   const fieldError = (name: string, message?: string) => {
-    const note = document.getElementById(`reserve-${name}-error`);
+    const note = document.getElementById(`reserve-${name.replace(/\B([A-Z])/g, '-$1').toLowerCase()}-error`);
     const input = r.form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${name}"]`);
     if (!note || !(input instanceof HTMLElement)) return;
     note.textContent = message ?? '';
@@ -382,7 +386,9 @@ if (wizard && payloadBox && payloadBox.textContent) {
     const reserved = reservation.status === 'RESERVED';
     r.doneTitle.textContent = reserved ? data.done.reservedTitle : data.done.requestedTitle;
     r.doneBody.textContent = reserved ? data.done.reservedBody : data.done.requestedBody;
-    r.doneWhen.textContent = `${fmtDay.format(new Date(`${reservation.localStart}T12:00:00Z`))} · ${reservation.localStart.slice(11, 16)}`;
+    const localDate = reservation.localStart.slice(0, 10);
+    const localTime = reservation.localStart.slice(11, 16);
+    r.doneWhen.textContent = `${fmtDay.format(new Date(`${localDate}T12:00:00Z`))} · ${localTime}`;
     r.doneParty.textContent = guestCount(reservation.partySize);
     r.doneRef.textContent = reservation.id;
     setState('done');
@@ -448,10 +454,12 @@ if (wizard && payloadBox && payloadBox.textContent) {
   prevButtons.forEach((button) => {
     button.addEventListener('click', () => {
       const target = Number(button.dataset.go);
-      if (target <= 2 && state.step > 2) {
+      if (target <= 2) {
         state.time = '';
-        if (target === 2) state.date = '';
-        renderMonth();
+        if (target === 2) {
+          state.date = '';
+          renderMonth();
+        }
       }
       goStep(target);
     });
