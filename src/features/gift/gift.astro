@@ -1,10 +1,12 @@
 ---
 import { Picture } from 'astro:assets';
 import Icon from '@/shared/ui/icon.astro';
-import { getT } from '@/shared/i18n/t';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
 import { links, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
+const locale = Astro.currentLocale as Locale;
 ---
 
 <section id="regala" aria-labelledby="regala-title" class="px-4 py-24 md:px-12 xl:px-24">
@@ -29,7 +31,7 @@ const t = getT(Astro.currentLocale);
         {t('gift.body')}
       </p>
       <div data-reveal style="--d:300ms" class="mt-8">
-        <a href={links.regalar} class="btn btn-ghost" rel="noopener">
+        <a href={localizedPathname(links.regalar, locale)} class="btn btn-ghost">
           <Icon name="gift" class="size-5" />
           <span>{t('gift.cta')}</span>
         </a>

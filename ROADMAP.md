@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 11 |
-| ⏳ pendiente | 4 |
+| ✅ done | 12 |
+| ⏳ pendiente | 3 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-11-legal-static-pages` (Fase 3 — Carta y páginas de contenido)
+**Siguiente:** `step-12-auth-core` (Fase 4 — Miembros / Account)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -30,7 +30,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 08 · Reserve page | ✅ done | `step-08-reserve-page.md` | wizard `/reserve/` (en/es/it) con copy t(); 53 claves + seed es/it vía translation-content REST |
 | 09 · Reserve E2E | ✅ done | `step-09-reserve-e2e.md` | Playwright mock: wizard success/409/428/móvil (10 verdes) + contract real opt-in |
 | 10 · Carta desde restaurants | ✅ done | `step-10-menu-from-restaurants.md` | `/carta/` desde Wix Restaurants (menú Nami 5×16); caché 600s + fallback estático; es/it vía fallback rewrite (fix astro 7.4.10) |
-| 11 · Legal estáticas | ⏳ pending | `step-11-legal-static-pages.md` | `/legal/` `/privacidad/` `/cookies/` `/terminos-compra/` |
+| 11 · Legal estáticas | ✅ done | `step-11-legal-static-pages.md` | 4 legales + `/regalar/` (en/es/it) prerender + JSON-LD; 94 claves i18n |
 | 12 · Auth core | ⏳ pending | `step-12-auth-core.md` | OAuth visitante/miembro + sessions en cookies |
 | 13 · Custom login pages | ⏳ pending | `step-13-custom-login-pages.md` | email/pass + Google/Facebook |
 | 14 · Account + orders | ⏳ pending | `step-14-account-orders.md` | `/account/` con órdenes `@wix/ecom` |
@@ -42,7 +42,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 0 — Cimientos de infraestructura**: step-01, step-02 → ✅ 2/2
 - **Fase 1 — i18n (el dashboard manda)**: step-03, step-04, step-05 → ✅ 3/3
 - **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07, step-08, step-09 → ✅ 4/4
-- **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 1/2 (step-11 pendiente)
+- **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ⏳ 0/3
 - **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
@@ -93,3 +93,5 @@ Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado
 - **step-07**: `src/features/reserve/` (site-time TZ Madrid con doble pasada DST; reservation-context lee `configuration.onlineReservations.*` — anidado en el SDK real, no aplanado; slots con `timeSlots.getTimeSlots(id, new Date(date+'T12:00:00Z'), partySize, { slotsBefore: 50, slotsAfter: 50 })` — args posicionales, ancla es una hora, máx 50/lado; error map: 400/404/409/428/502, nunca 500; API key server-side + `console.info` con email maskado). Rutas: `pages/api/reserve.ts` (POST) + `api/reserve/setup.ts` (cache 600s) + `api/reserve/slots.ts` (no-store). Smoke real: setup 200 con config de step-06; slots 96 slots (41 libres 13:00–23:00); POST → 200 `RESERVED` (trial abre create, premium-gate solo cambiará a 428 si Wix lo impone); 10:00 → 409; email mal → 400; experienceId desconocido → 404. Contrato JSON → `references/reserve-api-contract.md` (fuente para step-08/09). `@wix/table-reservations` timeSlots añadido al admin-client.
 - **step-08**: wizard vanilla JS en `src/features/reserve/` (`wizard.astro` + `wizard-client.ts`): tarjeta glass, pills `aria-pressed`, estados boot/premium/fatal/wizard/done, 4 pasos (personas → calendario mensual con solo días de schedule, hoy→+60d → slots con skeleton+retry → form validado por campo), done con status RESERVED/REQUESTED; JSON-LD ReserveAction en `reserve-schema.ts`; ruta única `pages/reserve/index.astro` prerenderizada para en/es/it. 53 claves `reserve.*` + `seo.reserve.*`: `translation push` NO auto-traduce (crea en sin published) y `pull` solo devuelve claves con contenido creado → seed es/it vía REST `translation-content/v1/bulk/contents/create` (+ PATCH `/contents/by-key` con body `{content:{…}}` para fixes). Fix colateral: anchors duplicados `href` en `header.astro` (quedaba `href` original + `#{item.href}`) y MT del dashboard había roto `{year}` → `{anno}` en `footer.rights` it. Smoke: las 3 locales 200 con copy propio, setup 200; POST E2E no repetido aquí (dashboard trial sin experiences configuradas → `experiences: []`; step-09 lo cubrirá con Playwright).
 - **step-09**: E2E Playwright (`@playwright/test 1.65.0` exacto; `playwright.config.ts` con webServer `astro build && astro preview` en 4321, teardown `pnpm test:e2e` → `src/tests/free-port-4321.cjs`; `test-results/` en .gitignore). Fixtures `src/tests/fixtures/reserve-*.json` **con envoltura `{slots:[...]}`** (contrato) y setup; `src/tests/reserve-flow.spec.ts`: 10 mocks verdes (success con body del POST verificado, REQUESTED, validación por campo, 428 sin perder form, 409 post→vuelta a slots, slots 409 con retry, slots vacíos→back borra, setup rojo→fatal, calendario ventana/meses, móvil 390×844) + contract real opt-in de setup con `RESERVE_E2E_REAL=1` (verificado 1/1). **El E2E destapó 5 bugs del step-08 que el smoke HTML no ve (el wizard JS nunca se había corrido en un browser)**: `addEventListener` sobre null (panel 4 sin `[data-next]`), `classList.toggle/add` con tokens multi-clase (`DOMTokenList` lanza → helper `setPillVariant`), `state.step` inexistente en back-navigation, id de error `reserve-firstName-error` vs markup `reserve-first-name-error`, y `showDone` pegando `T12:00:00Z` a un `localStart` ya datetime (`Invalid Date`). Lección OP: tras escribir JS de cliente, correr Playwright contra build real antes de cerrar el step.
+- **step-10**: `/carta/` SSR desde Wix Restaurants (menu Nami 5×16, app Menus instalada vía Apps Installer; seed REST `menus-menu/v1` + `menus-section/v1` + `menus-item/v1`; orden en `sectionIds`/`itemIds` del padre). `src/shared/wix/menu-client.ts` + `src/shared/site/menu-mapper.ts` (`mapWixMenu`, `staticCarta`, `formatEuPrice`) + `src/features/menu/carta-data.ts` (caché 600s + fallback) + `carta.astro` (2 columnas desktop / lista móvil). 4 claves i18n (242→246) push + seed es/it REST. Fix de plataforma: `astro 7.3.6→7.4.10` (PR #18474) para 200 en es/it con `fallbackType: 'rewrite'` en SSR.
+- **step-11**: 4 legales (`/legal/`, `/privacidad/`, `/cookies/`, `/terminos-compra/`) + `/regalar/`, `prerender = true` en en/es/it. `src/features/legal/legal-content.ts` (secciones por claves) + `legal-doc.astro` (breadcrumb, contacto, nav legal) y `src/features/gift/regalar.astro` (hero, 3 importes, 3 pasos, CTA shell mailto) + `gift-schema.ts` (Product/Offer + WebPage). 94 claves nuevas (246→340) push + seed es/it REST; es/it 338/340. Footer legal y CTA gift de la home localizados con `localizedPathname`. Smoke: 15/15 rutas 200, sitemap + canonical/hreflang OK, 0 enlaces rotos, E2E 10/10 verdes.

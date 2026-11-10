@@ -39,3 +39,29 @@ Las rutas reservadas en `src/shared/site/nami.ts#legal` y `links.regalar` existe
 
 - La compra real de gift cards (cart + checkout + orders) es step-15; aquí solo shell visual.
 - Cerrar servidor y liberar puerto al terminar (AGENTS.md).
+
+## Resultado
+
+✅ Ejecutado (2026-11-10). 4 páginas legales + `/regalar/` en en/es/it, prerenderizadas y en sitemap.
+
+**Páginas**
+
+- `src/pages/legal/index.astro`, `privacidad/index.astro`, `cookies/index.astro`, `terminos-compra/index.astro`: thin, `prerender = true`, Layout con title/description propios.
+- `src/features/legal/legal-content.ts`: modelo de documentos (6/8/5/7 secciones) con claves `legal.<id>.sections.<n>.{heading,body}`.
+- `src/features/legal/legal-doc.astro`: breadcrumb, h1 + intro + fecha, secciones, bloque de contacto (email/tel) y nav entre documentos legales. Todo el copy vía `t()`.
+- `src/pages/regalar/index.astro` + `src/features/gift/regalar.astro`: hero con foto, 3 opciones (Short €150, Full €250, importe libre), cómo funciona en 3 pasos, CTA shell (mailto) + nota de "compra online pronto" y enlace a condiciones. JSON-LD `Product/Offer + WebPage` en `src/features/gift/gift-schema.ts`.
+
+**i18n (94 claves nuevas, 246→340)**
+
+- `seo.legal.{notices,privacy,cookies,purchase}.*`, `seo.regalar.*`, `legal.*` (documentos + `breadcrumb/home/lastUpdated/contact/navLabel`) y `gift.landing.*`.
+- `wix translation push --json` + seed es/it vía REST `translation-content/v1/bulk/contents/create` (schemaId `e2aa6aa7-…`, chunks de 25) + `translation pull`: es 338/340 e it 338/340 (faltan solo los `carta.dishes.*.detail` vacíos, que caen a en).
+- Enlaces internos localizados: footer legal y CTA de la home `gift` ahora usan `localizedPathname(...)`; `/es/` e `/it/` apuntan a `/es/…` y `/it/…`.
+
+**Smoke (`pnpm build && pnpm preview`, 4321, cerrado)**
+
+- 15/15 rutas nuevas 200 (`/legal/`, `/privacidad/`, `/cookies/`, `/terminos-compra/`, `/regalar/` × en/es/it); `/no-existe/` 404; port liberado.
+- Title/description/canonical/hreflang/x-default correctos por locale; sitemap incluye las 15 URLs; JSON-LD de `/regalar/` parsea (`Product`, `WebPage`).
+- Checker de enlaces internos sobre el HTML construido: 0 rotos (whitelist `/carta/` por ser SSR).
+- `pnpm test:e2e`: 10/10 mocks verdes, 1 skip opt-in; `[free-port] 4321 y 8787 libres`.
+
+Siguiente: `step-12-auth-core`.

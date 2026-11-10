@@ -71,7 +71,7 @@ const year = new Date().getFullYear();
       {
         legal.map((item) => (
           <li>
-            <a href={item.href} class="link" rel="noopener">
+            <a href={localizedPathname(item.href, locale)} class="link">
               {t(`legal.${item.id}`)}
             </a>
           </li>

@@ -1,0 +1,96 @@
+---
+import { Picture } from 'astro:assets';
+import Icon from '@/shared/ui/icon.astro';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
+import { formatEuPrice } from '@/shared/site/menu-mapper';
+import { contacto, experiencias, photos } from '@/shared/site/nami';
+
+const t = getT(Astro.currentLocale);
+const locale = Astro.currentLocale as Locale;
+const termsHref = localizedPathname('/terminos-compra/', locale);
+const emailHref = `mailto:${contacto.email}?subject=${encodeURIComponent(t('gift.landing.emailSubject'))}`;
+
+const options = [
+  ...experiencias.map((exp) => ({
+    id: exp.id,
+    name: t(`experiences.${exp.id}.name`),
+    body: t(`experiences.${exp.id}.description`),
+    price: formatEuPrice(exp.price, locale),
+  })),
+  {
+    id: 'custom',
+    name: t('gift.landing.custom.name'),
+    body: t('gift.landing.custom.body'),
+    price: t('gift.landing.custom.price'),
+  },
+];
+---
+
+<section class="px-4 pt-36 pb-16 md:px-12 xl:px-24">
+  <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+    <div>
+      <p data-reveal class="text-sm text-teja">{t('gift.landing.eyebrow')}</p>
+      <h1 data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-6xl">{t('gift.landing.title')}</h1>
+      <p data-reveal style="--d:200ms" class="mt-6 max-w-md text-base text-crema/70 lg:text-lg">
+        {t('gift.landing.intro')}
+      </p>
+      <p data-reveal style="--d:250ms" class="mt-4 text-sm text-crema/50">{t('gift.landing.validity')}</p>
+      <div data-reveal style="--d:300ms" class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <a href={emailHref} class="btn btn-primary">
+          <Icon name="gift" class="size-5" />
+          <span>{t('gift.landing.cta')}</span>
+        </a>
+        <a href={termsHref} class="link text-sm">{t('gift.landing.terms')}</a>
+      </div>
+      <p data-reveal style="--d:350ms" class="mt-4 max-w-md text-sm text-crema/50">{t('gift.landing.note')}</p>
+    </div>
+    <div data-reveal style="--d:150ms" class="mirror-frame mask-mirror mx-auto w-full max-w-sm">
+      <Picture
+        src={photos.mesaEspecial}
+        alt={t('gift.photoAlt')}
+        formats={['avif', 'webp']}
+        widths={[400, 640, 800]}
+        sizes="(min-width: 768px) 384px, 90vw"
+        loading="eager"
+        decoding="async"
+        pictureAttributes={{ class: 'block' }}
+        class="aspect-[4/5] w-full mask-mirror object-cover"
+      />
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="gift-options-title" class="px-4 py-16 md:px-12 xl:px-24">
+  <div class="mx-auto max-w-6xl">
+    <h2 id="gift-options-title" data-reveal class="text-3xl lg:text-5xl">{t('gift.landing.optionsTitle')}</h2>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        options.map((option, i) => (
+          <article data-reveal style={`--d:${i * 100}ms`} class="flex flex-col rounded-3xl p-6 ring-1 ring-crema/15 lg:p-8">
+            <h3 class="text-2xl">{option.name}</h3>
+            <p class="mt-2 text-base text-crema/70">{option.body}</p>
+            <p class="mt-8 font-display text-4xl">{option.price}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="gift-how-title" class="px-4 py-16 md:px-12 xl:px-24">
+  <div class="mx-auto max-w-6xl">
+    <h2 id="gift-how-title" data-reveal class="text-3xl lg:text-5xl">{t('gift.landing.howTitle')}</h2>
+    <ol class="mt-10 grid gap-8 md:grid-cols-3">
+      {
+        [1, 2, 3].map((n, i) => (
+          <li data-reveal style={`--d:${i * 100}ms`} class="border-t border-crema/15 pt-6">
+            <p class="font-display text-4xl text-teja">{n}</p>
+            <h3 class="mt-4 text-xl">{t(`gift.landing.how${n}.title`)}</h3>
+            <p class="mt-2 text-base text-crema/70">{t(`gift.landing.how${n}.body`)}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
