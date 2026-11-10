@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 12 |
-| ⏳ pendiente | 3 |
+| ✅ done | 13 |
+| ⏳ pendiente | 2 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-12-auth-core` (Fase 4 — Miembros / Account)
+**Siguiente:** `step-13-custom-login-pages` (Fase 4 — Miembros / Account)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -31,7 +31,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 09 · Reserve E2E | ✅ done | `step-09-reserve-e2e.md` | Playwright mock: wizard success/409/428/móvil (10 verdes) + contract real opt-in |
 | 10 · Carta desde restaurants | ✅ done | `step-10-menu-from-restaurants.md` | `/carta/` desde Wix Restaurants (menú Nami 5×16); caché 600s + fallback estático; es/it vía fallback rewrite (fix astro 7.4.10) |
 | 11 · Legal estáticas | ✅ done | `step-11-legal-static-pages.md` | 4 legales + `/regalar/` (en/es/it) prerender + JSON-LD; 94 claves i18n |
-| 12 · Auth core | ⏳ pending | `step-12-auth-core.md` | OAuth visitante/miembro + sessions en cookies |
+| 12 · Auth core | ✅ done | `step-12-auth-core.md` | cookies HttpOnly + `/api/auth/*` + renew/logout; allow-list OAuth registrada; roundtrip real verificado |
 | 13 · Custom login pages | ⏳ pending | `step-13-custom-login-pages.md` | email/pass + Google/Facebook |
 | 14 · Account + orders | ⏳ pending | `step-14-account-orders.md` | `/account/` con órdenes `@wix/ecom` |
 | 15 · Gift cards | ⏳ pending | `step-15-gift-cards-checkout.md` | checkout gift cards (premium requerido) |
@@ -43,7 +43,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 1 — i18n (el dashboard manda)**: step-03, step-04, step-05 → ✅ 3/3
 - **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07, step-08, step-09 → ✅ 4/4
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
-- **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ⏳ 0/3
+- **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 1/3
 - **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
   - 🅿️ Deploy hook/cron rebuild para `wix translation pull` tras ediciones en dashboard (Riesgo 4)
@@ -80,7 +80,7 @@ Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado
 
 1. **Premium**: activar `onlineReservationsEnabled` (reservas online) y el checkout de gift cards requieren sitio Wix premium; en trial se espera `428 PREMIUM_ONLY` (no fatal). Importante: las fases 0/1/3/4 no dependen del premium; la Fase 2/5 degradan con mensajes claros mientras no se pague.
 2. **Scopes de API key**: la API key debe tener permisos "Manage restaurant reservations" (+ lectura de menús); si algún endpoint rechaza API key → usar OAuth client_credentials como fallback backend.
-3. **Fragment en social login**: Google/Facebook devuelven `code`/`state` en el fragment (`#...`), invisible para el servidor → el callback es página client-side + `POST` a `/api/auth/session` para cookies HttpOnly. Requiere **allow-list de redirect URIs** en Headless Settings (precondición de step-02).
+3. **Fragment en social login**: Google/Facebook devuelven `code`/`state` en el fragment (`#...`), invisible para el servidor → el callback es página client-side + `POST` a `/api/auth/session` para cookies HttpOnly. Allow-list de redirect URIs del OAuth app registrada en step-12 (`/api/auth/callback` y `/auth/callback`, localhost + dominio), vía `PATCH oauth-app/v1` con `mask.paths`.
 4. **Traducciones → deploy**: editar en dashboard obliga `wix translation pull` + rebuild. Mitigación futura: deploy hook.
 5. **Trial de `wrangler dev` y `@wix/sdk`**: `@wix/sdk` usa fetch estándar, compatible con Workers; verificado en step-02 con smoke 200 (locations).
 
@@ -95,3 +95,4 @@ Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado
 - **step-09**: E2E Playwright (`@playwright/test 1.65.0` exacto; `playwright.config.ts` con webServer `astro build && astro preview` en 4321, teardown `pnpm test:e2e` → `src/tests/free-port-4321.cjs`; `test-results/` en .gitignore). Fixtures `src/tests/fixtures/reserve-*.json` **con envoltura `{slots:[...]}`** (contrato) y setup; `src/tests/reserve-flow.spec.ts`: 10 mocks verdes (success con body del POST verificado, REQUESTED, validación por campo, 428 sin perder form, 409 post→vuelta a slots, slots 409 con retry, slots vacíos→back borra, setup rojo→fatal, calendario ventana/meses, móvil 390×844) + contract real opt-in de setup con `RESERVE_E2E_REAL=1` (verificado 1/1). **El E2E destapó 5 bugs del step-08 que el smoke HTML no ve (el wizard JS nunca se había corrido en un browser)**: `addEventListener` sobre null (panel 4 sin `[data-next]`), `classList.toggle/add` con tokens multi-clase (`DOMTokenList` lanza → helper `setPillVariant`), `state.step` inexistente en back-navigation, id de error `reserve-firstName-error` vs markup `reserve-first-name-error`, y `showDone` pegando `T12:00:00Z` a un `localStart` ya datetime (`Invalid Date`). Lección OP: tras escribir JS de cliente, correr Playwright contra build real antes de cerrar el step.
 - **step-10**: `/carta/` SSR desde Wix Restaurants (menu Nami 5×16, app Menus instalada vía Apps Installer; seed REST `menus-menu/v1` + `menus-section/v1` + `menus-item/v1`; orden en `sectionIds`/`itemIds` del padre). `src/shared/wix/menu-client.ts` + `src/shared/site/menu-mapper.ts` (`mapWixMenu`, `staticCarta`, `formatEuPrice`) + `src/features/menu/carta-data.ts` (caché 600s + fallback) + `carta.astro` (2 columnas desktop / lista móvil). 4 claves i18n (242→246) push + seed es/it REST. Fix de plataforma: `astro 7.3.6→7.4.10` (PR #18474) para 200 en es/it con `fallbackType: 'rewrite'` en SSR.
 - **step-11**: 4 legales (`/legal/`, `/privacidad/`, `/cookies/`, `/terminos-compra/`) + `/regalar/`, `prerender = true` en en/es/it. `src/features/legal/legal-content.ts` (secciones por claves) + `legal-doc.astro` (breadcrumb, contacto, nav legal) y `src/features/gift/regalar.astro` (hero, 3 importes, 3 pasos, CTA shell mailto) + `gift-schema.ts` (Product/Offer + WebPage). 94 claves nuevas (246→340) push + seed es/it REST; es/it 338/340. Footer legal y CTA gift de la home localizados con `localizedPathname`. Smoke: 15/15 rutas 200, sitemap + canonical/hreflang OK, 0 enlaces rotos, E2E 10/10 verdes.
+- **step-12**: `src/shared/auth/session.ts` (cookie `wix-session` base64url HttpOnly/SameSite=Lax/30d, `wix-oauth` PKCE 10 min, `getMemberSession()` con renew y `safeReturnTo`) + `http.ts` (requestOrigin/isSameOrigin/redirect no-store) + `src/shared/wix/member-client.ts` (`OAuthStrategy` + `members`). Rutas `pages/api/auth/{login,callback,session,logout}.ts` + `api/dev/auth-check.ts`. **Hallazgo:** `allowedRedirectUris` del OAuth app estaba vacío → `400 Invalid redirect URI`; se registró con `PATCH oauth-app/v1` usando `client_credentials` (la API key da 403) y `mask.paths` (sin mask no-op): `/api/auth/callback` y `/auth/callback` en localhost/namicrestaurant.com/www + esos dominios en `allowedRedirectDomains` (post-logout). **`expiresAt` del SDK está en segundos**, no ms. Roundtrip real verificado: code real (PKCE + signOn de miembro de prueba) → callback 303 + cookie → `getCurrentMember` 200 → renew de access vencido (14400 s) → logout Wix y vuelta a `/`; negativos 400/403/state/code/open-redirect OK.

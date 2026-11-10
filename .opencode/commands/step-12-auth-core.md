@@ -46,3 +46,36 @@ El flujo termina con los tokens del miembro guardados en una cookie HttpOnly, y 
 - La UI de login/signup va en step-13; este step es solo infra (testeable con una ruta temporal de dev).
 - La cookie de sesión es técnica: no requiere consentimiento (banner de cookies si aplica).
 - Liberar puerto al terminar el paso.
+
+## Resultado
+
+Ejecutado el 2026-11-11. Infra de sesión server-side lista y verificada contra Wix real.
+
+**Archivos**
+- `src/shared/auth/session.ts`: cookie `wix-session` (HttpOnly, SameSite=Lax, `Secure` según proto del request, 30 días) con tokens serializados en base64url; cookie temporal `wix-oauth` (10 min) con `OauthData` (state + PKCE); `getMemberSession()` renueva el access token vencido con `auth.renewToken(refreshToken)` y limpia la cookie si falla; `safeReturnTo()` bloquea `//`, `\` y saltos de línea.
+- `src/shared/auth/http.ts`: redirects `no-store`, `requestOrigin()` (respeta `x-forwarded-proto`), `isSameOrigin()`, helper de `/login/?error=`.
+- `src/shared/wix/member-client.ts`: `getMemberClient(tokens?)` = `createClient({ auth: OAuthStrategy({ clientId, tokens }), modules: { members } })`. La API key no se usa en auth de miembros.
+- `src/pages/api/auth/login.ts` (GET), `callback.ts` (GET), `session.ts` (POST), `logout.ts` (POST).
+- `src/pages/api/dev/auth-check.ts`: ruta de humo SSR que llama `getCurrentMember({ fieldsets: ['FULL'] })` y devuelve solo id/email/nickname (nunca tokens).
+
+**Contrato**
+- `GET /api/auth/login?returnTo=/es/account/` → 302 a Wix con `responseMode=query` + cookie `wix-oauth`; `returnTo` no local cae a `/account/`.
+- `GET /api/auth/callback?code&state` → valida state contra la cookie, `getMemberTokens()` → cookie `wix-session` → 303 al `returnTo`; errores → 302 a `/login/?error=oauth_state|oauth_callback|oauth_failed|access_denied|oauth_error|oauth_start`. Nunca devuelve tokens.
+- `POST /api/auth/session` (JSON `{ tokens }` o tokens planos) → 204 sin body; valida shape (refresh role `member`), `Content-Type` JSON y mismo origin (403 si no).
+- `POST /api/auth/logout` → borra `wix-session` + `wix-oauth`; con sesión redirige al logout de Wix (post-logout `/`) y sin sesión a `/`.
+- Renew: `expiresAt` del SDK está en **segundos** (no ms); el helper compara contra `Math.floor(Date.now()/1000) + 60`.
+
+**Allow-list OAuth (hallazgo y fix)**
+- `allowedRedirectUris` estaba **vacío** en el OAuth app (`oauth-app/v1`), por lo que Wix devolvía `400 Invalid redirect URI` al autorizar. Se registró vía `PATCH` con `client_credentials` (la API key da 403):
+  - URIs: `http://localhost:4321/api/auth/callback`, `http://localhost:4321/auth/callback`, `https://namicrestaurant.com/api/auth/callback`, `https://namicrestaurant.com/auth/callback` (+ variantes `www.`).
+  - Domains: `localhost:4321`, `namicrestaurant.com`, `www.namicrestaurant.com` (necesarios para el post-logout redirect).
+  - El `PATCH` exige `mask.paths` o no-op silencioso. Las URIs de `/auth/callback` quedan listas para el social login del step-13.
+
+**Verificación** (`pnpm astro build && pnpm preview`, Node 24.22.1)
+- `GET /api/auth/login` → 302 a Wix, cookie `wix-oauth` compacta (base64url), sin tokens en body.
+- Flujo completo real: se obtuvo un authorization code real con PKCE + `signOn` (miembro de prueba `auth-smoke@namicrestaurant.com`) → `/api/auth/callback` → 303 `/es/account/` + cookie `wix-session` → `/api/dev/auth-check` 200 con `loggedIn:true` y email del miembro (`getCurrentMember` OK).
+- Renew: cookie con access vencido → auth-check 200, `Set-Cookie` nuevo con `expiresAt` a 14400 s y refresh role `member`.
+- Logout con sesión real → 303 al logout de Wix, que vuelve a `http://localhost:4321/`; cookies borradas.
+- Negativos: tokens inválidos → 400; `Origin` ajeno → 403; state incorrecto → `oauth_state`; code inválido → `oauth_failed`; `returnTo=//evil.test` → `/account/`.
+- Typecheck focalizado con `tsc --baseUrl .` sin errores en los archivos nuevos (el repo arrastra errores previos ajenos a este step).
+- Puerto 4321 liberado al terminar.
