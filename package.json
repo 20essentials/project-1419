@@ -36,6 +36,7 @@
   "devDependencies": {
     "@playwright/test": "1.65.0",
     "@wix/cli": "1.2.9",
+    "typescript": "5.9.3",
     "wrangler": "4.158.0"
   }
 }
