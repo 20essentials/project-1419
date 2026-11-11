@@ -1,0 +1,15 @@
+---
+import Layout from '@/app/layout.astro';
+import AuthPage from '@/features/auth/auth-page.astro';
+import { getMemberSession, requestIsSecure, safeReturnTo } from '@/shared/auth/session';
+import { getT } from '@/shared/i18n/t';
+
+const t = getT(Astro.currentLocale);
+const returnTo = safeReturnTo(Astro.url.searchParams.get('returnTo'));
+const session = await getMemberSession(Astro.cookies, requestIsSecure(Astro.request));
+if (session) return Astro.redirect(returnTo);
+---
+
+<Layout title={t('seo.signup.title')} description={t('seo.signup.description')} noindex>
+  <AuthPage mode="signup" returnTo={returnTo} />
+</Layout>

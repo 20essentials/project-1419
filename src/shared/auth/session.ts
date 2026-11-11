@@ -4,10 +4,17 @@ import { getMemberClient } from '@/shared/wix/member-client';
 
 export const SESSION_COOKIE = 'wix-session';
 export const OAUTH_COOKIE = 'wix-oauth';
+export const VERIFY_COOKIE = 'wix-verify';
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 const OAUTH_MAX_AGE = 60 * 10;
+const VERIFY_MAX_AGE = 60 * 10;
 const RENEW_MARGIN_SECONDS = 60;
+
+export interface VerifyData {
+  stateToken: string;
+  email: string;
+}
 
 const toBase64Url = (bytes: Uint8Array) => {
   let binary = '';
@@ -113,6 +120,34 @@ export const writeOAuthData = (cookies: AstroCookies, data: OauthData, secure: b
 
 export const clearOAuthData = (cookies: AstroCookies) => {
   cookies.delete(OAUTH_COOKIE, { path: '/' });
+};
+
+const isVerifyData = (value: unknown): value is VerifyData =>
+  Boolean(
+    value &&
+      typeof value === 'object' &&
+      typeof (value as VerifyData).stateToken === 'string' &&
+      (value as VerifyData).stateToken.length > 0 &&
+      typeof (value as VerifyData).email === 'string',
+  );
+
+export const readVerifyData = (cookies: AstroCookies): VerifyData | null => {
+  const data = decode<VerifyData>(cookies.get(VERIFY_COOKIE)?.value);
+  return isVerifyData(data) ? data : null;
+};
+
+export const writeVerifyData = (cookies: AstroCookies, data: VerifyData, secure: boolean) => {
+  cookies.set(VERIFY_COOKIE, encode(data), {
+    path: '/',
+    httpOnly: true,
+    secure,
+    sameSite: 'lax',
+    maxAge: VERIFY_MAX_AGE,
+  });
+};
+
+export const clearVerifyData = (cookies: AstroCookies) => {
+  cookies.delete(VERIFY_COOKIE, { path: '/' });
 };
 
 export const getMemberSession = async (cookies: AstroCookies, secure: boolean): Promise<Tokens | null> => {

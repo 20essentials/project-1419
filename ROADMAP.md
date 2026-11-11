@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 13 |
-| ⏳ pendiente | 2 |
+| ✅ done | 14 |
+| ⏳ pendiente | 1 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-13-custom-login-pages` (Fase 4 — Miembros / Account)
+**Siguiente:** `step-14-account-orders` (Fase 4 — Miembros / Account)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -32,7 +32,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 10 · Carta desde restaurants | ✅ done | `step-10-menu-from-restaurants.md` | `/carta/` desde Wix Restaurants (menú Nami 5×16); caché 600s + fallback estático; es/it vía fallback rewrite (fix astro 7.4.10) |
 | 11 · Legal estáticas | ✅ done | `step-11-legal-static-pages.md` | 4 legales + `/regalar/` (en/es/it) prerender + JSON-LD; 94 claves i18n |
 | 12 · Auth core | ✅ done | `step-12-auth-core.md` | cookies HttpOnly + `/api/auth/*` + renew/logout; allow-list OAuth registrada; roundtrip real verificado |
-| 13 · Custom login pages | ⏳ pending | `step-13-custom-login-pages.md` | email/pass + Google/Facebook |
+| 13 · Custom login pages | ✅ done | `step-13-custom-login-pages.md` | `/login/` `/signup/` email/pass + Google/Facebook; redirect-session para sesión móvil-safe; captcha invisible; 50 claves i18n |
 | 14 · Account + orders | ⏳ pending | `step-14-account-orders.md` | `/account/` con órdenes `@wix/ecom` |
 | 15 · Gift cards | ⏳ pending | `step-15-gift-cards-checkout.md` | checkout gift cards (premium requerido) |
 | 100 · Deploy | 🅿️ parket | `step-100-deploy.md` | `wrangler deploy` al querer publicar |
@@ -43,7 +43,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 1 — i18n (el dashboard manda)**: step-03, step-04, step-05 → ✅ 3/3
 - **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07, step-08, step-09 → ✅ 4/4
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
-- **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 1/3
+- **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 2/3
 - **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
   - 🅿️ Deploy hook/cron rebuild para `wix translation pull` tras ediciones en dashboard (Riesgo 4)
@@ -96,3 +96,4 @@ Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado
 - **step-10**: `/carta/` SSR desde Wix Restaurants (menu Nami 5×16, app Menus instalada vía Apps Installer; seed REST `menus-menu/v1` + `menus-section/v1` + `menus-item/v1`; orden en `sectionIds`/`itemIds` del padre). `src/shared/wix/menu-client.ts` + `src/shared/site/menu-mapper.ts` (`mapWixMenu`, `staticCarta`, `formatEuPrice`) + `src/features/menu/carta-data.ts` (caché 600s + fallback) + `carta.astro` (2 columnas desktop / lista móvil). 4 claves i18n (242→246) push + seed es/it REST. Fix de plataforma: `astro 7.3.6→7.4.10` (PR #18474) para 200 en es/it con `fallbackType: 'rewrite'` en SSR.
 - **step-11**: 4 legales (`/legal/`, `/privacidad/`, `/cookies/`, `/terminos-compra/`) + `/regalar/`, `prerender = true` en en/es/it. `src/features/legal/legal-content.ts` (secciones por claves) + `legal-doc.astro` (breadcrumb, contacto, nav legal) y `src/features/gift/regalar.astro` (hero, 3 importes, 3 pasos, CTA shell mailto) + `gift-schema.ts` (Product/Offer + WebPage). 94 claves nuevas (246→340) push + seed es/it REST; es/it 338/340. Footer legal y CTA gift de la home localizados con `localizedPathname`. Smoke: 15/15 rutas 200, sitemap + canonical/hreflang OK, 0 enlaces rotos, E2E 10/10 verdes.
 - **step-12**: `src/shared/auth/session.ts` (cookie `wix-session` base64url HttpOnly/SameSite=Lax/30d, `wix-oauth` PKCE 10 min, `getMemberSession()` con renew y `safeReturnTo`) + `http.ts` (requestOrigin/isSameOrigin/redirect no-store) + `src/shared/wix/member-client.ts` (`OAuthStrategy` + `members`). Rutas `pages/api/auth/{login,callback,session,logout}.ts` + `api/dev/auth-check.ts`. **Hallazgo:** `allowedRedirectUris` del OAuth app estaba vacío → `400 Invalid redirect URI`; se registró con `PATCH oauth-app/v1` usando `client_credentials` (la API key da 403) y `mask.paths` (sin mask no-op): `/api/auth/callback` y `/auth/callback` en localhost/namicrestaurant.com/www + esos dominios en `allowedRedirectDomains` (post-logout). **`expiresAt` del SDK está en segundos**, no ms. Roundtrip real verificado: code real (PKCE + signOn de miembro de prueba) → callback 303 + cookie → `getCurrentMember` 200 → renew de access vencido (14400 s) → logout Wix y vuelta a `/`; negativos 400/403/state/code/open-redirect OK.
+- **step-13**: `src/features/auth/` (`auth-flow.ts` handlers server, `auth-page.astro` UI login/signup, `auth-client.ts` social+captcha, `callback-page.astro` + `callback-client.ts`) + páginas finas `login/signup/auth/callback` (SSR, noindex, redirect a returnTo si hay sesión) + rutas `api/auth/password-{login,register,verify,reset}.ts` + `wix-verify` (código email, 10 min) en `session.ts` + `redirects` en `member-client.ts`. **Diseño:** login/register NUNCA usan `getMemberTokensForDirectLogin` (iframe oculto no funciona en móvil) → `auth.login/register` → `createRedirectSession({authRequest con sessionToken, responseMode query}, prompt none)` → 303 al fullUrl de Wix → `/api/auth/callback` (step-12) setea cookie y 303 a returnTo. Social: `getAuthUrl(oauthData, {idp})` con fragment → `/auth/callback` client-side parsea hash, `getMemberTokens`, `POST /api/auth/session` (localStorage `wixOAuthData` temporal). **Captcha:** el sitio exige reCAPTCHA en register (`missingCaptchaToken`) → script enterprise con la site key invisible de Wix (expuesta por `OAuthStrategy.captchaInvisibleSiteKey`), token en submit → `captchaTokens.invisibleRecaptchaToken` en login/register. Allow-list: +9 URIs de `/login/` (3 locales × localhost/namicrestaurant/www) para `sendRecoveryEmail` (PATCH client_credentials). 50 claves i18n (390 en) push + seed es/it REST. Smoke real: signOn → redirect-session → callback → cookie → auth-check 200 (miembro logueado); visit /login/ logueado → 303 returnTo; reset real con URI `/login/` OK; negativos (origin ajeno 403, returnTo peligroso sanatizado, verify sin cookie). E2E `src/tests/auth-pages.spec.ts` 9 verdes (render 3 locales, estados verify/reset/error, login real contraseña mala, social mocked con cookie real de sesión, state mismatch, access_denied, nota legal) — destapó que el mock del redirect-session necesita `urlDetails.endpoint`; suite completa 19 verdes + 1 opt-in.
