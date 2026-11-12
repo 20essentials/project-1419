@@ -43,6 +43,7 @@
     font-family: var(--font-display);
     font-weight: 400;
     text-wrap: balance;
+    word-spacing: -0.12em;
   }
 
   p,
