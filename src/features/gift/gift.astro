@@ -9,11 +9,11 @@ const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 ---
 
-<section id="regala" aria-labelledby="regala-title" class="px-4 py-24 md:px-12 xl:px-24">
+<section id="gift" aria-labelledby="gift-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
     <div data-reveal class="mirror-frame mask-mirror mx-auto w-full max-w-sm">
       <Picture
-        src={photos.mesaEspecial}
+        src={photos.specialTable}
         alt={t('gift.photoAlt')}
         formats={['avif', 'webp']}
         widths={[400, 640, 800]}
@@ -26,12 +26,12 @@ const locale = Astro.currentLocale as Locale;
     </div>
     <div>
       <p data-reveal class="text-sm text-teja">{t('gift.eyebrow')}</p>
-      <h2 id="regala-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('gift.title')}</h2>
+      <h2 id="gift-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('gift.title')}</h2>
       <p data-reveal style="--d:200ms" class="mt-6 max-w-md text-base text-crema/70 lg:text-lg">
         {t('gift.body')}
       </p>
       <div data-reveal style="--d:300ms" class="mt-8">
-        <a href={localizedPathname(links.regalar, locale)} class="btn btn-ghost">
+        <a href={localizedPathname(links.gift, locale)} class="btn btn-ghost">
           <Icon name="gift" class="size-5" />
           <span>{t('gift.cta')}</span>
         </a>

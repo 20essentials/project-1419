@@ -46,7 +46,7 @@ export async function getWixMenu(): Promise<WixMenuPayload | null> {
     ]);
     return { menu, sections: allSections, items: allItems };
   } catch (error) {
-    console.error('[carta] menus de Wix no disponibles:', error);
+    console.error('[menu] menus de Wix no disponibles:', error);
     return null;
   }
 }

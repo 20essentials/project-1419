@@ -2,7 +2,7 @@
 import { Picture } from 'astro:assets';
 import Spiral from '@/shared/ui/spiral.astro';
 import { getT } from '@/shared/i18n/t';
-import { contacto, links, photos } from '@/shared/site/nami';
+import { contact, links, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---
@@ -12,7 +12,7 @@ const t = getT(Astro.currentLocale);
   <div class="relative mx-auto flex max-w-[680px] flex-col items-center text-center">
     <div data-reveal class="w-48 lg:w-56">
       <Picture
-        src={photos.entrada}
+        src={photos.entrance}
         alt={t('finalcta.photoAlt')}
         formats={['avif', 'webp']}
         widths={[320, 480]}
@@ -24,15 +24,15 @@ const t = getT(Astro.currentLocale);
       />
     </div>
     <h2 id="final-title" data-reveal style="--d:100ms" class="mt-12 text-4xl lg:text-6xl">
-      {t('finalcta.titleLine1')}<br /> {contacto.calle}
+      {t('finalcta.titleLine1')}<br /> {contact.street}
     </h2>
     <p data-reveal style="--d:200ms" class="mt-6 text-base text-crema/70 lg:text-lg">
       {t('finalcta.body')}
     </p>
     <div data-reveal style="--d:300ms" class="mt-8 flex flex-col items-center gap-4">
-      <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+      <a href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
       <p class="text-sm text-crema/70">
-        {t('finalcta.callUs')} <a href={links.telefono} class="link whitespace-nowrap">{contacto.telefono}</a>
+        {t('finalcta.callUs')} <a href={links.phone} class="link whitespace-nowrap">{contact.phone}</a>
       </p>
     </div>
   </div>

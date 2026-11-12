@@ -20,7 +20,7 @@ const saved = params.get('saved') === '1';
 const formError = params.get('error') === 'profile' ? 'profile' : params.get('error') === 'invalid' ? 'invalid' : null;
 
 const homeHref = localizedPathname('/', locale);
-const giftHref = localizedPathname('/regalar/', locale);
+const giftHref = localizedPathname('/gift/', locale);
 const profileAction = '/api/account/profile';
 
 const displayName = (profile?.firstName || profile?.nickname || '').trim();

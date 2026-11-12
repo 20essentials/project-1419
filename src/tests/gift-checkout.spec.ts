@@ -17,10 +17,10 @@ async function bindGift(page: Page): Promise<void> {
 }
 
 test.describe('gift checkout', () => {
-  test('regalar page renders product options, custom input and CTA in 3 locales', async ({ page }) => {
+  test('gift page renders product options, custom input and CTA in 3 locales', async ({ page }) => {
     const localesByPrefix = [['en', '/'], ['es', '/es'], ['it', '/it']] as const;
     for (const [locale, prefix] of localesByPrefix) {
-      await page.goto(prefix === '/' ? '/regalar/' : `${prefix}/regalar/`);
+      await page.goto(prefix === '/' ? '/gift/' : `${prefix}/gift/`);
       await expect(page.locator('[data-gift]')).toBeVisible();
       await expect(page.locator('form[data-gift-form]')).toBeVisible();
       await expect(page.locator('input[name="gift-variant"]')).toHaveCount(3);
@@ -39,7 +39,7 @@ test.describe('gift checkout', () => {
     void page.on('request', (request) => {
       if (CHECKOUT_RE.test(request.url())) posts.push(request.postData());
     });
-    await page.goto('/regalar/');
+    await page.goto('/gift/');
     await bindGift(page);
     await page.locator('label:has(input[name="gift-variant"][value="custom"])').click();
     await expect(page.locator('[data-gift-amount-wrap]')).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('gift checkout', () => {
       posts.push(body);
       await fulfill(route, 200, { redirectUrl: HOSTED_CHECKOUT });
     });
-    await page.goto('/regalar/');
+    await page.goto('/gift/');
     await bindGift(page);
     await page.locator('label:has(input[name="gift-variant"]:not([value="custom"]))').first().click();
     await page.locator('[data-gift-submit]').click();
@@ -79,7 +79,7 @@ test.describe('gift checkout', () => {
     ];
     for (const { status, body, text } of cases) {
       await page.route(CHECKOUT_RE, (route) => fulfill(route, status, body));
-      await page.goto('/regalar/');
+      await page.goto('/gift/');
       await bindGift(page);
       await page.locator('label:has(input[name="gift-variant"]:not([value="custom"]))').first().click();
       await page.locator('[data-gift-submit]').click();
@@ -96,7 +96,7 @@ test.describe('gift checkout', () => {
     });
     expect(forbidden.status()).toBe(403);
     const badBody = await request.post('http://localhost:4321/api/gift/checkout', {
-      headers: { Origin: 'http://localhost:4321', Referer: 'http://localhost:4321/regalar/' },
+      headers: { Origin: 'http://localhost:4321', Referer: 'http://localhost:4321/gift/' },
       data: { amount: 99999, locale: 'en' },
     });
     expect(badBody.status()).toBe(400);

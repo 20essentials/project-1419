@@ -3,7 +3,7 @@ import Logo from './logo.astro';
 import Icon from '@/shared/ui/icon.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import { contacto, legal, links, nav } from '@/shared/site/nami';
+import { contact, legal, links, nav } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
@@ -35,7 +35,7 @@ const year = new Date().getFullYear();
 
     <div class="flex flex-col gap-2 text-sm">
       <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">{t('footer.visitUs')}</h2>
-      <address>{contacto.calle}<br />{contacto.ciudad}</address>
+      <address>{contact.street}<br />{contact.city}</address>
       <a href={links.maps} class="link inline-flex items-center gap-2 self-start" rel="noopener" target="_blank">
         <Icon name="mapPin" />
         {t('footer.howToArrive')}
@@ -50,17 +50,17 @@ const year = new Date().getFullYear();
 
     <div class="flex flex-col gap-2 text-sm">
       <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">{t('footer.contact')}</h2>
-      <a href={links.telefono} class="link inline-flex items-center gap-2 self-start">
+      <a href={links.phone} class="link inline-flex items-center gap-2 self-start">
         <Icon name="phone" />
-        {contacto.telefono}
+        {contact.phone}
       </a>
       <a href={links.email} class="link inline-flex items-center gap-2 self-start">
         <Icon name="envelope" />
-        {contacto.email}
+        {contact.email}
       </a>
       <a href={links.instagram} class="link inline-flex items-center gap-2 self-start" rel="noopener" target="_blank">
         <Icon name="instagram" />
-        {contacto.instagram}
+        {contact.instagram}
       </a>
     </div>
   </div>

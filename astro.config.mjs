@@ -4,7 +4,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
-import { fotosPublicas, ogImage } from './src/shared/site/imagenes.ts';
+import { publicPhotos, ogImage } from './src/shared/site/imagenes.ts';
 import { getT, locales, defaultLocale } from './src/shared/i18n/t.ts';
 
 // https://astro.build/config
@@ -35,7 +35,7 @@ export default defineConfig({
         const t = getT();
         const images = [
           { src: ogImage.src, title: t('og.title'), caption: t('og.imageAlt') },
-          ...fotosPublicas.map((foto) => ({
+          ...publicPhotos.map((foto) => ({
             src: foto.src,
             title: `${t(`photos.${foto.id}.label`)} · Nami`,
             caption: t(`photos.${foto.id}.alt`),

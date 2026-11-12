@@ -2,21 +2,21 @@
 import Icon from '@/shared/ui/icon.astro';
 import Pending from '@/shared/ui/pending.astro';
 import { getT } from '@/shared/i18n/t';
-import { prensa } from '@/shared/site/nami';
+import { press } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---
 
-<section id="prensa" aria-labelledby="prensa-title" class="px-4 py-24 md:px-12 xl:px-24">
+<section id="press" aria-labelledby="press-title" class="px-4 py-24 md:px-12 xl:px-24">
   <figure class="mx-auto flex max-w-4xl flex-col items-center text-center">
-    <p id="prensa-title" data-reveal class="text-sm text-teja">{t('press.eyebrow')}</p>
-    <blockquote data-reveal style="--d:100ms" cite={prensa.url} class="mt-6">
+    <p id="press-title" data-reveal class="text-sm text-teja">{t('press.eyebrow')}</p>
+    <blockquote data-reveal style="--d:100ms" cite={press.url} class="mt-6">
       <p class="font-display text-3xl lg:text-5xl">“{t('press.quoteTitle')}”</p>
       <p class="mx-auto mt-6 max-w-2xl text-base text-crema/70 lg:text-lg">{t('press.quoteExcerpt')}</p>
     </blockquote>
     <figcaption data-reveal style="--d:200ms" class="mt-8 flex flex-col items-center gap-2 text-sm">
-      <span>{prensa.medio} · {t('press.date')}</span>
-      <a href={prensa.url} class="link inline-flex items-center gap-2 text-crema/70" rel="noopener" target="_blank">
+      <span>{press.outlet} · {t('press.date')}</span>
+      <a href={press.url} class="link inline-flex items-center gap-2 text-crema/70" rel="noopener" target="_blank">
         {t('press.readArticle')}
         <Icon name="arrowUpRight" />
       </a>

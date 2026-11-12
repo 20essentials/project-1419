@@ -3,7 +3,7 @@ import Icon from '@/shared/ui/icon.astro';
 import Spiral from '@/shared/ui/spiral.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import { contacto, links } from '@/shared/site/nami';
+import { contact, links } from '@/shared/site/nami';
 import { MAX_ADVANCE_DAYS } from './site-time';
 
 const locale = Astro.currentLocale as Locale;
@@ -93,9 +93,9 @@ const pulse = [
     <div data-state="premium" hidden class="text-center">
       <h2 tabindex="-1" class="text-3xl lg:text-4xl">{t('reserve.disabled.title')}</h2>
       <p class="mx-auto mt-4 max-w-md text-base text-crema/70">{t('reserve.disabled.body')}</p>
-      <a href={links.telefono} class="btn btn-ghost mt-8">
+      <a href={links.phone} class="btn btn-ghost mt-8">
         <Icon name="phone" class="size-5" />
-        <span>{t('reserve.call', { phone: contacto.telefono })}</span>
+        <span>{t('reserve.call', { phone: contact.phone })}</span>
       </a>
     </div>
 

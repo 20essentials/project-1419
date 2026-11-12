@@ -2,42 +2,42 @@
 import Icon from '@/shared/ui/icon.astro';
 import { Picture } from 'astro:assets';
 import { getT } from '@/shared/i18n/t';
-import { links, platos } from '@/shared/site/nami';
+import { links, dishes } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---
 
-<section id="carta" data-spy="#carta" aria-labelledby="carta-title" class="px-4 py-24 md:px-12 xl:px-24">
+<section id="menu" data-spy="#menu" aria-labelledby="menu-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto max-w-6xl">
     <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div class="max-w-xl">
-        <p data-reveal class="text-sm text-teja">{t('carta.eyebrow')}</p>
-        <h2 id="carta-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('carta.title')}</h2>
+        <p data-reveal class="text-sm text-teja">{t('menu.eyebrow')}</p>
+        <h2 id="menu-title" data-reveal style="--d:100ms" class="mt-4 text-3xl lg:text-5xl">{t('menu.title')}</h2>
       </div>
       <a
         data-reveal
         style="--d:200ms"
-        href={links.carta}
+        href={links.menu}
         class="link inline-flex items-center gap-2 self-start text-sm md:self-auto"
         rel="noopener"
       >
-        {t('carta.viewFull')}
+        {t('menu.viewFull')}
         <Icon name="arrowUpRight" />
       </a>
     </div>
 
     <ol class="mt-12 divide-y divide-crema/10">
       {
-        platos.map((plato, i) => (
+        dishes.map((dish, i) => (
           <li data-reveal style={`--d:${i * 80}ms`} class="grid grid-cols-[auto_1fr] items-baseline gap-x-6 gap-y-1 py-6 md:grid-cols-[auto_1fr_auto] md:items-center lg:py-8">
             <span class="font-display text-sm text-teja tabular-nums">{String(i + 1).padStart(2, '0')}</span>
             <div>
-              <h3 class="text-2xl lg:text-4xl">{t(`carta.dishes.${plato.id}.name`)}</h3>
-              {t(`carta.dishes.${plato.id}.detail`) && <p class="mt-2 text-base text-crema/70">{t(`carta.dishes.${plato.id}.detail`)}</p>}
+              <h3 class="text-2xl lg:text-4xl">{t(`menu.dishes.${dish.id}.name`)}</h3>
+              {t(`menu.dishes.${dish.id}.detail`) && <p class="mt-2 text-base text-crema/70">{t(`menu.dishes.${dish.id}.detail`)}</p>}
             </div>
             <div class="col-start-2 mt-3 flex items-center -space-x-2 md:col-start-3 md:mt-0">
               <Picture
-                src={plato.fotos[2]}
+                src={dish.photos[2]}
                 alt=""
                 aria-hidden="true"
                 formats={['avif', 'webp']}
@@ -49,8 +49,8 @@ const t = getT(Astro.currentLocale);
                 class="mask-oval h-20 w-16 translate-y-2 object-cover ring-1 ring-teja/50"
               />
               <Picture
-                src={plato.fotos[0]}
-                alt={t(`carta.dishes.${plato.id}.photoAlt`)}
+                src={dish.photos[0]}
+                alt={t(`menu.dishes.${dish.id}.photoAlt`)}
                 formats={['avif', 'webp']}
                 widths={[240, 480]}
                 sizes="72px"
@@ -60,7 +60,7 @@ const t = getT(Astro.currentLocale);
                 class="mask-oval h-24 w-18 object-cover ring-1 ring-teja/60"
               />
               <Picture
-                src={plato.fotos[1]}
+                src={dish.photos[1]}
                 alt=""
                 aria-hidden="true"
                 formats={['avif', 'webp']}

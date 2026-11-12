@@ -4,7 +4,7 @@ import { Picture } from 'astro:assets';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
 import { formatEuPrice } from '@/shared/site/menu-mapper';
-import { contacto, experiencias, photos } from '@/shared/site/nami';
+import { contact, experiences, photos } from '@/shared/site/nami';
 import { GIFT_CUSTOM_FALLBACK, type GiftProduct } from './gift-product';
 
 interface Props {
@@ -14,19 +14,19 @@ interface Props {
 const { product } = Astro.props;
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
-const termsHref = localizedPathname('/terminos-compra/', locale);
-const emailHref = `mailto:${contacto.email}?subject=${encodeURIComponent(t('gift.landing.emailSubject'))}`;
+const termsHref = localizedPathname('/purchase-terms/', locale);
+const emailHref = `mailto:${contact.email}?subject=${encodeURIComponent(t('gift.landing.emailSubject'))}`;
 
-const experienceById = new Map(experiencias.map((exp) => [exp.id, exp]));
+const experienceById = new Map(experiences.map((exp) => [exp.id, exp]));
 
 const presetCards = product
   ? product.presets.map((preset) => ({
       kind: 'preset' as const,
       value: `preset:${preset.id}`,
       price: preset.price,
-      expId: experienceById.get(experiencias.find((exp) => exp.price === preset.price)?.id ?? '')?.id,
+      expId: experienceById.get(experiences.find((exp) => exp.price === preset.price)?.id ?? '')?.id,
     }))
-  : experiencias.map((exp) => ({
+  : experiences.map((exp) => ({
       kind: 'static' as const,
       value: `preset:${exp.id}`,
       price: exp.price,
@@ -79,7 +79,7 @@ const messagesPayload = JSON.stringify(errorMessages).replaceAll('<', '\\u003c')
     </div>
     <div data-reveal style="--d:150ms" class="mirror-frame mask-mirror mx-auto w-full max-w-sm">
       <Picture
-        src={photos.mesaEspecial}
+        src={photos.specialTable}
         alt={t('gift.photoAlt')}
         formats={['avif', 'webp']}
         widths={[400, 640, 800]}

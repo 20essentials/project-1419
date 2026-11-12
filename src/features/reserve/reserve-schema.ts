@@ -17,7 +17,7 @@ export function reserveStructuredData(site: URL, locale: Locale) {
         '@id': restaurantId,
         name: 'Nami',
         url: new URL(home, site).href,
-        telephone: links.telefono.replace('tel:', ''),
+        telephone: links.phone.replace('tel:', ''),
         acceptsReservations: true,
         potentialAction: {
           '@type': 'ReserveAction',

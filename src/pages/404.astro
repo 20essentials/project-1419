@@ -15,7 +15,7 @@ const t = getT(Astro.currentLocale);
   <section class="flex min-h-svh flex-col items-center justify-center gap-12 px-4 py-24 text-center md:flex-row md:text-left">
     <div data-reveal class="w-48 md:w-64">
       <Picture
-        src={photos.vinos}
+        src={photos.wine}
         alt={t('page404.photoAlt')}
         formats={['avif', 'webp']}
         widths={[320, 512]}
@@ -32,7 +32,7 @@ const t = getT(Astro.currentLocale);
       <p data-reveal style="--d:200ms" class="text-base text-crema/70">{t('page404.body')}</p>
       <div data-reveal style="--d:300ms" class="flex flex-wrap items-center justify-center gap-4">
         <a href="/" class="btn btn-ghost"><Icon name="arrowLeft" class="size-5" /><span>{t('page404.backHome')}</span></a>
-        <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+        <a href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
       </div>
     </div>
   </section>

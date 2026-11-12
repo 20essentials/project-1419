@@ -1,7 +1,7 @@
 ---
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import { contacto, legal, links } from '@/shared/site/nami';
+import { contact, legal, links } from '@/shared/site/nami';
 import { legalDocs, type LegalDocId } from '@/features/legal/legal-content';
 
 interface Props {
@@ -44,11 +44,11 @@ const homeHref = localizedPathname('/', locale);
 
     <div class="mt-16 rounded-3xl p-6 ring-1 ring-crema/15 lg:p-8">
       <p class="text-base text-crema/75 lg:text-lg">
-        {t('legal.contact', { email: contacto.email, phone: contacto.telefono })}
+        {t('legal.contact', { email: contact.email, phone: contact.phone })}
       </p>
       <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        <a href={links.email} class="link">{contacto.email}</a>
-        <a href={links.telefono} class="link">{contacto.telefono}</a>
+        <a href={links.email} class="link">{contact.email}</a>
+        <a href={links.phone} class="link">{contact.phone}</a>
       </div>
     </div>
 

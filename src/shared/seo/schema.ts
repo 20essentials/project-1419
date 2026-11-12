@@ -1,7 +1,7 @@
 import { getT, formatPrice, defaultLocale, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import { contacto, experiencias, faqIds, links, maridaje, platos } from '@/shared/site/nami';
-import { fotosPublicas, ogImage } from '@/shared/site/imagenes';
+import { contact, experiences, faqIds, links, pairing, dishes } from '@/shared/site/nami';
+import { publicPhotos, ogImage } from '@/shared/site/imagenes';
 
 const WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
@@ -17,10 +17,10 @@ function abs(site: URL, path: string) {
 
 export function pageImages(site: URL): PageImage[] {
   const t = getT();
-  return fotosPublicas.map((foto) => ({
-    loc: abs(site, foto.src),
-    title: `${t(`photos.${foto.id}.label`)} · Nami`,
-    caption: t(`photos.${foto.id}.alt`),
+  return publicPhotos.map((photo) => ({
+    loc: abs(site, photo.src),
+    title: `${t(`photos.${photo.id}.label`)} · Nami`,
+    caption: t(`photos.${photo.id}.alt`),
   }));
 }
 
@@ -31,7 +31,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
   const restaurantId = new URL(`${localizedHome}#restaurant`, site).href;
   const websiteId = new URL(`${localizedHome}#website`, site).href;
   const webpageId = new URL(`${localizedHome}#webpage`, site).href;
-  const telephone = links.telefono.replace('tel:', '');
+  const telephone = links.phone.replace('tel:', '');
   const shareImage = {
     '@type': 'ImageObject',
     url: abs(site, ogImage.src),
@@ -59,25 +59,25 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
         ],
         logo: abs(site, '/icon-512.png'),
         telephone,
-        email: contacto.email,
+        email: contact.email,
         priceRange: '€€€',
         servesCuisine: [t('seo.cuisineJapanese'), t('seo.cuisineNikkei'), t('seo.cuisineMediterranean')],
         currenciesAccepted: 'EUR',
         acceptsReservations: true,
-        menu: links.carta,
+        menu: links.menu,
         hasMenu: {
           '@type': 'Menu',
           name: t('seo.menuName'),
-          url: links.carta,
+          url: links.menu,
           hasMenuSection: [
             {
               '@type': 'MenuSection',
-              name: t('carta.eyebrow'),
-              hasMenuItem: platos.map((plato) => {
-                const detail = t(`carta.dishes.${plato.id}.detail`);
+              name: t('menu.eyebrow'),
+              hasMenuItem: dishes.map((dish) => {
+                const detail = t(`menu.dishes.${dish.id}.detail`);
                 return {
                   '@type': 'MenuItem',
-                  name: t(`carta.dishes.${plato.id}.name`),
+                  name: t(`menu.dishes.${dish.id}.name`),
                   ...(detail ? { description: detail } : {}),
                 };
               }),
@@ -86,7 +86,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
               '@type': 'MenuSection',
               name: t('experiences.eyebrow'),
               hasMenuItem: [
-                ...experiencias.map((exp) => ({
+                ...experiences.map((exp) => ({
                   '@type': 'MenuItem',
                   name: t(`experiences.${exp.id}.name`),
                   description: `${t(`experiences.${exp.id}.description`)} ${t('experiences.perPerson', { price: formatPrice(exp.price / 2, locale) })}.`,
@@ -96,7 +96,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
                   '@type': 'MenuItem',
                   name: t('experiences.pairing.name'),
                   description: t('experiences.pairing.description'),
-                  offers: { '@type': 'Offer', price: String(maridaje.price), priceCurrency: 'EUR' },
+                  offers: { '@type': 'Offer', price: String(pairing.price), priceCurrency: 'EUR' },
                 },
               ],
             },
@@ -104,13 +104,13 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
         },
         address: {
           '@type': 'PostalAddress',
-          streetAddress: contacto.calle,
-          postalCode: contacto.codigoPostal,
-          addressLocality: contacto.localidad,
+          streetAddress: contact.street,
+          postalCode: contact.postalCode,
+          addressLocality: contact.locality,
           addressRegion: 'Cataluña',
           addressCountry: 'ES',
         },
-        geo: { '@type': 'GeoCoordinates', latitude: contacto.lat, longitude: contacto.lon },
+        geo: { '@type': 'GeoCoordinates', latitude: contact.lat, longitude: contact.lon },
         hasMap: links.maps,
         openingHoursSpecification: {
           '@type': 'OpeningHoursSpecification',
@@ -125,7 +125,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
           '@type': 'ReserveAction',
           target: {
             '@type': 'EntryPoint',
-            urlTemplate: links.reservar,
+            urlTemplate: links.reserve,
             inLanguage: locale,
             actionPlatform: ['https://schema.org/DesktopWebPlatform', 'https://schema.org/MobileWebPlatform'],
           },
@@ -157,7 +157,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
       {
         '@type': 'FAQPage',
         '@id': new URL(`${localizedHome}#faq`, site).href,
-        url: new URL(`${localizedHome}#preguntas`, site).href,
+        url: new URL(`${localizedHome}#questions`, site).href,
         inLanguage: locale,
         isPartOf: { '@id': webpageId },
         mainEntity: faqIds.map((id) => ({

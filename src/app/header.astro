@@ -4,7 +4,7 @@ import Icon from '@/shared/ui/icon.astro';
 import LanguageSwitcher from './language-switcher.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import { contacto, links, nav } from '@/shared/site/nami';
+import { contact, links, nav } from '@/shared/site/nami';
 
 interface Props {
   session?: { name: string } | null;
@@ -34,7 +34,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
   <div
     class="pointer-events-auto flex w-max items-center gap-6 rounded-full bg-bg/60 p-2 pl-6 ring-1 ring-crema/10 backdrop-blur-xl lg:gap-5"
   >
-    <a href={anchor('#inicio')} class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
+    <a href={anchor('#intro')} class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
       <Logo class="text-xl" />
     </a>
 
@@ -61,7 +61,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
       <div class="hidden sm:block">
         <LanguageSwitcher />
       </div>
-      <a href={links.reservar} class="btn btn-primary btn-sm px-4">
+      <a href={links.reserve} class="btn btn-primary btn-sm px-4">
         <span>{t('common.reserve')}</span>
       </a>
       {
@@ -115,7 +115,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
         ))
       }
       <li class="menu-item pt-2" style={`--i:${nav.length}`}>
-        <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+        <a href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
       </li>
       <li class="menu-item" style={`--i:${nav.length + 1}`}>
         <LanguageSwitcher />
@@ -144,11 +144,11 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
   </nav>
 
   <div class="menu-item flex flex-col items-center gap-2 text-sm text-crema/70" style={`--i:${nav.length + 3}`}>
-    <a href={links.telefono} class="link inline-flex items-center gap-2">
+    <a href={links.phone} class="link inline-flex items-center gap-2">
       <Icon name="phone" />
-      {contacto.telefono}
+      {contact.phone}
     </a>
-    <p>{contacto.calle} · {t('contact.hoursText')}</p>
+    <p>{contact.street} · {t('contact.hoursText')}</p>
   </div>
 </div>
 
@@ -200,7 +200,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
     transition-delay: calc(100ms + var(--i, 0) * 50ms);
   }
 
-  /* Píldora que se desliza hasta la sección activa. */
+  /* Pill that slides to the active section. */
   .nav-indicator {
     width: var(--w, 0);
     translate: var(--x, 0) 0;
@@ -266,7 +266,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
     if (event.matches) setOpen(false);
   });
 
-  // Indica en la navegación la sección que se está viendo.
+  // Marks the section currently in view in the navigation.
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
   const indicator = document.querySelector<HTMLElement>('.nav-indicator');
 
@@ -277,7 +277,7 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
       indicator.removeAttribute('data-visible');
       return;
     }
-    // Si estaba oculta, aparece en su sitio en vez de deslizarse desde el anterior.
+    // If it was hidden, it appears in place instead of sliding from the previous one.
     indicator.toggleAttribute('data-instant', !indicator.hasAttribute('data-visible'));
     indicator.style.setProperty('--x', `${active.offsetLeft}px`);
     indicator.style.setProperty('--w', `${active.offsetWidth}px`);

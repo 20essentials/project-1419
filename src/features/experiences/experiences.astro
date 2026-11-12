@@ -2,12 +2,12 @@
 import { Picture } from 'astro:assets';
 import Pending from '@/shared/ui/pending.astro';
 import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
-import { experiencias, links, maridaje, photos } from '@/shared/site/nami';
+import { experiences, links, pairing, photos } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 ---
 
-<section id="experiencias" data-spy="#experiencias" aria-labelledby="exp-title" class="px-4 py-24 md:px-12 xl:px-24">
+<section id="experiences" data-spy="#experiences" aria-labelledby="exp-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-xl">
       <p data-reveal class="text-sm text-teja">{t('experiences.eyebrow')}</p>
@@ -19,7 +19,7 @@ const t = getT(Astro.currentLocale);
 
     <div class="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr_0.9fr]">
       {
-        experiencias.map((exp, i) => (
+        experiences.map((exp, i) => (
           <article
             data-reveal
             style={`--d:${i * 100}ms`}
@@ -41,7 +41,7 @@ const t = getT(Astro.currentLocale);
             </p>
             <p class="mt-1 text-sm text-crema/50">{t('experiences.perPerson', { price: formatPrice(exp.price / 2) })}</p>
             <div class="mt-8 flex flex-1 items-end">
-              <a href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+              <a href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
             </div>
           </article>
         ))
@@ -50,7 +50,7 @@ const t = getT(Astro.currentLocale);
       <article data-reveal style="--d:200ms" class="flex flex-col items-center gap-6 rounded-3xl p-6 text-center ring-1 ring-crema/15 lg:p-8">
         <div class="mirror-frame mask-oval w-40 lg:w-48">
           <Picture
-            src={photos.vinos}
+            src={photos.wine}
             alt={t('experiences.pairingPhotoAlt')}
             formats={['avif', 'webp']}
             widths={[320, 480]}
@@ -65,7 +65,7 @@ const t = getT(Astro.currentLocale);
           <h3 class="text-2xl">{t('experiences.pairing.name')}</h3>
           <p class="mt-2 text-base text-crema/70">{t('experiences.pairing.description')}</p>
         </div>
-        <p class="font-display text-4xl">{formatPairing(maridaje.price)}</p>
+        <p class="font-display text-4xl">{formatPairing(pairing.price)}</p>
       </article>
     </div>
 

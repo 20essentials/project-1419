@@ -1,5 +1,5 @@
 ---
-// Espirales de arena rastrillada, como las de la barra de sushi.
+// Raked-sand spirals, like the ones in a sushi bar.
 interface Props {
   class?: string;
   rings?: number;
@@ -11,11 +11,11 @@ const size = 400;
 const c = size / 2;
 const step = (c - 8) / rings;
 
-// Décimas de unidad sin el cero inicial (0.4 → .4) para que el path pese menos en el HTML.
+// Tenths of a unit without the leading zero (0.4 → .4) so the path weighs less in the HTML.
 const num = (tenths: number) => String(tenths / 10).replace(/^(-?)0\./, '$1.');
 
 // Anillos ligeramente irregulares, como surcos hechos a mano. Coordenadas relativas (`l`) calculadas sobre puntos
-// ya redondeados, así el redondeo no se acumula y el anillo cierra donde empezó.
+// already rounded, so rounding does not accumulate and the ring closes where it started.
 const ring = (r: number, i: number) => {
   const points = 72;
   let d = '';

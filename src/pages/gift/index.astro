@@ -2,7 +2,7 @@
 export const prerender = false;
 
 import Layout from '@/app/layout.astro';
-import Regalar from '@/features/gift/regalar.astro';
+import GiftPage from '@/features/gift/gift-page.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { giftStructuredData } from '@/features/gift/gift-schema';
 import { getGiftProduct } from '@/features/gift/gift-product';
@@ -14,7 +14,7 @@ const jsonLd = JSON.stringify(giftStructuredData(site, Astro.currentLocale as Lo
 const product = await getGiftProduct();
 ---
 
-<Layout title={t('seo.regalar.title')} description={t('seo.regalar.description')}>
+<Layout title={t('seo.gift.title')} description={t('seo.gift.description')}>
   <script slot="head" type="application/ld+json" set:html={jsonLd} />
-  <Regalar product={product} />
+  <GiftPage product={product} />
 </Layout>

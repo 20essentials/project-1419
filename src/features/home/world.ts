@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 type Key = { y: number; v: number };
 
-// Interpola un valor por tramos según la posición de scroll.
+// Interpolates a value piecewise according to the scroll position.
 const piecewise = (y: number, keys: Key[]) => {
   if (y <= keys[0].y) return keys[0].v;
   for (let i = 1; i < keys.length; i++) {
@@ -16,10 +16,10 @@ const piecewise = (y: number, keys: Key[]) => {
 
 const clamp = gsap.utils.clamp(0, 1);
 
-// Paseo por Nami: el scroll mueve los clips (o las fotos, mientras el clip del tramo no ha cargado) y cada parada
-// muestra su texto. Cada parada tiene un clip que va de ella a la siguiente; el de la última sigue hasta el final.
-// `w` es la posición en el paseo: 0 en la primera parada, 1 en la segunda, 2.5 a medio camino entre la tercera y la
-// cuarta. Al acabar la sección vale `stops.length`, para que el último clip también tenga su tramo.
+// The Nami tour: scroll moves the clips (or the photos, while the current segment clip has not loaded) and each
+// stop shows its text. Each stop has a clip that runs from it to the next one; the last one keeps going to the end.
+// `w` is the position along the tour: 0 at the first stop, 1 at the second, 2.5 halfway between the third and the
+// fourth. At the end of the section it equals `stops.length`, so the last clip gets its segment too.
 export function initWorld(world: HTMLElement, reduceMotion: boolean) {
   const stage = world.querySelector<HTMLElement>('[data-stage]');
   if (!stage) return;
@@ -32,7 +32,7 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
   const last = stops.length - 1;
   const focus = stops.map((stop) => Number(stop.dataset.focus ?? 50));
 
-  // Cada parada llega cuando su artículo toca el borde superior; el paseo termina al acabar la sección.
+  // Each stop arrives when its article touches the top edge; the tour ends at the end of the section.
   const marks = stops.map((stop) => ScrollTrigger.create({ trigger: stop, start: 'top top' }));
   const ready = clips.map(() => false);
   let current = -1;
@@ -48,7 +48,7 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
     links.forEach((link, i) => link.setAttribute('aria-current', String(i === index)));
   };
 
-  // El clip del tramo entra en cuanto ha buscado su fotograma. Si aún no ha cargado, las fotos vuelven a verse.
+  // The segment clip kicks in as soon as it has seeked to its frame. Until it loads, the photos stay visible.
   const show = () => {
     if (shown !== active) {
       shown = active;
@@ -86,8 +86,8 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
     if (fill) fill.style.transform = `scaleY(${at / last})`;
     if (hint) hint.style.opacity = String(clamp(1 - w * 4));
 
-    // Fotogramas (debajo de los clips): cada uno está entero y sin escalar justo en su parada, donde empieza su clip, así
-    // el vídeo entra encima sin que se note. Aparece en la segunda mitad del tramo anterior y se acerca al avanzar.
+    // Frames (underneath the clips): each one is whole and unscaled exactly at its stop, where its clip starts, so
+    // the video comes in on top without a visible swap. It appears in the second half of the previous segment and zooms in as you advance.
     frames.forEach((frame, i) => {
       frame.style.opacity = String(i === 0 ? 1 : clamp((w - i + 0.5) / 0.5));
       if (!reduceMotion) frame.style.transform = `scale(${1 + 0.06 * clamp(w - i)})`;
@@ -109,12 +109,12 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
   });
   render(span);
 
-  // Con movimiento reducido o ahorro de datos se quedan las fotos.
+  // With reduced motion or data saver, the photos stay.
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
   if (!clips.length || reduceMotion || saveData) return;
 
-  // Los clips se cargan de uno en uno: primero el del tramo actual y después el más cercano a la posición del scroll.
-  // A igual distancia va antes el que viene por delante.
+  // Clips load one at a time: first the current segment, then the one closest to the scroll position.
+  // At equal distance, the one ahead goes first.
   const distance = (i: number) => {
     if (i === active) return -1;
     if (i > w) return i - w;
@@ -130,7 +130,7 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
     const src = clip.dataset.src ?? '';
     clip.preload = 'auto';
 
-    // Cada clip se descarga entero (blob) para que el scrub no dependa de la red.
+    // Each clip is fully downloaded (blob) so scrubbing does not depend on the network.
     try {
       const res = await fetch(src);
       if (!res.ok) throw new Error(res.statusText);
@@ -144,7 +144,7 @@ export function initWorld(world: HTMLElement, reduceMotion: boolean) {
       clip.addEventListener('error', () => resolve(false), { once: true });
     });
     if (loaded) {
-      // iOS no pinta los fotogramas buscados hasta que el vídeo se ha reproducido una vez.
+      // iOS does not paint seeked frames until the video has played once.
       await clip.play().catch(() => {});
       clip.pause();
       ready[i] = true;

@@ -1,27 +1,27 @@
 ---
 import { getT } from '@/shared/i18n/t';
-import { paseo } from '@/shared/site/nami';
+import { tour } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
 
-// Una parada del paseo. El artículo marca la distancia de scroll; el texto se queda abajo a la izquierda
-// mientras la cámara avanza y sale empujado por la parada siguiente.
+// A tour stop. The article marks the scroll distance; the text stays at the bottom left
+// while the camera advances and gets pushed out by the next stop.
 interface Props {
   index: number;
-  /** Sin eyebrow, la parada lo pone dentro de su propio titular (la entrada lo mete en el h1). */
+  /** Without eyebrow, the stop puts it inside its own headline (the intro puts it in the h1). */
   eyebrow?: string;
   spy?: string;
 }
 
 const { index, eyebrow, spy = '#nikkei' } = Astro.props;
-const parada = paseo.paradas[index];
+const stop = tour.stops[index];
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <article
-  id={parada.id}
+  id={stop.id}
   data-stop
-  data-focus={parada.focus}
+  data-focus={stop.focus}
   data-spy={spy}
   class="stop pointer-events-none flex min-h-[200svh] flex-col justify-end"
 >
@@ -29,9 +29,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
     class="stop-body pointer-events-auto sticky bottom-0 flex w-full max-w-2xl xl:max-w-3xl flex-col items-start px-4 pt-32 pb-12 md:px-12 lg:pb-16 xl:px-20"
   >
     <p class="flex items-center gap-2 text-xs tracking-widest text-crema/60 uppercase">
-      <span class="tabular-nums">{pad(index + 1)} / {pad(paseo.paradas.length)}</span>
+      <span class="tabular-nums">{pad(index + 1)} / {pad(tour.stops.length)}</span>
       <span aria-hidden="true" class="size-1 rounded-full bg-teja"></span>
-      <span>{t(`stop.${parada.id}.place`)}</span>
+      <span>{t(`stop.${stop.id}.place`)}</span>
     </p>
     {eyebrow && <p class="mt-4 text-xs font-medium tracking-widest text-teja uppercase">{eyebrow}</p>}
     <slot />

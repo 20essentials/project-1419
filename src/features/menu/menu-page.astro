@@ -3,19 +3,19 @@ import { Picture } from 'astro:assets';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { links } from '@/shared/site/nami';
 import { formatEuPrice } from '@/shared/site/menu-mapper';
-import { getCartaData } from '@/features/menu/carta-data';
+import { getMenuData } from '@/features/menu/menu-data';
 
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
-const { menu } = await getCartaData(locale);
+const { menu } = await getMenuData(locale);
 ---
 
 <section aria-labelledby="carta-page-title" class="px-4 py-24 md:px-12 xl:px-24">
   <div class="mx-auto max-w-6xl">
     <div class="max-w-xl">
-      <p data-reveal class="text-sm text-teja">{t('carta.eyebrow')}</p>
-      <h1 id="carta-page-title" data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-6xl">{t('carta.title')}</h1>
-      <p data-reveal style="--d:200ms" class="mt-6 text-base text-crema/70 lg:text-lg">{t('carta.pageIntro')}</p>
+      <p data-reveal class="text-sm text-teja">{t('menu.eyebrow')}</p>
+      <h1 id="carta-page-title" data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-6xl">{t('menu.title')}</h1>
+      <p data-reveal style="--d:200ms" class="mt-6 text-base text-crema/70 lg:text-lg">{t('menu.pageIntro')}</p>
     </div>
 
     <div class="mt-16 gap-x-16 lg:columns-2">
@@ -32,11 +32,11 @@ const { menu } = await getCartaData(locale);
                     <span class="font-display tabular-nums text-teja">{formatEuPrice(item.price, locale)}</span>
                   )}
                   {item.description && <p class="col-span-2 text-sm text-crema/60">{item.description}</p>}
-                  {item.fotos.length > 0 && (
+                  {item.photos.length > 0 && (
                     <div class="col-span-2 mt-3 flex -space-x-2">
-                      {item.fotos.map((foto, j) => (
+                      {item.photos.map((photo, j) => (
                         <Picture
-                          src={foto}
+                          src={photo}
                           alt=""
                           aria-hidden="true"
                           formats={['avif', 'webp']}
@@ -58,8 +58,8 @@ const { menu } = await getCartaData(locale);
     </div>
 
     <div class="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-      <p data-reveal class="text-sm text-crema/50">{t('carta.pageNote')}</p>
-      <a data-reveal href={links.reservar} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+      <p data-reveal class="text-sm text-crema/50">{t('menu.pageNote')}</p>
+      <a data-reveal href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
     </div>
   </div>
 </section>

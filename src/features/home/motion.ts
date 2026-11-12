@@ -13,7 +13,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-// Scroll suave sincronizado con ScrollTrigger.
+// Smooth scroll synced with ScrollTrigger.
 if (!reduceMotion) {
   const lenis = new Lenis({ autoRaf: false, anchors: true });
   lenis.on('scroll', ScrollTrigger.update);
@@ -22,7 +22,7 @@ if (!reduceMotion) {
   window.lenis = lenis;
 }
 
-// Entradas al hacer scroll: IntersectionObserver, nunca un listener de scroll.
+// Scroll-in reveals: IntersectionObserver, never a scroll listener.
 const reveal = new IntersectionObserver(
   (entries) => {
     for (const entry of entries) {
@@ -35,11 +35,11 @@ const reveal = new IntersectionObserver(
 );
 document.querySelectorAll('[data-reveal]').forEach((el) => reveal.observe(el));
 
-// Scroll world: el paseo por Nami.
+// Scroll world: the Nami tour.
 const world = document.querySelector<HTMLElement>('[data-world]');
 if (world) initWorld(world, reduceMotion);
 
-// Frase principal: cada palabra pasa del tono apagado al crema, una a una y en orden de lectura.
+// Headline: each word goes from muted to crema, one by one in reading order.
 document.querySelectorAll<HTMLElement>('[data-words]').forEach((block) => {
   const words = [...block.querySelectorAll<HTMLElement>('[data-word]')];
   if (reduceMotion) {
@@ -57,7 +57,7 @@ document.querySelectorAll<HTMLElement>('[data-words]').forEach((block) => {
   });
 });
 
-// Espirales de arena: los surcos se dibujan del centro hacia fuera.
+// Sand spirals: the grooves draw from the center outwards.
 document.querySelectorAll<SVGSVGElement>('[data-spiral-draw]').forEach((svg) => {
   const rings = svg.querySelectorAll('path');
   if (reduceMotion) return;

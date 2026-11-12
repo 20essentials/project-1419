@@ -1,30 +1,30 @@
-import { platos } from './nami';
-import { fotosDeCartaItem, platoFotos } from './platos-fotos';
+import { dishes } from './nami';
+import { photosForMenuItem } from './dish-photos';
 import { getT, type Locale } from '@/shared/i18n/t';
 import type { ImageMetadata } from 'astro';
 import type { WixMenuPayload } from '@/shared/wix/menu-client';
 
-export interface CartaItem {
+export interface MenuItem {
   id: string;
   title: string;
   description: string | null;
   price: number | null;
-  fotos: ImageMetadata[];
+  photos: ImageMetadata[];
 }
 
-export interface CartaSection {
+export interface MenuSection {
   id: string;
   title: string;
   description: string | null;
-  items: CartaItem[];
+  items: MenuItem[];
 }
 
-export interface CartaMenu {
+export interface MenuDataShape {
   title: string;
-  sections: CartaSection[];
+  sections: MenuSection[];
 }
 
-export type CartaSource = 'wix' | 'static';
+export type MenuSource = 'wix' | 'static';
 
 const localeTags: Record<Locale, string> = { en: 'en', es: 'es-ES', it: 'it-IT' };
 
@@ -43,7 +43,7 @@ function parsePrice(price?: string | null): number | null {
   return Number.isFinite(numeric) && numeric >= 0 ? numeric : null;
 }
 
-export function mapWixMenu(payload: WixMenuPayload): CartaMenu {
+export function mapWixMenu(payload: WixMenuPayload): MenuDataShape {
   const itemsById = new Map(payload.items.filter((item) => item._id).map((item) => [item._id as string, item]));
   const sectionsById = new Map(payload.sections.filter((section) => section._id).map((section) => [section._id as string, section]));
 
@@ -62,26 +62,26 @@ export function mapWixMenu(payload: WixMenuPayload): CartaMenu {
           title: item?.name ?? '',
           description: item?.description || null,
           price: parsePrice(item?.priceInfo?.price),
-          fotos: fotosDeCartaItem(item?.name ?? ''),
+          photos: photosForMenuItem(item?.name ?? ''),
         })),
     }));
 
   return { title: payload.menu.name ?? '', sections };
 }
 
-export function staticCarta(locale: Locale): CartaMenu {
+export function staticMenu(locale: Locale): MenuDataShape {
   const t = getT(locale);
   return {
-    title: t('carta.title'),
+    title: t('menu.title'),
     sections: [
       {
         id: 'signature',
-        title: t('carta.eyebrow'),
+        title: t('menu.eyebrow'),
         description: null,
-        items: platos.map((plato) => ({
-          id: plato.id,
-          title: t(`carta.dishes.${plato.id}.name`),
-          description: t(`carta.dishes.${plato.id}.detail`) || null,
+        items: dishes.map((dish) => ({
+          id: dish.id,
+          title: t(`menu.dishes.${dish.id}.name`),
+          description: t(`menu.dishes.${dish.id}.detail`) || null,
           price: null,
         })),
       },

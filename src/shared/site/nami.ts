@@ -1,19 +1,19 @@
-// Todo lo que no se ha podido verificar va marcado como `pending` y solo se ve en desarrollo.
+// Anything not yet verified is marked as `pending` and only shows in development.
 
 import type { ImageMetadata } from 'astro';
-import entrada from '../../assets/photos/0-entrada.webp';
-import lateralEntrada from '../../assets/photos/1-lateral-entrada.webp';
-import mesaEspecial from '../../assets/photos/2-mesa-especial.webp';
-import mesas from '../../assets/photos/3-mesas.webp';
-import barra from '../../assets/photos/4-barra.webp';
-import barraLateral from '../../assets/photos/5-barra-lateral.webp';
-import vinos from '../../assets/photos/6-vinos.webp';
-import poster1 from '../../assets/paseo/paseo-1.webp';
-import poster2 from '../../assets/paseo/paseo-2.webp';
-import poster3 from '../../assets/paseo/paseo-3.webp';
-import poster4 from '../../assets/paseo/paseo-4.webp';
-import poster5 from '../../assets/paseo/paseo-5.webp';
-import poster6 from '../../assets/paseo/paseo-6.webp';
+import entrance from '../../assets/photos/0-entrada.webp';
+import sideEntrance from '../../assets/photos/1-lateral-entrada.webp';
+import specialTable from '../../assets/photos/2-mesa-especial.webp';
+import tables from '../../assets/photos/3-mesas.webp';
+import bar from '../../assets/photos/4-barra.webp';
+import sideBar from '../../assets/photos/5-barra-lateral.webp';
+import wine from '../../assets/photos/6-vinos.webp';
+import tour1 from '../../assets/paseo/paseo-1.webp';
+import tour2 from '../../assets/paseo/paseo-2.webp';
+import tour3 from '../../assets/paseo/paseo-3.webp';
+import tour4 from '../../assets/paseo/paseo-4.webp';
+import tour5 from '../../assets/paseo/paseo-5.webp';
+import tour6 from '../../assets/paseo/paseo-6.webp';
 import bluefinCarpaccio1 from '../../assets/photos/bluefin-carpaccio-01.avif';
 import bluefinCarpaccio2 from '../../assets/photos/bluefin-carpaccio-02.avif';
 import bluefinCarpaccio3 from '../../assets/photos/bluefin-carpaccio-03.avif';
@@ -30,46 +30,46 @@ import lucumaGelato1 from '../../assets/photos/lucuma-gelato-01.avif';
 import lucumaGelato2 from '../../assets/photos/lucuma-gelato-02.avif';
 import lucumaGelato3 from '../../assets/photos/lucuma-gelato-03.avif';
 
-export const photos = { entrada, lateralEntrada, mesaEspecial, mesas, barra, barraLateral, vinos };
+export const photos = { entrance, sideEntrance, specialTable, tables, bar, sideBar, wine };
 
 // ffmpeg -i clip.mp4 -an -vf "scale=1920:-2" -c:v libx264 -preset slow -crf 28 -g 6 -keyint_min 6 -sc_threshold 0 -pix_fmt yuv420p -color_primaries bt709 -color_trc iec61966-2-1 -colorspace bt709 -color_range tv -movflags +faststart+write_colr public/video/paseo-1.mp4
-export type Parada = {
+export type Stop = {
   id: string;
   clip: string;
   focus: number;
   poster: ImageMetadata;
 };
 
-export const paseo: { paradas: Parada[] } = {
-  paradas: [
-    { id: 'inicio', clip: '/video/paseo-1.mp4', focus: 50, poster: poster1 },
-    { id: 'nikkei', clip: '/video/paseo-2.mp4', focus: 50, poster: poster2 },
-    { id: 'precio', clip: '/video/paseo-3.mp4', focus: 50, poster: poster3 },
-    { id: 'producto', clip: '/video/paseo-4.mp4', focus: 50, poster: poster4 },
-    { id: 'shari', clip: '/video/paseo-5.mp4', focus: 50, poster: poster5 },
-    { id: 'como-reservar', clip: '/video/paseo-6.mp4', focus: 50, poster: poster6 },
+export const tour: { stops: Stop[] } = {
+  stops: [
+    { id: 'intro', clip: '/video/paseo-1.mp4', focus: 50, poster: tour1 },
+    { id: 'nikkei', clip: '/video/paseo-2.mp4', focus: 50, poster: tour2 },
+    { id: 'pricing', clip: '/video/paseo-3.mp4', focus: 50, poster: tour3 },
+    { id: 'produce', clip: '/video/paseo-4.mp4', focus: 50, poster: tour4 },
+    { id: 'shari', clip: '/video/paseo-5.mp4', focus: 50, poster: tour5 },
+    { id: 'how-it-works', clip: '/video/paseo-6.mp4', focus: 50, poster: tour6 },
   ],
 };
 
 export const links = {
-  reservar: '/reserve/',
-  regalar: '/regalar/',
-  carta: '/carta/',
+  reserve: '/reserve/',
+  gift: '/gift/',
+  menu: '/menu/',
   maps: 'https://maps.google.com/?q=Passeig+de+Gracia+24+08008+Barcelona',
   instagram: 'https://www.instagram.com/nami.barcelona/',
-  telefono: 'tel:+34931270815',
+  phone: 'tel:+34931270815',
   email: 'mailto:hola@namicrestaurant.com',
 };
 
-export const contacto = {
-  calle: 'Passeig de Gràcia 24',
-  ciudad: '08008 Barcelona',
-  codigoPostal: '08008',
-  localidad: 'Barcelona',
-  barrio: 'Eixample',
+export const contact = {
+  street: 'Passeig de Gràcia 24',
+  city: '08008 Barcelona',
+  postalCode: '08008',
+  locality: 'Barcelona',
+  neighborhood: 'Eixample',
   lat: 41.3922385,
   lon: 2.1636479,
-  telefono: '+34 931 27 08 15',
+  phone: '+34 931 27 08 15',
   email: 'hola@namicrestaurant.com',
   instagram: '@nami.barcelona',
 };
@@ -77,34 +77,34 @@ export const contacto = {
 export type NavItem = { id: string; href: string };
 
 export const nav: NavItem[] = [
-  { id: 'recorrido', href: '#nikkei' },
-  { id: 'carta', href: '#carta' },
-  { id: 'experiencias', href: '#experiencias' },
-  { id: 'preguntas', href: '#preguntas' },
+  { id: 'tour', href: '#nikkei' },
+  { id: 'menu', href: '#menu' },
+  { id: 'experiences', href: '#experiences' },
+  { id: 'questions', href: '#questions' },
 ];
 
 export type LegalPage = { id: string; href: string };
 
 export const legal: LegalPage[] = [
   { id: 'legal-notices', href: '/legal/' },
-  { id: 'privacy', href: '/privacidad/' },
+  { id: 'privacy', href: '/privacy/' },
   { id: 'cookies', href: '/cookies/' },
-  { id: 'purchase-terms', href: '/terminos-compra/' },
+  { id: 'purchase-terms', href: '/purchase-terms/' },
 ];
 
 export type Experience = { id: 'short' | 'full'; price: number; popular?: boolean };
 
-export const experiencias: Experience[] = [
+export const experiences: Experience[] = [
   { id: 'short', price: 150 },
   { id: 'full', price: 250, popular: true },
 ];
 
-export const maridaje = { price: 100 };
+export const pairing = { price: 100 };
 
-export const platos = [
+export const dishes = [
   {
     id: 'bluefin-carpaccio',
-    fotos: [
+    photos: [
       bluefinCarpaccio1,
       bluefinCarpaccio2,
       bluefinCarpaccio3,
@@ -112,23 +112,23 @@ export const platos = [
   },
   {
     id: 'oyster-ponzu',
-    fotos: [oysterPonzu1, oysterPonzu2, oysterPonzu3],
+    photos: [oysterPonzu1, oysterPonzu2, oysterPonzu3],
   },
   {
     id: 'nigiri-selection',
-    fotos: [nigiriSelection1, nigiriSelection2, nigiriSelection3],
+    photos: [nigiriSelection1, nigiriSelection2, nigiriSelection3],
   },
   {
     id: 'wagyu-picanha',
-    fotos: [wagyuPicanha1, wagyuPicanha2, wagyuPicanha3],
+    photos: [wagyuPicanha1, wagyuPicanha2, wagyuPicanha3],
   },
   {
     id: 'lucuma-gelato',
-    fotos: [lucumaGelato1, lucumaGelato2, lucumaGelato3],
+    photos: [lucumaGelato1, lucumaGelato2, lucumaGelato3],
   },
 ] as const;
 
-export const prensa = { medio: 'El Periódico', url: '#' };
+export const press = { outlet: 'El Periódico', url: '#' };
 
 export const faqIds = [
   'what-is-nami',

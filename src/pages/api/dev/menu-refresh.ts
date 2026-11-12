@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
-import { invalidateCartaCache } from '@/features/menu/carta-data';
+import { invalidateMenuCache } from '@/features/menu/menu-data';
 
 export const GET: APIRoute = async () => {
-  invalidateCartaCache();
+  invalidateMenuCache();
   return new Response(JSON.stringify({ ok: true, cache: 'cleared' }), {
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
   });

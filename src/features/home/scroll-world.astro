@@ -3,25 +3,25 @@ import { Picture } from 'astro:assets';
 import Pending from '@/shared/ui/pending.astro';
 import Stop from './stop.astro';
 import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
-import { links, paseo } from '@/shared/site/nami';
+import { links, tour } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
-const { paradas } = paseo;
+const { stops } = tour;
 const body = 'mt-4 max-w-md text-base text-crema/80 lg:text-lg';
 const title = 'mt-4 max-w-xl text-4xl lg:text-5xl xl:text-6xl';
 const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur-md';
 ---
 
-<section id="recorrido" data-world aria-label={t('world.ariaLabel')} class="relative">
-  <!-- Escenario fijo: los clips del paseo ocupan toda la pantalla. Debajo, el primer fotograma de cada clip, con el mismo
-       encuadre, para que el vídeo entre sin que se note el cambio. -->
+<section id="tour" data-world aria-label={t('world.ariaLabel')} class="relative">
+  <!-- Fixed stage: the tour clips fill the screen. Below, the first frame of each clip, framed
+       exactly the same, so the video kicks in without a visible swap. -->
   <div data-stage class="sticky top-0 h-lvh overflow-hidden bg-bg" style="--focus-x: 50%">
     <div aria-hidden="true" class="absolute inset-0">
       {
-        paradas.map((parada, i) => (
+        stops.map((stop, i) => (
           <div data-frame class="frame absolute inset-0" style={i === 0 ? undefined : 'opacity: 0'}>
             <Picture
-              src={parada.poster}
+              src={stop.poster}
               alt=""
               formats={['avif', 'webp']}
               widths={[828, 1280, 1920]}
@@ -38,10 +38,10 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
       }
       <div class="clips absolute inset-0">
         {
-          paradas.map((parada) => (
+          stops.map((stop) => (
             <video
               data-clip
-              data-src={parada.clip}
+              data-src={stop.clip}
               muted
               playsinline
               preload="none"
@@ -55,7 +55,7 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
       </div>
     </div>
 
-    <!-- Velos para leer el texto encima del vídeo. -->
+    <!-- Veils so the text stays readable on top of the video. -->
     <div aria-hidden="true" class="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-bg/60 to-transparent"></div>
     <div
       aria-hidden="true"
@@ -64,18 +64,18 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
     </div>
     <div aria-hidden="true" class="absolute inset-x-0 bottom-0 hidden h-1/2 bg-linear-to-t from-bg/80 to-transparent lg:block"></div>
 
-    <!-- Raíl de paradas. -->
+    <!-- Stops rail. -->
     <nav aria-label={t('rail.stops')} class="absolute top-1/2 right-6 hidden -translate-y-1/2 lg:block xl:right-8">
       <ol class="relative flex flex-col items-end gap-4">
         <span aria-hidden="true" class="absolute top-3 right-1 bottom-3 w-px translate-x-1/2 bg-crema/20">
           <span data-rail-fill class="absolute inset-0 origin-top scale-y-0 bg-teja"></span>
         </span>
         {
-          paradas.map((parada, i) => (
+          stops.map((stop, i) => (
             <li>
-              <a href={`#${parada.id}`} data-goto aria-current={i === 0 ? 'true' : 'false'} class="rail-link group flex h-6 items-center gap-3">
+              <a href={`#${stop.id}`} data-goto aria-current={i === 0 ? 'true' : 'false'} class="rail-link group flex h-6 items-center gap-3">
                 <span class="rail-label rounded-full bg-bg/60 px-3 py-1 text-xs whitespace-nowrap text-crema ring-1 ring-crema/10 backdrop-blur-xl">
-                  {t(`stop.${parada.id}.place`)}
+                  {t(`stop.${stop.id}.place`)}
                 </span>
                 <span class="relative grid size-2 place-items-center">
                   <span class="rail-dot size-2 rounded-full bg-crema/50" />
@@ -97,9 +97,9 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
     </p>
   </div>
 
-  <!-- Paradas: cada una deja su texto abajo a la izquierda mientras el paseo avanza. -->
+  <!-- Stops: each one leaves its text at the bottom left while the tour moves on. -->
   <div class="relative z-10 -mt-[100lvh]">
-    <Stop index={0} spy="#inicio">
+    <Stop index={0} spy="#intro">
       <h1 class="mt-4">
         <span class="block font-sans text-xs font-medium tracking-widest text-teja uppercase">
           {t('hero.kicker')}
@@ -113,7 +113,7 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
       <p class={body}>
         {t('hero.body')}
       </p>
-      <a href={links.reservar} class="btn btn-primary mt-6"><span>{t('common.reserveTable')}</span></a>
+      <a href={links.reserve} class="btn btn-primary mt-6"><span>{t('common.reserveTable')}</span></a>
       <ul class="mt-6 flex flex-wrap gap-2 text-xs text-crema/80" aria-label={t('hero.pillsLabel')}>
         <li class={pill}>{t('hero.pillRice')}</li>
         <li class={pill}>{t('hero.pillAnisakis')}</li>
@@ -148,7 +148,7 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
           <dd class="font-display text-2xl lg:text-4xl">{formatPairing(100)}</dd>
         </div>
       </dl>
-      <a href="#experiencias" class="link mt-6 text-sm">{t('stop.pricing.viewMenus')}</a>
+      <a href="#experiences" class="link mt-6 text-sm">{t('stop.pricing.viewMenus')}</a>
     </Stop>
 
     <Stop index={3} eyebrow={t('stop.produce.eyebrow')}>
@@ -205,7 +205,7 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
         </li>
       </ol>
       <Pending class="mt-4 max-w-md">{t('pending.faqExperiences')}</Pending>
-      <a href={links.reservar} class="btn btn-primary mt-6"><span>{t('common.reserveTable')}</span></a>
+      <a href={links.reserve} class="btn btn-primary mt-6"><span>{t('common.reserveTable')}</span></a>
     </Stop>
   </div>
 </section>
@@ -224,7 +224,7 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
     opacity: 1;
   }
 
-  /* Solo se ve el clip del tramo actual; el cambio entre clips es instantáneo porque comparten fotograma. */
+  /* Only the current segment clip shows; swaps between clips are instant because they share a frame. */
   .clip {
     object-position: var(--focus-x) 50%;
     visibility: hidden;

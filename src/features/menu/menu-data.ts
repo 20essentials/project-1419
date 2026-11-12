@@ -1,21 +1,21 @@
 import type { Locale } from '@/shared/i18n/t';
-import { mapWixMenu, staticCarta, type CartaMenu, type CartaSource } from '@/shared/site/menu-mapper';
+import { mapWixMenu, staticMenu, type MenuDataShape, type MenuSource } from '@/shared/site/menu-mapper';
 import { getWixMenu } from '@/shared/wix/menu-client';
 
-export interface CartaData {
-  source: CartaSource;
-  menu: CartaMenu;
+export interface MenuData {
+  source: MenuSource;
+  menu: MenuDataShape;
 }
 
 const CACHE_TTL_MS = 600_000;
 
-let cache: { data: CartaData; expiresAt: number } | null = null;
+let cache: { data: MenuData; expiresAt: number } | null = null;
 
-export function invalidateCartaCache(): void {
+export function invalidateMenuCache(): void {
   cache = null;
 }
 
-export async function getCartaData(locale: Locale): Promise<CartaData> {
+export async function getMenuData(locale: Locale): Promise<MenuData> {
   if (cache && cache.expiresAt > Date.now()) return cache.data;
   const payload = await getWixMenu();
   if (payload) {
@@ -28,5 +28,5 @@ export async function getCartaData(locale: Locale): Promise<CartaData> {
       return cache.data;
     }
   }
-  return { source: 'static', menu: staticCarta(locale) };
+  return { source: 'static', menu: staticMenu(locale) };
 }

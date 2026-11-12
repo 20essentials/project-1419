@@ -1,30 +1,30 @@
 import type { ImageMetadata } from 'astro';
 
-type FotoConOrden = { foto: ImageMetadata; n: number };
+type OrderedPhoto = { photo: ImageMetadata; n: number };
 
 const modules = import.meta.glob('../../assets/photos/*.avif', { eager: true }) as Record<string, { default: ImageMetadata }>;
 
-const porPlato: Record<string, FotoConOrden[]> = {};
+const byDish: Record<string, OrderedPhoto[]> = {};
 
-for (const [ruta, modulo] of Object.entries(modules)) {
-  const foto = modulo.default;
-  if (!foto) continue;
-  const nombre = ruta.split('/').pop() ?? '';
-  const match = nombre.match(/^([a-z0-9-]+)-(\d{2})\.avif$/);
+for (const [path, module] of Object.entries(modules)) {
+  const photo = module.default;
+  if (!photo) continue;
+  const name = path.split('/').pop() ?? '';
+  const match = name.match(/^([a-z0-9-]+)-(\d{2})\.avif$/);
   if (!match) continue;
-  (porPlato[match[1]] ??= []).push({ foto, n: Number(match[2]) });
+  (byDish[match[1]] ??= []).push({ photo, n: Number(match[2]) });
 }
 
-const fotosPorPlato: Record<string, ImageMetadata[]> = {};
-for (const [slug, fotos] of Object.entries(porPlato)) {
-  fotosPorPlato[slug] = fotos.sort((a, b) => a.n - b.n).map((f) => f.foto);
+const photosByDish: Record<string, ImageMetadata[]> = {};
+for (const [slug, photos] of Object.entries(byDish)) {
+  photosByDish[slug] = photos.sort((a, b) => a.n - b.n).map((f) => f.photo);
 }
 
-export function platoFotos(slug: string): ImageMetadata[] {
-  return fotosPorPlato[slug] ?? [];
+export function dishPhotos(slug: string): ImageMetadata[] {
+  return photosByDish[slug] ?? [];
 }
 
-const slugsPorNombre: Record<string, string> = {
+const slugsByName: Record<string, string> = {
   'Grilled Wagyu picanha': 'wagyu-picanha',
   'Seabass with kombu butter': 'seabass-kombu-butter',
   'Nikkei roll': 'nikkei-roll',
@@ -43,7 +43,7 @@ const slugsPorNombre: Record<string, string> = {
   'Tuna tataki with aji amarillo': 'tuna-tataki',
 };
 
-export function fotosDeCartaItem(title: string): ImageMetadata[] {
-  const slug = slugsPorNombre[title];
-  return slug ? platoFotos(slug) : [];
+export function photosForMenuItem(title: string): ImageMetadata[] {
+  const slug = slugsByName[title];
+  return slug ? dishPhotos(slug) : [];
 }
