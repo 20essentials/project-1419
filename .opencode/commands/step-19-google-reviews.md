@@ -34,6 +34,7 @@ Resolver el pending `press.pending`: "Google reviews: they are not on their webs
 
 ## Notas
 
+- Las URLs de las paginas son SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): AGENTS.md. Los step docs ya ejecutados (01–16) citan slugs viejos en espanol a proposito: no reescribirlos al ejecutar este step.
 - Si no hay datos reales ni decisión, dejar `parket` en el Resultado.
 - Cerrar servidor y liberar puerto al terminar (AGENTS.md).
 

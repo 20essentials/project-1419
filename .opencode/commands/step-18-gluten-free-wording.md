@@ -32,6 +32,7 @@ Resolver el pending `faq.items.gluten-free.pending`: "Validate the allergy wordi
 
 ## Notas
 
+- Las URLs de las paginas son SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): AGENTS.md. Los step docs ya ejecutados (01–16) citan slugs viejos en espanol a proposito: no reescribirlos al ejecutar este step.
 - Si el propietario no responde, dejar documentado como `parket` (no inventar claim médico/legal).
 - Cerrar servidor y liberar puerto al terminar (AGENTS.md).
 

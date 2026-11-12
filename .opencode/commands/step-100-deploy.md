@@ -51,6 +51,7 @@ URL pública real servida por Workers: obtener el subdominio workers.dev (o domi
 
 ## Notas
 
+- Las URLs de las paginas son SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): AGENTS.md. Los step docs ya ejecutados (01–16) citan slugs viejos en espanol a proposito: no reescribirlos al ejecutar este step.
 - Si el dominio propio aún no existe, el deploy igual es válido: los auth redirects de Wix (allow-list del step-02) deben linkear la URL PÚBLICA REAL elegida.
 - Deploy re-pedido tras cada `wix translation pull` (Fase 1) — el deploy es manual durante el proyecto (ROADMAP "Extras futuros": deploy hook opcional).
 - Liberar puerto local al terminar la validación (AGENTS.md).

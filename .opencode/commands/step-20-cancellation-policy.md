@@ -20,7 +20,7 @@ Resolver el pending `pending.faqCancel`: "Can I cancel or change my reservation?
 2. **Publicarla**
    - FAQ: actualizar/crear la respuesta en `faqIds` (3 idiomas, push + pull + seed es/it).
    - Wizard: nota de política en el paso del formulario (`reserve.*`, nueva clave i18n) y enlace al FAQ.
-   - Si la política lo exige, actualizar el copy legal de `/terminos-compra/` (`legal.purchase.*`).
+   - Si la política lo exige, actualizar el copy legal de `/purchase-terms/` (`legal.purchase.*`).
 3. **Cerrar el pending**
    - Quitar `faqCancel` de `pendingFaqs` en `src/shared/site/nami.ts`; borrar la clave `pending.faqCancel` (push + pull).
 4. **Smoke**
@@ -33,6 +33,7 @@ Resolver el pending `pending.faqCancel`: "Can I cancel or change my reservation?
 
 ## Notas
 
+- Las URLs de las paginas son SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): AGENTS.md. Los step docs ya ejecutados (01–16) citan slugs viejos en espanol a proposito: no reescribirlos al ejecutar este step.
 - Sin decisión del propietario → `parket` en el Resultado (no inventar condiciones de cancelación).
 - Cerrar servidor y liberar puerto al terminar (AGENTS.md).
 

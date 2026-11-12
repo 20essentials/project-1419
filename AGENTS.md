@@ -13,6 +13,7 @@
      Verificar con `Get-Process chrome | Where-Object { \$_.MainWindowTitle -ne '' }` que no queda ninguna ventana `about:blank`.
 - Todo archivo dentro de src/ debe ser kebab-case (minsuclas, sin CamelCase, sin _ ni espacios). Los tests viven en su carpeta aparte (src/tests/), no junto a los componentes.
 - Prohibido usar export default, excepto para API routes y los .astro. Usa siempre export nombrado (export const).
+- Las URLs de las paginas seran SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): viven en src/shared/site/nami.ts y no se crean slugs en espanol; la localizacion es solo el prefijo de locale (/es/... /it/...).
 - Screaming architecture (inspirado en project-1415, moderno y sin barrels: nada de index.ts re-exportando; los imports son directos por ruta de archivo, con el alias `@/*`). Las carpetas de src/ gritan lo que hace el negocio, no la tecnologia:
   - `src/app/`: chrome de la app (layout.astro, header, footer, logo, language-switcher)
   - `src/features/`: UNA carpeta por capacidad de negocio (home, menu, experiences, press, faq, gift, final-cta); un feature nunca importa de otro feature
@@ -21,5 +22,5 @@
   - Deprecated: crear carpetas genericas tipo `src/components/`, `src/utils/`, `src/data/`, `src/layouts/`, `src/scripts/`, `src/wix/`, `src/i18n/` (quedan vacias tras el refactor, no reutilizarse)
 
 ## Siguientes pasos
-- La marca del restaurante es Nami (inventada): hay que construir las paginas que apuntan con URLs relativas en src/shared/site/nami.ts y aun no existen: /reservar/, /regalar/, /carta/, /legal/, /privacidad/, /cookies/, /terminos-compra/.
-- El dominio inventado es namicrestaurant.com (email hola@namicrestaurant.com, Instagram @nami.barcelona): registrar dominio y cuentas cuando exista el proyecto real.
+- La marca del restaurante es Nami (inventada): las paginas existen; email hola@namicrestaurant.com, Instagram @nami.barcelona.
+- El dominio inventado es namicrestaurant.com: registrar dominio y cuentas cuando exista el proyecto real (ver step-100).

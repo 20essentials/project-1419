@@ -36,6 +36,7 @@ Resolver el pending `experiences.pending` y su duplicado `pending.faqExperiences
 
 ## Notas
 
+- Las URLs de las paginas son SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): AGENTS.md. Los step docs ya ejecutados (01–16) citan slugs viejos en espanol a proposito: no reescribirlos al ejecutar este step.
 - No pedir al propietario más de una vez: si no responde, dejar la decisión documentada como `parket` en el Resultado y no inventar el flujo.
 - Cerrar servidor y liberar puerto al terminar (AGENTS.md).
 
