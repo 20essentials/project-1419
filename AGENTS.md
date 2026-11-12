@@ -13,6 +13,7 @@
      Verificar con `Get-Process chrome | Where-Object { \$_.MainWindowTitle -ne '' }` que no queda ninguna ventana `about:blank`.
 - Todo archivo dentro de src/ debe ser kebab-case (minsuclas, sin CamelCase, sin _ ni espacios). Los tests viven en su carpeta aparte (src/tests/), no junto a los componentes.
 - Prohibido usar export default, excepto para API routes y los .astro. Usa siempre export nombrado (export const).
+- Tailwind v4 moderno: prohibido el valor arbitrario cuando existe clase canonica (regla suggestCanonicalClasses): `aspect-[9/16]` -> `aspect-9/16`, `z-[60]` -> `z-60`, `w-[640px]` -> `w-160`, `max-w-[680px]` -> `max-w-170` (escala spacing x4px). El valor arbitrario solo queda para lo que no tiene forma canonica: `ease-[cubic-bezier(...)]`, `grid-cols-[1fr_1.6fr]`, `min-h-[200svh]`, `w-[min(140vw,960px)]`.
 - Las URLs de las paginas seran SIEMPRE en ingles (/reserve/, /gift/, /menu/, /privacy/, /cookies/, /purchase-terms/, /legal/): viven en src/shared/site/nami.ts y no se crean slugs en espanol; la localizacion es solo el prefijo de locale (/es/... /it/...).
 - Screaming architecture (inspirado en project-1415, moderno y sin barrels: nada de index.ts re-exportando; los imports son directos por ruta de archivo, con el alias `@/*`). Las carpetas de src/ gritan lo que hace el negocio, no la tecnologia:
   - `src/app/`: chrome de la app (layout.astro, header, footer, logo, language-switcher)
