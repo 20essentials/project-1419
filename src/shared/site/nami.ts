@@ -14,6 +14,21 @@ import poster3 from '../../assets/paseo/paseo-3.webp';
 import poster4 from '../../assets/paseo/paseo-4.webp';
 import poster5 from '../../assets/paseo/paseo-5.webp';
 import poster6 from '../../assets/paseo/paseo-6.webp';
+import bluefinCarpaccio1 from '../../assets/photos/bluefin-carpaccio-01.avif';
+import bluefinCarpaccio2 from '../../assets/photos/bluefin-carpaccio-02.avif';
+import bluefinCarpaccio3 from '../../assets/photos/bluefin-carpaccio-03.avif';
+import oysterPonzu1 from '../../assets/photos/oyster-ponzu-01.avif';
+import oysterPonzu2 from '../../assets/photos/oyster-ponzu-02.avif';
+import oysterPonzu3 from '../../assets/photos/oyster-ponzu-03.avif';
+import nigiriSelection1 from '../../assets/photos/nigiri-selection-01.avif';
+import nigiriSelection2 from '../../assets/photos/nigiri-selection-02.avif';
+import nigiriSelection3 from '../../assets/photos/nigiri-selection-03.avif';
+import wagyuPicanha1 from '../../assets/photos/wagyu-picanha-01.avif';
+import wagyuPicanha2 from '../../assets/photos/wagyu-picanha-02.avif';
+import wagyuPicanha3 from '../../assets/photos/wagyu-picanha-03.avif';
+import lucumaGelato1 from '../../assets/photos/lucuma-gelato-01.avif';
+import lucumaGelato2 from '../../assets/photos/lucuma-gelato-02.avif';
+import lucumaGelato3 from '../../assets/photos/lucuma-gelato-03.avif';
 
 export const photos = { entrada, lateralEntrada, mesaEspecial, mesas, barra, barraLateral, vinos };
 
@@ -87,11 +102,30 @@ export const experiencias: Experience[] = [
 export const maridaje = { price: 100 };
 
 export const platos = [
-  'bluefin-carpaccio',
-  'oyster-ponzu',
-  'nigiri-selection',
-  'wagyu-picanha',
-  'lucuma-gelato',
+  {
+    id: 'bluefin-carpaccio',
+    fotos: [
+      bluefinCarpaccio1,
+      bluefinCarpaccio2,
+      bluefinCarpaccio3,
+    ],
+  },
+  {
+    id: 'oyster-ponzu',
+    fotos: [oysterPonzu1, oysterPonzu2, oysterPonzu3],
+  },
+  {
+    id: 'nigiri-selection',
+    fotos: [nigiriSelection1, nigiriSelection2, nigiriSelection3],
+  },
+  {
+    id: 'wagyu-picanha',
+    fotos: [wagyuPicanha1, wagyuPicanha2, wagyuPicanha3],
+  },
+  {
+    id: 'lucuma-gelato',
+    fotos: [lucumaGelato1, lucumaGelato2, lucumaGelato3],
+  },
 ] as const;
 
 export const prensa = { medio: 'El Periódico', url: '#' };

@@ -1,5 +1,7 @@
 import { platos } from './nami';
+import { fotosDeCartaItem, platoFotos } from './platos-fotos';
 import { getT, type Locale } from '@/shared/i18n/t';
+import type { ImageMetadata } from 'astro';
 import type { WixMenuPayload } from '@/shared/wix/menu-client';
 
 export interface CartaItem {
@@ -7,6 +9,7 @@ export interface CartaItem {
   title: string;
   description: string | null;
   price: number | null;
+  fotos: ImageMetadata[];
 }
 
 export interface CartaSection {
@@ -59,6 +62,7 @@ export function mapWixMenu(payload: WixMenuPayload): CartaMenu {
           title: item?.name ?? '',
           description: item?.description || null,
           price: parsePrice(item?.priceInfo?.price),
+          fotos: fotosDeCartaItem(item?.name ?? ''),
         })),
     }));
 
@@ -74,10 +78,10 @@ export function staticCarta(locale: Locale): CartaMenu {
         id: 'signature',
         title: t('carta.eyebrow'),
         description: null,
-        items: platos.map((id) => ({
-          id,
-          title: t(`carta.dishes.${id}.name`),
-          description: t(`carta.dishes.${id}.detail`) || null,
+        items: platos.map((plato) => ({
+          id: plato.id,
+          title: t(`carta.dishes.${plato.id}.name`),
+          description: t(`carta.dishes.${plato.id}.detail`) || null,
           price: null,
         })),
       },

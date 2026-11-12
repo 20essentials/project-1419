@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { links } from '@/shared/site/nami';
 import { formatEuPrice } from '@/shared/site/menu-mapper';
@@ -31,6 +32,23 @@ const { menu } = await getCartaData(locale);
                     <span class="font-display tabular-nums text-teja">{formatEuPrice(item.price, locale)}</span>
                   )}
                   {item.description && <p class="col-span-2 text-sm text-crema/60">{item.description}</p>}
+                  {item.fotos.length > 0 && (
+                    <div class="col-span-2 mt-3 flex -space-x-2">
+                      {item.fotos.map((foto, j) => (
+                        <Picture
+                          src={foto}
+                          alt=""
+                          aria-hidden="true"
+                          formats={['avif', 'webp']}
+                          widths={[64, 128]}
+                          sizes="40px"
+                          loading="lazy"
+                          decoding="async"
+                          class="mask-oval h-12 w-10 shrink-0 object-cover ring-1 ring-teja/40"
+                        />
+                      ))}
+                    </div>
+                  )}
                 </li>
               ))}
             </ol>

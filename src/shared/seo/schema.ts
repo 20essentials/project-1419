@@ -73,11 +73,11 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
             {
               '@type': 'MenuSection',
               name: t('carta.eyebrow'),
-              hasMenuItem: platos.map((id) => {
-                const detail = t(`carta.dishes.${id}.detail`);
+              hasMenuItem: platos.map((plato) => {
+                const detail = t(`carta.dishes.${plato.id}.detail`);
                 return {
                   '@type': 'MenuItem',
-                  name: t(`carta.dishes.${id}.name`),
+                  name: t(`carta.dishes.${plato.id}.name`),
                   ...(detail ? { description: detail } : {}),
                 };
               }),
