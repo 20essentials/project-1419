@@ -1,6 +1,6 @@
 # build output
 dist/
-
+opencode.json
 # generated types
 .astro/
 ---notes--.txt
