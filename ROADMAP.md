@@ -16,7 +16,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **16** |
 
-**Siguiente:** `step-15-gift-cards-checkout` (Fase 5 — Regalar / pagos)
+**Siguiente:** parket del proyecto (step-100 deploy cuando toque publicar); backlog: dominio namicrestaurant.com, migrar a plan premium para pagos/reservas reales
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -34,7 +34,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 12 · Auth core | ✅ done | `step-12-auth-core.md` | cookies HttpOnly + `/api/auth/*` + renew/logout; allow-list OAuth registrada; roundtrip real verificado |
 | 13 · Custom login pages | ✅ done | `step-13-custom-login-pages.md` | `/login/` `/signup/` email/pass + Google/Facebook; redirect-session para sesión móvil-safe; captcha invisible; 50 claves i18n |
 | 14 · Account + orders | ✅ done | `step-14-account-orders.md` | `/account/` SSR con perfil editable + órdenes `orders.searchOrders` filtradas por memberId; header dinámico con sesión; 32 claves i18n |
-| 15 · Gift cards | ⏳ pending | `step-15-gift-cards-checkout.md` | checkout gift cards (premium requerido) |
+| 15 · Gift cards | ✅ done | `step-15-gift-cards-checkout.md` | producto Gift Cards real (presets 150/250 + custom 50–1000), add-to-cart + checkout hosted con `lang` y post-flow `/account/?orders=1/`; pago real pendiente de premium (Wix Payments) |
 | 100 · Deploy | 🅿️ parket | `step-100-deploy.md` | `wrangler deploy` al querer publicar |
 
 ## Fases
@@ -44,7 +44,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 2 — Reservas (`/reserve/`, Wix Restaurants)**: step-06, step-07, step-08, step-09 → ✅ 4/4
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 3/3
-- **Fase 5 — Regalar / pagos**: step-15 → ⏳ 0/1
+- **Fase 5 — Regalar / pagos**: step-15 → ✅ 1/1 (pago real pendiente de premium, igual que reservas)
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
   - 🅿️ Deploy hook/cron rebuild para `wix translation pull` tras ediciones en dashboard (Riesgo 4)
   - 🅿️ Redirect 301 `/reservar/` → `/reserve/` (el link histórico era español)

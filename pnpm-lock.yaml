@@ -26,6 +26,9 @@ importers:
       '@wix/ecom':
         specifier: 1.0.2648
         version: 1.0.2648(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/gift-vouchers':
+        specifier: 1.0.99
+        version: 1.0.99(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))
       '@wix/members':
         specifier: 1.0.541
         version: 1.0.541
@@ -1604,6 +1607,15 @@ packages:
   '@wix/auto_sdk_ecom_wishlists@1.0.9':
     resolution: {integrity: sha512-Ftwo0w3QmPYZ3BPw1eVICux4CWfnAMDQBX9ud+neK3i46Wazouravrh9m8q83SqAr7TiTsbnRCeBJLzk59w3kQ==}
 
+  '@wix/auto_sdk_gift-vouchers_gift-voucher-products@1.0.39':
+    resolution: {integrity: sha512-1sXhKHPU6xOXSydp7cBiWhHEX2D3qw68EAjnY7elCpG3R4c4TibqQv/pSc1/2phwd6J2yjMOh1UV2pUHOzto+A==}
+
+  '@wix/auto_sdk_gift-vouchers_gift-vouchers@1.0.68':
+    resolution: {integrity: sha512-7bJMinCI49ToJ3vBRggAOA6h2C5g/E6OZv8ledmcQxg8SMrK3jtl/WmzhuvaLgc4TuxXfhFvOLcQau+eIyZ1PA==}
+
+  '@wix/auto_sdk_gift-vouchers_transactions@1.0.11':
+    resolution: {integrity: sha512-3ExS7nEiA6J3mBzQjjcpmMzjmovctv/BDK/VzmYdUB0J4+Q32u+VTV1RXY3itsoKs4dKYB6JlKijFq+PtwUMsA==}
+
   '@wix/auto_sdk_headless-site-assets_scripts@1.0.15':
     resolution: {integrity: sha512-8mPxqiTXJZEX2lnh4MlWMns40oXYrCeATqdMo7dr3A/pfJ8vZz91w0b+j6IJHRmPBQaEzXQI1HOg5oBPkVLmjw==}
 
@@ -1809,11 +1821,24 @@ packages:
   '@wix/essentials@1.0.15':
     resolution: {integrity: sha512-UpQ9hbH1BHurisssTA1l6+MTeAGZH/bBK+Nzk+Jh9dVlcEptY92CqdeGQirS19aLU3ylHUGnWcvVkTc4pxqs2Q==}
 
+  '@wix/gift-vouchers@1.0.99':
+    resolution: {integrity: sha512-sFoUocAZJ0c2tnKDDjGclLXxpib5fGD0dRv7nQ3KpRFxEj5Ft4qirq/RWEmmwwL0KUT6G+UmWBR8aEIiOYi2tQ==}
+
   '@wix/headless-components@0.0.36':
     resolution: {integrity: sha512-PKq1vsXKdSUf/sIpPkQHgfqATkO/e67PgkKtcS3p4MZYQo7IRatY0KE3JaYzy92XStptJtOWEP/iBpXCYQOtNw==}
 
   '@wix/headless-ecom@0.0.41':
     resolution: {integrity: sha512-YYZZtCLvY+2vcS0FxSJuuro8aWF8jnINHQRafxYwkZXQNvPMbewKpx1MF97/UiSaGyeSCJyZZoOTdSldEo7Vtw==}
+    peerDependencies:
+      '@wix/headless-components': ^0.0.0
+
+  '@wix/headless-ecom@0.0.45':
+    resolution: {integrity: sha512-CRbvUajeMijIitfPMCgOEPLJtBe8ry5ePD4PF9wTiUjFrHR+Ybz0u8wd9zomnH910zLFWdBcfIBqxFboBIP8aw==}
+    peerDependencies:
+      '@wix/headless-components': ^0.0.0
+
+  '@wix/headless-gift-voucher@0.0.11':
+    resolution: {integrity: sha512-1bJ3jBLZbNW/f4AhKkEyc6mKKuuwR1jX67aHRU2LIzWuO32qJP5z7NzNrU7B3g6xKliZnD5Q2+zG0dvJCbWIWQ==}
     peerDependencies:
       '@wix/headless-components': ^0.0.0
 
@@ -1825,6 +1850,9 @@ packages:
 
   '@wix/headless-media@0.0.21':
     resolution: {integrity: sha512-7o9ctPfQsQwfLwLCjs4RDO9Ns900Hv+BNVc301tShulKeitxgMKTrFqUxCsCuSQqqgQYaOhm5hDB+994LtBozg==}
+
+  '@wix/headless-media@0.0.25':
+    resolution: {integrity: sha512-qxS7892M8cr2y6Pata1laHmQDCXeF5SAepB2csxTvCk/bYzFsp7gJOTYwjVqKnZP2O28RW/JO8F00nkKwP1/NA==}
 
   '@wix/headless-node@1.46.0':
     resolution: {integrity: sha512-SYsspXxhal2FDskyDJV4njl9vvXB+W/IUzIbqZIG2xWkWMNRvgxa3Wep0hRyOvZiuaJjwLQnEr7ZPNigeRixig==}
@@ -1844,6 +1872,11 @@ packages:
 
   '@wix/headless-site-assets@1.0.15':
     resolution: {integrity: sha512-FT42DdCKtISz4UutVKPNI15dAYwNMmLyQQ8hqO0OcWIQHnrSgI1vjCQz0gIvB0TX5m/hJGPGh2qRmfMSr11/dg==}
+
+  '@wix/headless-utils@0.0.12':
+    resolution: {integrity: sha512-CY5L2/KftFNvoCBzx68MJ2lhSlkjNNBrTXDAhg/fom5PORCruJAoRit4HuIK4u19pUWXkp7QLrhiQKapf1wucg==}
+    peerDependencies:
+      react: '>=16.3.0'
 
   '@wix/headless-utils@0.0.8':
     resolution: {integrity: sha512-BcLXiNXc4p5O9PRbfqk/3C9OIELjelB0C3qkYQu9oQDa8QZtQ06/ZRHAviM+DD7+jOgAw1larc+58Zq/54xBKw==}
@@ -4786,6 +4819,21 @@ snapshots:
       '@wix/sdk-runtime': 1.0.31
       '@wix/sdk-types': 1.17.12
 
+  '@wix/auto_sdk_gift-vouchers_gift-voucher-products@1.0.39':
+    dependencies:
+      '@wix/sdk-runtime': 1.0.31
+      '@wix/sdk-types': 1.17.12
+
+  '@wix/auto_sdk_gift-vouchers_gift-vouchers@1.0.68':
+    dependencies:
+      '@wix/sdk-runtime': 1.0.31
+      '@wix/sdk-types': 1.17.12
+
+  '@wix/auto_sdk_gift-vouchers_transactions@1.0.11':
+    dependencies:
+      '@wix/sdk-runtime': 1.0.31
+      '@wix/sdk-types': 1.17.12
+
   '@wix/auto_sdk_headless-site-assets_scripts@1.0.15':
     dependencies:
       '@wix/sdk-runtime': 1.0.31
@@ -5203,6 +5251,23 @@ snapshots:
       - react-native
       - typescript
 
+  '@wix/gift-vouchers@1.0.99(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))':
+    dependencies:
+      '@wix/auto_sdk_gift-vouchers_gift-voucher-products': 1.0.39
+      '@wix/auto_sdk_gift-vouchers_gift-vouchers': 1.0.68
+      '@wix/auto_sdk_gift-vouchers_transactions': 1.0.11
+      '@wix/headless-gift-voucher': 0.0.11(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@wix/fe-essentials'
+      - '@wix/headless-components'
+      - '@wix/services-manager'
+      - react
+      - react-dom
+      - react-native
+      - typescript
+      - use-sync-external-store
+
   '@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)':
     dependencies:
       '@radix-ui/react-select': 2.4.1(react-dom@18.3.1(react@19.3.1))(react@19.3.1)
@@ -5238,6 +5303,47 @@ snapshots:
       - react-dom
       - use-sync-external-store
 
+  '@wix/headless-ecom@0.0.45(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))':
+    dependencies:
+      '@radix-ui/react-slot': 1.5.0(react@19.3.1)
+      '@wix/auto_sdk_ecom_checkout': 1.0.185
+      '@wix/auto_sdk_ecom_current-cart': 1.0.202
+      '@wix/headless-components': 0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)
+      '@wix/headless-media': 0.0.25(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/redirects': 1.0.133
+      '@wix/sdk': 1.21.18
+      '@wix/services-definitions': 1.0.5
+      '@wix/services-manager-react': 1.0.8(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@wix/services-manager'
+      - react
+      - react-dom
+      - use-sync-external-store
+
+  '@wix/headless-gift-voucher@0.0.11(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))':
+    dependencies:
+      '@wix/auto_sdk_ecom_checkout': 1.0.185
+      '@wix/auto_sdk_gift-vouchers_gift-voucher-products': 1.0.39
+      '@wix/ecom': 1.0.2648(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/essentials': 1.0.15(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)
+      '@wix/gift-vouchers': 1.0.99(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/headless-components': 0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)
+      '@wix/headless-ecom': 0.0.45(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/headless-media': 0.0.25(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+      '@wix/headless-utils': 0.0.12(react@19.3.1)
+      '@wix/services-definitions': 1.0.5
+      '@wix/services-manager-react': 1.0.8(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+    transitivePeerDependencies:
+      - '@types/react'
+      - '@wix/fe-essentials'
+      - '@wix/services-manager'
+      - react
+      - react-dom
+      - react-native
+      - typescript
+      - use-sync-external-store
+
   '@wix/headless-localization-utils@1.0.15':
     dependencies:
       '@wix/headless-node': 1.46.0
@@ -5265,11 +5371,22 @@ snapshots:
       - react-dom
       - use-sync-external-store
 
+  '@wix/headless-media@0.0.25(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))':
+    dependencies:
+      '@wix/sdk': 1.21.18
+      '@wix/services-definitions': 1.0.5
+      '@wix/services-manager-react': 1.0.8(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(use-sync-external-store@1.7.0(react@19.3.1))
+    transitivePeerDependencies:
+      - '@wix/services-manager'
+      - react
+      - react-dom
+      - use-sync-external-store
+
   '@wix/headless-node@1.46.0':
     dependencies:
       '@babel/runtime': 7.29.13
       '@wix/monitoring-velo': 1.36.0
-      '@wix/sdk-runtime': 1.0.25
+      '@wix/sdk-runtime': 1.0.31
 
   '@wix/headless-restaurants-menus@0.0.24(@wix/headless-components@0.0.36(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3))(@wix/services-manager@1.0.7)(react-dom@18.3.1(react@19.3.1))(react@19.3.1)(typescript@5.9.3)(use-sync-external-store@1.7.0(react@19.3.1))':
     dependencies:
@@ -5348,6 +5465,13 @@ snapshots:
   '@wix/headless-site-assets@1.0.15':
     dependencies:
       '@wix/auto_sdk_headless-site-assets_scripts': 1.0.15
+
+  '@wix/headless-utils@0.0.12(react@19.3.1)':
+    dependencies:
+      '@radix-ui/react-slot': 1.5.0(react@19.3.1)
+      react: 19.3.1
+    transitivePeerDependencies:
+      - '@types/react'
 
   '@wix/headless-utils@0.0.8(react@19.3.1)':
     dependencies:

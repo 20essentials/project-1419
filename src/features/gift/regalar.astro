@@ -1,30 +1,51 @@
 ---
-import { Picture } from 'astro:assets';
 import Icon from '@/shared/ui/icon.astro';
+import { Picture } from 'astro:assets';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
 import { formatEuPrice } from '@/shared/site/menu-mapper';
 import { contacto, experiencias, photos } from '@/shared/site/nami';
+import { GIFT_CUSTOM_FALLBACK, type GiftProduct } from './gift-product';
 
+interface Props {
+  product: GiftProduct | null;
+}
+
+const { product } = Astro.props;
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const termsHref = localizedPathname('/terminos-compra/', locale);
 const emailHref = `mailto:${contacto.email}?subject=${encodeURIComponent(t('gift.landing.emailSubject'))}`;
 
-const options = [
-  ...experiencias.map((exp) => ({
-    id: exp.id,
-    name: t(`experiences.${exp.id}.name`),
-    body: t(`experiences.${exp.id}.description`),
-    price: formatEuPrice(exp.price, locale),
-  })),
-  {
-    id: 'custom',
-    name: t('gift.landing.custom.name'),
-    body: t('gift.landing.custom.body'),
-    price: t('gift.landing.custom.price'),
-  },
-];
+const experienceById = new Map(experiencias.map((exp) => [exp.id, exp]));
+
+const presetCards = product
+  ? product.presets.map((preset) => ({
+      kind: 'preset' as const,
+      value: `preset:${preset.id}`,
+      price: preset.price,
+      expId: experienceById.get(experiencias.find((exp) => exp.price === preset.price)?.id ?? '')?.id,
+    }))
+  : experiencias.map((exp) => ({
+      kind: 'static' as const,
+      value: `preset:${exp.id}`,
+      price: exp.price,
+      expId: exp.id,
+    }));
+
+const custom = product?.customMin && product.customMax
+  ? { min: product.customMin, max: product.customMax }
+  : { min: GIFT_CUSTOM_FALLBACK.min, max: GIFT_CUSTOM_FALLBACK.max };
+
+const canBuy = Boolean(product);
+const errorMessages: Record<string, string> = {
+  generic: t('gift.landing.buy.error'),
+  INVALID_INPUT: t('gift.landing.buy.invalid', { min: formatEuPrice(custom.min, locale), max: formatEuPrice(custom.max, locale) }),
+  PRODUCT_UNAVAILABLE: t('gift.landing.buy.unavailable'),
+  CHECKOUT_UNAVAILABLE: t('gift.landing.buy.unavailable'),
+  PREMIUM_ONLY: t('gift.landing.buy.premium'),
+};
+const messagesPayload = JSON.stringify(errorMessages).replaceAll('<', '\\u003c');
 ---
 
 <section class="px-4 pt-36 pb-16 md:px-12 xl:px-24">
@@ -36,13 +57,24 @@ const options = [
         {t('gift.landing.intro')}
       </p>
       <p data-reveal style="--d:250ms" class="mt-4 text-sm text-crema/50">{t('gift.landing.validity')}</p>
-      <div data-reveal style="--d:300ms" class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
-        <a href={emailHref} class="btn btn-primary">
-          <Icon name="gift" class="size-5" />
-          <span>{t('gift.landing.cta')}</span>
-        </a>
-        <a href={termsHref} class="link text-sm">{t('gift.landing.terms')}</a>
-      </div>
+      {
+        !canBuy && (
+          <div data-reveal style="--d:300ms" class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <a href={emailHref} class="btn btn-primary">
+              <Icon name="gift" class="size-5" />
+              <span>{t('gift.landing.cta')}</span>
+            </a>
+            <a href={termsHref} class="link text-sm">{t('gift.landing.terms')}</a>
+          </div>
+        )
+      }
+      {
+        canBuy && (
+          <div data-reveal style="--d:300ms" class="mt-8">
+            <a href={termsHref} class="link text-sm">{t('gift.landing.terms')}</a>
+          </div>
+        )
+      }
       <p data-reveal style="--d:350ms" class="mt-4 max-w-md text-sm text-crema/50">{t('gift.landing.note')}</p>
     </div>
     <div data-reveal style="--d:150ms" class="mirror-frame mask-mirror mx-auto w-full max-w-sm">
@@ -61,22 +93,72 @@ const options = [
   </div>
 </section>
 
-<section aria-labelledby="gift-options-title" class="px-4 py-16 md:px-12 xl:px-24">
-  <div class="mx-auto max-w-6xl">
-    <h2 id="gift-options-title" data-reveal class="text-3xl lg:text-5xl">{t('gift.landing.optionsTitle')}</h2>
-    <div class="mt-10 grid gap-6 md:grid-cols-3">
-      {
-        options.map((option, i) => (
-          <article data-reveal style={`--d:${i * 100}ms`} class="flex flex-col rounded-3xl p-6 ring-1 ring-crema/15 lg:p-8">
-            <h3 class="text-2xl">{option.name}</h3>
-            <p class="mt-2 text-base text-crema/70">{option.body}</p>
-            <p class="mt-8 font-display text-4xl">{option.price}</p>
-          </article>
-        ))
-      }
-    </div>
-  </div>
-</section>
+{
+  canBuy && (
+    <section aria-labelledby="gift-options-title" class="px-4 py-16 md:px-12 xl:px-24" data-gift data-locale={locale} data-pending-label={t('gift.landing.buy.pending')}>
+      <div class="mx-auto max-w-6xl">
+        <h2 id="gift-options-title" data-reveal class="text-3xl lg:text-5xl">{t('gift.landing.optionsTitle')}</h2>
+        <script type="application/json" is:inline set:html={messagesPayload} data-gift-messages />
+        <form data-gift-form novalidate class="mt-10">
+          <div class="grid gap-6 md:grid-cols-3" role="radiogroup" aria-label={t('gift.landing.optionsTitle')}>
+            {presetCards.map((card, i) => (
+              <label
+                data-reveal
+                style={`--d:${i * 100}ms`}
+                class="flex cursor-pointer flex-col rounded-3xl p-6 ring-1 ring-crema/15 transition has-checked:ring-teja lg:p-8"
+              >
+                <input class="sr-only" type="radio" name="gift-variant" value={card.value} required />
+                <h3 class="text-2xl">
+                  {card.expId ? t(`experiences.${card.expId}.name`) : t('gift.landing.preset.title')}
+                </h3>
+                <p class="mt-2 text-base text-crema/70">
+                  {card.expId ? t(`experiences.${card.expId}.description`) : t('gift.landing.preset.body')}
+                </p>
+                <p class="mt-8 font-display text-4xl">{formatEuPrice(card.price, locale)}</p>
+              </label>
+            ))}
+            <label
+              data-reveal
+              style={`--d:${presetCards.length * 100}ms`}
+              class="flex cursor-pointer flex-col rounded-3xl p-6 ring-1 ring-crema/15 transition has-checked:ring-teja lg:p-8"
+            >
+              <input class="sr-only" type="radio" name="gift-variant" value="custom" required />
+              <h3 class="text-2xl">{t('gift.landing.custom.name')}</h3>
+              <p class="mt-2 text-base text-crema/70">{t('gift.landing.custom.body')}</p>
+              <p class="mt-2 text-sm text-crema/50">
+                {t('gift.landing.custom.range', { min: formatEuPrice(custom.min, locale), max: formatEuPrice(custom.max, locale) })}
+              </p>
+              <div class="mt-8" hidden data-gift-amount-wrap>
+                <label class="block text-sm text-crema/70" for="gift-amount">{t('gift.landing.custom.amount')}</label>
+                <input
+                  id="gift-amount"
+                  data-gift-amount
+                  class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none focus:ring-teja"
+                  type="number"
+                  inputmode="numeric"
+                  min={custom.min}
+                  max={custom.max}
+                  step="1"
+                  placeholder={t('gift.landing.custom.placeholder')}
+                />
+              </div>
+              <p class="mt-8 font-display text-4xl">{t('gift.landing.custom.price')}</p>
+            </label>
+          </div>
+          <div data-reveal class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-4">
+            <button type="submit" class="btn btn-primary" data-gift-submit>
+              <Icon name="gift" class="size-5" />
+              <span data-gift-label>{t('gift.landing.cta')}</span>
+            </button>
+            <a href={emailHref} class="link text-sm">{t('gift.landing.contact')}</a>
+          </div>
+          <p data-gift-error hidden role="alert" class="mt-6 max-w-md text-sm text-teja"></p>
+          <p class="sr-only" aria-live="polite" data-gift-live></p>
+        </form>
+      </div>
+    </section>
+  )
+}
 
 <section aria-labelledby="gift-how-title" class="px-4 py-16 md:px-12 xl:px-24">
   <div class="mx-auto max-w-6xl">
@@ -94,3 +176,7 @@ const options = [
     </ol>
   </div>
 </section>
+
+<script>
+  import '@/features/gift/gift-client';
+</script>

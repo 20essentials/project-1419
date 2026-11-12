@@ -1,18 +1,20 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from '@/app/layout.astro';
 import Regalar from '@/features/gift/regalar.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { giftStructuredData } from '@/features/gift/gift-schema';
+import { getGiftProduct } from '@/features/gift/gift-product';
 
 const t = getT(Astro.currentLocale);
 const site = Astro.site;
 if (!site) throw new Error('Falta site en astro.config.mjs');
 const jsonLd = JSON.stringify(giftStructuredData(site, Astro.currentLocale as Locale)).replaceAll('<', '\\u003c');
+const product = await getGiftProduct();
 ---
 
 <Layout title={t('seo.regalar.title')} description={t('seo.regalar.description')}>
   <script slot="head" type="application/ld+json" set:html={jsonLd} />
-  <Regalar />
+  <Regalar product={product} />
 </Layout>
