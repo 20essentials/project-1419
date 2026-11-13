@@ -10,6 +10,7 @@ const slotsNoOpen = JSON.parse(readFileSync(join(here, 'fixtures', 'reserve-slot
 type SetupPayload = {
   window: string;
   slotsEmpty: string;
+  experience: { title: string; table: string; short: string; full: string };
   errors: Record<string, string>;
   form: { required: string; email: string; phone: string; summary: string };
   done: { reservedTitle: string; requestedTitle: string; reservedBody: string; requestedBody: string };
@@ -19,6 +20,7 @@ type PostBody = {
   date: string;
   time: string;
   partySize: number;
+  experienceId?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -240,6 +242,94 @@ test.describe('wizard /reserve/ (API mocked)', () => {
     await page.locator('[data-submit]').click();
     await expect(page.locator('[data-state="done"]')).toBeVisible();
     await expect(page.locator('[data-done-ref]')).toHaveText('res-e2e-mobile');
+  });
+
+  test('experiencias: query param preselecciona y POST y slots llevan experienceId', async ({ page }) => {
+    const sent: PostBody[] = [];
+    const slotQueries: string[] = [];
+    void page.route(SLOTS_RE, (route: Route) => {
+      slotQueries.push(route.request().url());
+      return fulfill(route, 200, slotsAvailable);
+    });
+    mockPost(page, 200, (body) => {
+      sent.push(body);
+      return {
+        reservation: {
+          id: 'res-e2e-exp',
+          status: 'RESERVED',
+          localStart: `${body.date}T${body.time}:00`,
+          partySize: body.partySize,
+          experienceId: body.experienceId,
+        },
+      };
+    });
+    const data = await (async () => {
+      await page.goto('/reserve/?experience=full');
+      await expect(page.locator('[data-state="wizard"]')).toBeVisible();
+      return payloadOf(page);
+    })();
+    await expect(page.locator('[data-experience-group]')).toBeVisible();
+    const pills = page.locator('[data-experiences] button');
+    await expect(pills).toHaveCount(3);
+    await expect(pills.nth(0)).toHaveText(data.experience.table);
+    await expect(pills.nth(2)).toHaveText(data.experience.full);
+    await expect(pills.nth(2)).toHaveAttribute('aria-pressed', 'true');
+    await pickParty(page, 2);
+    await pickDay(page, 2);
+    await pickTime(page, '19:00');
+    await expect(page.locator('[data-summary]')).toContainText(data.experience.full);
+    await fillGuest(page);
+    await page.locator('[data-submit]').click();
+    await expect(page.locator('[data-state="done"]')).toBeVisible();
+    expect(sent[0].experienceId).toBe('exp-full-02');
+    const slotsUrl = new URL(slotQueries[0]);
+    expect(slotsUrl.searchParams.get('experienceId')).toBe('exp-full-02');
+  });
+
+  test('experiencias: pill de solo mesa deselecciona y el POST no lleva experienceId', async ({ page }) => {
+    const sent: PostBody[] = [];
+    mockPost(page, 200, (body) => {
+      sent.push(body);
+      return {
+        reservation: { id: 'res-e2e-table', status: 'RESERVED', localStart: `${body.date}T${body.time}:00`, partySize: body.partySize },
+      };
+    });
+    await page.goto('/reserve/?experience=short');
+    await expect(page.locator('[data-state="wizard"]')).toBeVisible();
+    const pills = page.locator('[data-experiences] button');
+    await expect(pills.nth(1)).toHaveAttribute('aria-pressed', 'true');
+    await pills.nth(0).click();
+    await expect(pills.nth(0)).toHaveAttribute('aria-pressed', 'true');
+    await pickParty(page, 2);
+    await pickDay(page, 2);
+    await pickTime(page, '19:00');
+    await fillGuest(page);
+    await page.locator('[data-submit]').click();
+    await expect(page.locator('[data-state="done"]')).toBeVisible();
+    expect(sent[0].experienceId).toBeUndefined();
+  });
+
+  test('experiencias: query param desconocido cae en solo mesa', async ({ page }) => {
+    await page.goto('/reserve/?experience=unknown');
+    await expect(page.locator('[data-state="wizard"]')).toBeVisible();
+    const pills = page.locator('[data-experiences] button');
+    await expect(pills.nth(0)).toHaveAttribute('aria-pressed', 'true');
+    await expect(pills.nth(1)).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  test('experiencias: setup sin experiencias oculta el bloque y el flujo sigue', async ({ page }) => {
+    void page.route(SETUP_RE, (route: Route) => fulfill(route, 200, { ...setupMock, experiences: [] }));
+    mockPost(page, 200, (body) => ({
+      reservation: { id: 'res-e2e-noexp', status: 'RESERVED', localStart: `${body.date}T${body.time}:00`, partySize: body.partySize },
+    }));
+    await openWizard(page);
+    await expect(page.locator('[data-experience-group]')).toBeHidden();
+    await pickParty(page, 2);
+    await pickDay(page, 2);
+    await pickTime(page, '19:00');
+    await fillGuest(page);
+    await page.locator('[data-submit]').click();
+    await expect(page.locator('[data-state="done"]')).toBeVisible();
   });
 });
 

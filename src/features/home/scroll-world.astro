@@ -1,6 +1,5 @@
 ---
 import { Picture } from 'astro:assets';
-import Pending from '@/shared/ui/pending.astro';
 import Stop from './stop.astro';
 import { getT, formatPrice, formatPairing } from '@/shared/i18n/t';
 import { links, tour } from '@/shared/site/nami';
@@ -204,7 +203,6 @@ const pill = 'rounded-full bg-bg/40 px-3 py-1 ring-1 ring-crema/20 backdrop-blur
           </div>
         </li>
       </ol>
-      <Pending class="mt-4 max-w-md">{t('pending.faqExperiences')}</Pending>
       <a href={links.reserve} class="btn btn-primary mt-6"><span>{t('common.reserveTable')}</span></a>
     </Stop>
   </div>

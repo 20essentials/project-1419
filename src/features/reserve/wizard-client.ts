@@ -1,5 +1,13 @@
 type Slot = { time: string; available: boolean };
 
+type ReserveExperience = {
+  id: string;
+  slug: string | null;
+  name: string;
+  labelKey: string;
+  partySize?: { min: number; max: number } | null;
+};
+
 type Setup = {
   timeZone: string;
   onlineReservationsEnabled: boolean;
@@ -7,6 +15,7 @@ type Setup = {
   timeSlotInterval?: number;
   advanceWindowDays?: number;
   schedule?: { openDay: string; closeDay?: string }[];
+  experiences?: ReserveExperience[];
 };
 
 type Reservation = {
@@ -27,6 +36,7 @@ type Data = {
   slotsEmpty: string;
   retry: string;
   guests: string;
+  experience: { title: string; table: string; short: string; full: string };
   errors: Record<string, string>;
   form: { required: string; email: string; phone: string; summary: string };
   done: {
@@ -74,6 +84,8 @@ if (wizard && payloadBox && payloadBox.textContent) {
     steps: wizard.querySelectorAll<HTMLElement>('[data-step]'),
     panels: [...wizard.querySelectorAll<HTMLElement>('[data-panel]')],
     party: wizard.querySelector<HTMLElement>('[data-party]')!,
+    experienceGroup: wizard.querySelector<HTMLElement>('[data-experience-group]')!,
+    experiences: wizard.querySelector<HTMLElement>('[data-experiences]')!,
     calendar: wizard.querySelector<HTMLElement>('[data-calendar]')!,
     monthEl: wizard.querySelector<HTMLElement>('[data-month]')!,
     monthPrev: wizard.querySelector<HTMLButtonElement>('[data-month-prev]')!,
@@ -103,7 +115,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
     }
   });
 
-  const state = { party: 0, date: '', time: '' };
+  const state = { party: 0, date: '', time: '', experience: null as ReserveExperience | null };
   let setup: Setup;
   let openWeekdays = new Set<string>();
   let today = '';
@@ -187,6 +199,75 @@ if (wizard && payloadBox && payloadBox.textContent) {
       r.party.append(button);
     }
     paintParty();
+  };
+
+  const experienceKey = (experience: ReserveExperience) => experience.slug ?? experience.labelKey.split('.').pop() ?? '';
+
+  const experienceLabel = (experience: ReserveExperience) => {
+    const known = data.experience as Record<string, string>;
+    const label = known[experienceKey(experience)];
+    return (label && typeof label === 'string' ? label : experience.name) || data.experience.table;
+  };
+
+  const requestedExperience = () => {
+    const param = new URLSearchParams(location.search).get('experience') ?? '';
+    if (!param) return null;
+    return (
+      (setup.experiences ?? []).find(
+        (experience) =>
+          experience.id === param ||
+          experience.slug === param ||
+          (experience.labelKey !== '' && experience.labelKey.endsWith(`.${param}`)),
+      ) ?? null
+    );
+  };
+
+  const paintExperience = () => {
+    r.experiences.querySelectorAll<HTMLButtonElement>('button[data-experience]').forEach((button) => {
+      const active = button.dataset.experience === (state.experience?.id ?? '');
+      button.setAttribute('aria-pressed', String(active));
+      setPillVariant(button, active ? PILL_ON : PILL_OFF);
+    });
+  };
+
+  const renderExperience = () => {
+    const list = setup.experiences ?? [];
+    r.experienceGroup.hidden = list.length === 0;
+    const table = document.createElement('button');
+    table.type = 'button';
+    table.dataset.experience = '';
+    table.textContent = data.experience.table;
+    table.className = `${PILL} ${PILL_OFF}`;
+    table.addEventListener('click', () => {
+      if (state.experience) {
+        state.experience = null;
+        state.time = '';
+      }
+      paintExperience();
+    });
+    r.experiences.append(table);
+    list.forEach((experience) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.experience = experience.id;
+      button.textContent = experienceLabel(experience);
+      button.className = `${PILL} ${PILL_OFF}`;
+      button.addEventListener('click', () => {
+        if (state.experience?.id !== experience.id) {
+          state.experience = experience;
+          state.time = '';
+          const { min = 1, max = 8 } = experience.partySize ?? {};
+          if (state.party !== 0 && (state.party < min || state.party > max)) {
+            state.party = 0;
+            state.time = '';
+            paintParty();
+          }
+        }
+        paintExperience();
+      });
+      r.experiences.append(button);
+    });
+    paintExperience();
   };
 
   const paintDate = () => {
@@ -301,7 +382,11 @@ if (wizard && payloadBox && payloadBox.textContent) {
     const next = nextButtons.get(3);
     if (next) next.disabled = true;
     try {
-      const query = new URLSearchParams({ date: state.date, partySize: String(state.party) });
+      const query = new URLSearchParams({
+        date: state.date,
+        partySize: String(state.party),
+        ...(state.experience ? { experienceId: state.experience.id } : {}),
+      });
       const response = await fetch(`/api/reserve/slots?${query}`);
       const body = (await response.json().catch(() => null)) as { slots?: Slot[]; error?: string } | null;
       if (token !== slotsToken) return;
@@ -334,7 +419,8 @@ if (wizard && payloadBox && payloadBox.textContent) {
 
   const summary = () => {
     const when = fmtDay.format(new Date(`${state.date}T12:00:00Z`));
-    r.summary.textContent = `${when} · ${state.time} · ${guestCount(state.party)}`;
+    const type = state.experience ? ` · ${experienceLabel(state.experience)}` : '';
+    r.summary.textContent = `${when} · ${state.time} · ${guestCount(state.party)}${type}`;
   };
 
   const fieldError = (name: string, message?: string) => {
@@ -374,6 +460,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
       date: state.date,
       time: state.time,
       partySize: state.party,
+      ...(state.experience ? { experienceId: state.experience.id } : {}),
       firstName,
       lastName,
       email,
@@ -498,7 +585,9 @@ if (wizard && payloadBox && payloadBox.textContent) {
       setState('fatal');
       return;
     }
+    state.experience = requestedExperience();
     renderParty();
+    renderExperience();
     renderMonth();
     setState('wizard');
     goStep(1);

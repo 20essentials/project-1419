@@ -21,6 +21,12 @@ const payload = JSON.stringify({
   slotsEmpty: t('reserve.slotsEmpty'),
   retry: t('reserve.retry'),
   guests: t('reserve.confirm.guests'),
+  experience: {
+    title: t('reserve.experience.title'),
+    table: t('reserve.experience.table'),
+    short: t('experiences.short.name'),
+    full: t('experiences.full.name'),
+  },
   errors: {
     NO_AVAILABILITY: t('reserve.errors.noAvailability'),
     INVALID_INPUT: t('reserve.errors.invalid'),
@@ -128,6 +134,10 @@ const pulse = [
         <section data-panel="1" hidden>
           <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.people.title')}</h2>
           <div data-party class="mt-8 flex flex-wrap justify-center gap-3"></div>
+          <div class="mt-8" data-experience-group>
+            <p class="text-sm text-crema/50">{t('reserve.experience.title')}</p>
+            <div data-experiences class="mt-4 flex flex-wrap justify-center gap-3" aria-live="polite"></div>
+          </div>
           <p data-panel-error hidden class="mt-6 text-center text-sm text-teja"></p>
           <div class="mt-10 flex items-center justify-between gap-4">
             <span aria-hidden="true" class="block h-10"></span>

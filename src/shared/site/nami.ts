@@ -134,6 +134,7 @@ export const faqIds = [
   'what-is-nami',
   'what-is-nikkei',
   'cost',
+  'experiences',
   'raw-fish-safety',
   'gluten-free',
   'opening-hours',
@@ -142,4 +143,4 @@ export const faqIds = [
   'gift-voucher',
 ] as const;
 
-export const pendingFaqs = ['faqCancel', 'faqExperiences'] as const;
+export const pendingFaqs = ['faqCancel'] as const;

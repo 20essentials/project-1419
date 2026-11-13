@@ -16,5 +16,28 @@
     { "openDay": "SATURDAY", "openTime": "13:00", "closeDay": "SATURDAY", "closeTime": "23:00" },
     { "openDay": "SUNDAY", "openTime": "13:00", "closeDay": "SUNDAY", "closeTime": "23:00" }
   ],
-  "experiences": []
+  "experiences": [
+    {
+      "id": "exp-short-01",
+      "slug": "short",
+      "name": "Nami Short Experience",
+      "labelKey": "reserve.experience.short",
+      "partySize": { "min": 2, "max": 6 },
+      "pricePerGuest": "75.00",
+      "currency": "EUR",
+      "durationInMinutes": 90,
+      "schedule": []
+    },
+    {
+      "id": "exp-full-02",
+      "slug": "full",
+      "name": "Nami Full Experience",
+      "labelKey": "reserve.experience.full",
+      "partySize": { "min": 2, "max": 8 },
+      "pricePerGuest": "125.00",
+      "currency": "EUR",
+      "durationInMinutes": 150,
+      "schedule": []
+    }
+  ]
 }

@@ -22,6 +22,7 @@ export interface ScheduleEntry {
 export interface ReserveExperience {
   id: string;
   slug: string | null;
+  name: string;
   labelKey: string;
   partySize: { min: number; max: number } | null;
   pricePerGuest: string | null;
@@ -119,6 +120,7 @@ async function readExperiences(client: ReturnType<typeof getAdminClient>): Promi
       return {
         id: raw._id as string,
         slug: raw.slug ?? null,
+        name,
         labelKey: label ? `reserve.experience.${label}` : '',
         partySize: online?.partySize ? { min: online.partySize.min ?? 1, max: online.partySize.max ?? 8 } : null,
         pricePerGuest: raw.configuration?.paymentPolicy?.perGuestOptions?.price ?? null,
