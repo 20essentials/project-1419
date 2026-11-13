@@ -42,4 +42,11 @@ Resolver el pending `experiences.pending` y su duplicado `pending.faqExperiences
 
 ## Resultado
 
-⏳ pending — existe su step file, sin ejecutar.
+✅ done — Decisión del propietario: **Opción A, la experiencia se elige al reservar**.
+
+- **CTAs**: `experiences.astro` → cada card enlaza `/reserve/?experience=<short|full>` (experiences.body actualizado en en/es/it: "pick your experience when you book online").
+- **Wizard** (`wizard.astro` + `wizard-client.ts`): paso 1 muestra pills "Reservation type" (solo mesa + experiences del setup), preselecciona por query param (match por `id`/`slug`/sufijo de `labelKey`), clamp de comensales a los límites de la experiencia, `experienceId` va en `GET /api/reserve/slots` y en el POST (la API ya lo soportaba); sin match cae en solo mesa; sin experiences el bloque se oculta. `reservation-context.ts` expone el `name` crudo para fallback de etiquetas.
+- **Experiences reales en Wix**: creadas vía REST `table-reservations/experiences/v1/experiences` — `short` (610f6360-f858-486a-91a0-9cc0f622dc24, 75 €/comensal, 2–6, 90 min) y `full` (a9d265cd-8150-491e-a6cb-dd5efa01b875, 125 €/comensal, 2–8, 150 min), schedule semanal 13:00/14:00/19:00/20:00/21:00, notice 60 min heredado de la location. Smoke real: `setup` 200 con las dos experiences y `onlineReservationsEnabled: true`; slots proyectados por el schedule de la experiencia; wizard en vivo preselecciona con `?experience=short`.
+- **FAQ**: nuevo item `experiences` en `faqIds` ("Do I choose the experience when I book?" en/es/it); `<Pending>` fuera de `experiences.astro` y de `scroll-world.astro` (stop how-it-works); `faqExperiences` fuera de `pendingFaqs`.
+- **i18n**: `translations:push` OK → seed es/it vía REST `translation-content/v1/bulk/contents/create` (4 claves nuevas × 2, 8/8) + `update-by-key` (`experiences.body` × 2, 2/2) → `pull` roundtrip limpio (la propagación a es/it tarda ~30 s tras el seed; primer pull los devuelve ausentes).
+- **Tests**: `reserve-flow.spec.ts` +4 tests (preselección con POST/slots con `experienceId`, pill solo mesa sin `experienceId`, query desconocido, setup sin experiencias); fixture `reserve-setup-mock.json` con short/full reales de ejemplo. Suite completa 33/33 verde; puerto 4321 liberado.
