@@ -48,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
       200,
     );
   } catch (error) {
-    if (isReserveError(error)) return jsonError(error.code, error.status, error.message);
+    if (isReserveError(error)) return jsonError(error.code, error.status, error.message, error.field);
     console.error('[reserve/create] unexpected failure', error);
     return jsonError('RESERVATION_UNAVAILABLE', RESERVE_ERROR_STATUS.RESERVATION_UNAVAILABLE);
   }

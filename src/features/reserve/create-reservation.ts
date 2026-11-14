@@ -28,18 +28,51 @@ export interface CreateReserveReceipt {
   experienceId?: string;
 }
 
+interface WixViolation {
+  field: string;
+  ruleName?: string;
+}
+
+function wixFieldViolations(error: unknown): WixViolation[] {
+  if (!error || typeof error !== 'object') return [];
+  const details = (error as { details?: Record<string, unknown> }).details;
+  if (!details || typeof details !== 'object') return [];
+  const validationError = details.validationError as { fieldViolations?: WixViolation[] } | undefined;
+  return (validationError?.fieldViolations ?? []).filter((violation) => typeof violation?.field === 'string');
+}
+
 function wixApplicationError(error: unknown): { code?: string; description?: string; validationRule?: string } {
   if (!error || typeof error !== 'object') return {};
   const details = (error as { details?: Record<string, unknown> }).details;
   if (!details || typeof details !== 'object') return {};
   const applicationError = details.applicationError as { code?: string; description?: string } | undefined;
   const validationErrors = details.validationErrors as { ruleName?: string }[] | undefined;
+  const validationError = details.validationError as { fieldViolations?: { ruleName?: string }[] } | undefined;
   return {
     code: applicationError?.code,
     description: applicationError?.description,
-    validationRule: validationErrors?.find((entry) => entry.ruleName)?.ruleName,
+    validationRule: validationErrors?.find((entry) => entry.ruleName)?.ruleName
+      ?? validationError?.fieldViolations?.find((entry) => entry.ruleName)?.ruleName,
   };
 }
+
+const USER_FIELD_BY_WIX_FIELD: Record<string, string> = {
+  'reservation.reservee.phone': 'phone',
+  'reservation.reservee.email': 'email',
+  'reservation.reservee.firstName': 'firstName',
+  'reservation.reservee.lastName': 'lastName',
+  phone: 'phone',
+  email: 'email',
+  firstName: 'firstName',
+  lastName: 'lastName',
+};
+
+const FIELD_DETAIL: Record<string, string> = {
+  phone: 'el teléfono no es válido (incluye el prefijo internacional, ej. +34)',
+  email: 'el email no es válido',
+  firstName: 'el nombre no es válido',
+  lastName: 'los apellidos no son válidos',
+};
 
 export function maskEmail(email: string): string {
   const parts = email.split('@');
@@ -134,6 +167,21 @@ export async function createReserveBooking(input: CreateReserveInput): Promise<C
 
 export function mapWixFailure(error: unknown): ReserveError {
   if (error instanceof ReserveError) return error;
+  const violations = wixFieldViolations(error);
+  if (violations.length > 0) {
+    console.error(
+      '[reserve] wix validation',
+      violations.map((violation) => `${violation.field}:${violation.ruleName ?? '?'}`).join(', '),
+    );
+    const first = violations[0];
+    const field = USER_FIELD_BY_WIX_FIELD[first.field];
+    return new ReserveError(
+      'INVALID_INPUT',
+      RESERVE_ERROR_STATUS.INVALID_INPUT,
+      FIELD_DETAIL[field ?? ''] ?? 'datos inválidos',
+      field,
+    );
+  }
   const { code, description: detail, validationRule } = wixApplicationError(error);
   if (code === 'MUST_BE_PREMIUM' || code === 'PREMIUM_ONLY') {
     console.error('[reserve] premium gate', detail ?? code);

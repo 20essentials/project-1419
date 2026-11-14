@@ -494,7 +494,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
         body,
       });
       const payload = (await response.json().catch(() => null)) as
-        | { reservation?: Reservation; error?: string }
+        | { reservation?: Reservation; error?: string; field?: string }
         | null;
       if (response.ok && payload?.reservation) {
         showDone(payload.reservation);
@@ -509,6 +509,19 @@ if (wizard && payloadBox && payloadBox.textContent) {
       }
       if (code === 'PREMIUM_ONLY') {
         setState('premium');
+        return;
+      }
+      if (code === 'INVALID_INPUT' && payload?.field) {
+        const fieldMessages: Record<string, string> = {
+          phone: data.form.phone,
+          email: data.form.email,
+          firstName: data.form.required,
+          lastName: data.form.required,
+        };
+        const field = payload.field;
+        fieldError(field, fieldMessages[field] ?? data.form.summary);
+        panelError(4, data.form.summary);
+        r.form.querySelector<HTMLElement>(`[name="${field}"]`)?.focus({ preventScroll: true });
         return;
       }
       panelError(4, data.errors[code] ?? data.errors.fallback);

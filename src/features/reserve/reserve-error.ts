@@ -12,6 +12,7 @@ export class ReserveError extends Error {
     public readonly code: ReserveErrorCode,
     public readonly status: number,
     message: string,
+    public readonly field?: string,
   ) {
     super(message);
     this.name = 'ReserveError';
@@ -26,11 +27,14 @@ export const RESERVE_ERROR_STATUS: Record<ReserveErrorCode, number> = {
   RESERVATION_UNAVAILABLE: 502,
 };
 
-export function jsonError(code: ReserveErrorCode | string, status: number, detail?: string): Response {
-  return new Response(JSON.stringify({ error: code, ...(detail ? { detail } : {}) }), {
-    status,
-    headers: { 'Content-Type': 'application/json' },
-  });
+export function jsonError(code: ReserveErrorCode | string, status: number, detail?: string, field?: string): Response {
+  return new Response(
+    JSON.stringify({ error: code, ...(field ? { field } : {}), ...(detail ? { detail } : {}) }),
+    {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    },
+  );
 }
 
 export function jsonOk(data: Record<string, unknown>, status = 200, headers: Record<string, string> = {}): Response {
