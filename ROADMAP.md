@@ -11,12 +11,12 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 
 | Estado | Cuenta |
 |:--|:--|
-| ✅ done | 17 |
-| ⏳ pendiente | 3 |
+| ✅ done | 18 |
+| ⏳ pendiente | 2 |
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **21** |
 
-**Siguiente:** pendings de contenido del propietario (steps 19–20, uno por decisión/aporte que falta: reseñas Google, cancelación); parket del proyecto (step-100 deploy cuando toque publicar); backlog: dominio namicrestaurant.com, migrar a plan premium para pagos reales (las reservas online ya funcionan)
+**Siguiente:** pending de contenido del propietario (step-20, cancelación); parket del proyecto (step-100 deploy cuando toque publicar); backlog: dominio namicrestaurant.com, migrar a plan premium para pagos reales (las reservas online ya funcionan)
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -38,7 +38,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 16 · Fotos de platos | ✅ done | `step-16-dish-photos.md` | 3 fotos coherentes por plato (15, Wikimedia Commons) en trío ovalado; `platos` → `{id, fotos}`; −2 pending +5 photoAlt (push+seed+pull) · Ext. 2026-11-13: 9 fotos × 16 platos de la carta Wix (144 AVIF), galería de óvalos en `/carta/` (`platos-fotos.ts`) |
 | 17 · Experiencias al reservar | ✅ done | `step-17-experiences-ordering.md` | opción A: CTAs → `/reserve/?experience=<id>`, wizard preselecciona y envía `experienceId`; experiencias `short`/`full` creadas en Wix (REST); FAQ experiences definitiva (en/es/it, push+seed+pull) |
 | 18 · Wording gluten-free | ✅ done | `step-18-gluten-free-wording.md` | wording avalado tal cual; pending key borrada (push+pull, 0 en 3 locales); Pending condicional fuera de `faq.astro` |
-| 19 · Reseñas Google | ⏳ pending | `step-19-google-reviews.md` | pending `press.pending`: rating y nº de reseñas verificados para prensa |
+| 19 · Reseñas Google | ✅ done | `step-19-google-reviews.md` | placeholder avalado (4.8 · 320 reseñas, link Maps) en `googleReviews`; bloque estrellas en prensa; pending borrado (push+seed+pull, 0 en 3 locales) |
 | 20 · Política de cancelación | ⏳ pending | `step-20-cancellation-policy.md` | pending `pending.faqCancel`: política de cancelación en FAQ + wizard |
 | 100 · Deploy | 🅿️ parket | `step-100-deploy.md` | `wrangler deploy` al querer publicar |
 
@@ -50,7 +50,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 3/3
 - **Fase 5 — Regalar / pagos**: step-15 → ✅ 1/1 (pago real pendiente de premium, igual que reservas)
-- **Fase 6 — Pendings de contenido del propietario**: step-17 ✅, step-18 ✅, step-19, step-20 → ⏳ 2/4 (los restantes dependen de una decisión o asset que falta; se preguntan al propietario antes de codear)
+- **Fase 6 — Pendings de contenido del propietario**: step-17 ✅, step-18 ✅, step-19 ✅, step-20 → ⏳ 3/4 (los restantes dependen de una decisión o asset que falta; se preguntan al propietario antes de codear)
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
   - 🅿️ Deploy hook/cron rebuild para `wix translation pull` tras ediciones en dashboard (Riesgo 4)
   - 🅿️ Redirect 301 `/reservar/` → `/reserve/` (el link histórico era español)

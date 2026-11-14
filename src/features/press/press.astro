@@ -1,10 +1,10 @@
 ---
 import Icon from '@/shared/ui/icon.astro';
-import Pending from '@/shared/ui/pending.astro';
 import { getT } from '@/shared/i18n/t';
-import { press } from '@/shared/site/nami';
+import { press, googleReviews } from '@/shared/site/nami';
 
 const t = getT(Astro.currentLocale);
+const ratingLabel = googleReviews.rating.toLocaleString(Astro.currentLocale === 'en' ? 'en-GB' : 'es-ES');
 ---
 
 <section id="press" aria-labelledby="press-title" class="px-4 py-24 md:px-12 xl:px-24">
@@ -22,5 +22,19 @@ const t = getT(Astro.currentLocale);
       </a>
     </figcaption>
   </figure>
-  <Pending class="mx-auto mt-8 max-w-xl">{t('press.pending')}</Pending>
+  <div data-reveal style="--d:300ms" class="mx-auto mt-10 flex max-w-4xl flex-col items-center gap-3">
+    <div class="flex items-center gap-1 text-teja" role="img" aria-label={t('press.reviews.stars', { rating: ratingLabel, count: googleReviews.count })}>
+      <Icon name="star" class="size-4" />
+      <Icon name="star" class="size-4" />
+      <Icon name="star" class="size-4" />
+      <Icon name="star" class="size-4" />
+      <Icon name="starHalf" class="size-4" />
+      <span class="ms-2 font-display text-lg text-crema">{ratingLabel}</span>
+    </div>
+    <p class="text-sm text-crema/60">{t('press.reviews.count', { count: googleReviews.count })}</p>
+    <a href={googleReviews.url} class="link inline-flex items-center gap-2 text-crema/70" rel="noopener" target="_blank">
+      {t('press.reviews.read')}
+      <Icon name="arrowUpRight" />
+    </a>
+  </div>
 </section>

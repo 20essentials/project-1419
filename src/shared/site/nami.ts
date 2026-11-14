@@ -130,6 +130,12 @@ export const dishes = [
 
 export const press = { outlet: 'El Periódico', url: '#' };
 
+export const googleReviews = {
+  rating: 4.8,
+  count: 320,
+  url: links.maps,
+};
+
 export const faqIds = [
   'what-is-nami',
   'what-is-nikkei',
