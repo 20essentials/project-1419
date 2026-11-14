@@ -52,6 +52,7 @@ const PILL = `min-w-16 h-10 rounded-full px-4 text-sm ring-1 ${EASE}`;
 const PILL_OFF = 'text-crema ring-crema/20 hover:bg-crema/10';
 const PILL_ON = 'bg-teja text-bg ring-teja';
 const PILL_DIM = 'text-crema/40 ring-crema/10 pointer-events-none';
+const PILL_PAST = 'text-crema/20 ring-0 line-through pointer-events-none';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const STEP_NAMES = ['people', 'date', 'time', 'details'];
@@ -272,6 +273,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
 
   const paintDate = () => {
     r.calendar.querySelectorAll<HTMLButtonElement>('button[data-date]').forEach((button) => {
+      if (button.disabled) return;
       const active = button.dataset.date === state.date;
       button.setAttribute('aria-pressed', String(active));
       setPillVariant(button, active ? PILL_ON : PILL_OFF);
@@ -313,6 +315,10 @@ if (wizard && payloadBox && payloadBox.textContent) {
           }
           paintDate();
         });
+      } else if (date < today) {
+        button.disabled = true;
+        setPillVariant(button, PILL_PAST);
+        button.setAttribute('aria-disabled', 'true');
       } else {
         button.disabled = true;
         setPillVariant(button, PILL_DIM);
