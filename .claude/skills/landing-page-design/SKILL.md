@@ -6,9 +6,7 @@ description: "Complete system for building high converting landing pages: intake
 # Landing Page Design
 
 A landing page is not a homepage. A homepage serves multiple intents. A landing page wins one intent:
-
 **one offer → one audience → one primary action.**
-
 This skill has two halves. **Part A** decides what the page says and how it is structured. **Part B** is the non negotiable visual system. Work through A before touching B.
 
 ## Scope
