@@ -38,4 +38,8 @@ Resolver el pending `faq.items.gluten-free.pending`: "Validate the allergy wordi
 
 ## Resultado
 
-⏳ pending — existe su step file, sin ejecutar.
+✅ done (2026-11-14)
+
+- **Aval del propietario**: la redacción actual de `faq.items.gluten-free.*` (en/es/it) queda aprobada tal cual — el restaurante avala "All the soy we serve in the dining room is gluten free. If you have any allergy or intolerance, call us at +34 931 27 08 15 before you come." y sus traducciones es/it sin cambios de copy (no hubo PATCH).
+- **Cierre del pending**: clave `faq.items.gluten-free.pending` borrada de `src/translations.json` + `translations:push` (success) + `translations:pull` — el pull ya no devuelve la clave en ninguna locale (en/es/it). En `faq.astro` se eliminó el bloque `<Pending>` condicional del loop `faqIds` (el mecanismo `hasKey` queda disponible en `shared/i18n/t` para futuros FAQ); el `<Pending>` de `pendingFaqs` se conserva para `pending.faqCancel` (step-20). Nota: un primer build falló con "Pending is not defined" porque el import de `Pending` se había quitado junto con el condicional del loop; restaurado.
+- **Smoke**: `pnpm build` OK; `/`, `/es/`, `/it/` → 200 con la respuesta gluten-free visible en las 3 locales (también en el JSON-LD de FAQPage) y 0 restos del texto de pending en el render. Puerto 4321 liberado (PID 16360 terminado).
