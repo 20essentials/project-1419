@@ -28,6 +28,7 @@ Solo cuando el commit no se explica en una línea: línea en blanco tras el subj
 
 ## Reglas duras
 
+- Todo commit se escribe SOLO en inglés: tanto el subject como el cuerpo. Nunca español ni ningún otro idioma, sin excepción.
 - Nada de `git commit -i`, force-push, ni enmendar commits fallidos: si un hook rechaza, arregla y crea un commit nuevo.
 - Antes de commitear revisa el diff efectivo que vas a stageear (`git diff --cached`): no commitees archivos ajenos al grupo ni touches accidentales (`package-lock.json` por `patch-package` solo entra si el grupo toca deps).
 - NO commitear nunca: `.wix/`, `.tmp/`, `node_modules/`, nada en `.gitignore`.
