@@ -39,4 +39,10 @@ Resolver el pending `pending.faqCancel`: "Can I cancel or change my reservation?
 
 ## Resultado
 
-⏳ pending — existe su step file, sin ejecutar.
+✅ done (2026-11-14)
+
+- **Política definida con el propietario**: cancelación/cambio gratis hasta 24 h antes (teléfono +34 931 27 08 15 o email); sin pago previo, nada que reembolsar; mesa se guarda 15 min desde la hora reservada (no-show aviso suave); no se toca `/purchase-terms/` (decisión del owner). Coherente con step-06 (approval AUTOMATIC, notice 60 MIN; sin cobro por adelantado no hay reembolso que documentar).
+- **FAQ**: nuevo item `cancel` añadido a `faqIds` en `src/shared/site/nami.ts` (tras `experiences`); claves `faq.items.cancel.q/.a` en en + seed es/it vía REST `translation-content/v1/bulk/contents/create` (schemaId `e2aa6aa7-…`, field `static-field`, `{ textValue, updatedBy: 'USER', published: true }`, entityId = clave, chunks por locales × claves): 8/8 (200). JSON-LD FAQPage en home lo recoge automáticamente (usa `faqIds`).
+- **Wizard**: nota de política en el panel 4 (paso del formulario) en `wizard.astro`, bajo `data-summary`, con enlace `${homeHref}#questions`; claves nuevas `reserve.policy.note` y `reserve.policy.link` (en + seed es/it, mismas 8/8 del bulk).
+- **Cierre del pending**: `pendingFaqs` → `[]` en `nami.ts` (el `<Pending>` de `faq.astro` queda y no renderiza nada); clave `pending.faqCancel` borrada de `src/translations.json` → `translations:push` OK → `translations:pull` roundtrip limpio (0 restos en en/es/it; `reserve.policy.*` y `faq.items.cancel.*` presentes en es/it, propagación instantánea en este caso).
+- **Smoke**: build verde; prerender de `/`, `/es/`, `/it/` y `/reserve/`, `/es/reserve/`, `/it/reserve/` con la política visible en los 3 idiomas y 0 "Pending" en HTML prerenderizado. E2E 33 passed + 1 skipped (contract real opt-in) tras el cambio del wizard; `[free-port] 4321 y 8787 libres`.

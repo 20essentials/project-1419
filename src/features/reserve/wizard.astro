@@ -9,6 +9,7 @@ import { MAX_ADVANCE_DAYS } from './site-time';
 const locale = Astro.currentLocale as Locale;
 const t = getT(locale);
 const homeHref = localizedPathname('/', locale);
+const faqHref = `${homeHref}#questions`;
 
 const payload = JSON.stringify({
   locale,
@@ -204,6 +205,10 @@ const pulse = [
         <section data-panel="4" hidden>
           <h2 tabindex="-1" class="text-center text-2xl lg:text-3xl">{t('reserve.details.title')}</h2>
           <p data-summary class="mx-auto mt-4 max-w-md text-center text-sm text-crema/60" aria-live="polite"></p>
+          <p class="mx-auto mt-3 max-w-md text-center text-sm text-crema/50">
+            {t('reserve.policy.note')}
+            <a href={faqHref} class="link ml-1 whitespace-nowrap">{t('reserve.policy.link')}</a>
+          </p>
           <div class="mx-auto mt-8 grid max-w-md gap-5 text-left sm:grid-cols-2">
             <div>
               <label for="reserve-first-name" class="block text-sm text-crema/70">{t('reserve.firstName')}</label>

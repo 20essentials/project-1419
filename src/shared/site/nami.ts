@@ -141,6 +141,7 @@ export const faqIds = [
   'what-is-nikkei',
   'cost',
   'experiences',
+  'cancel',
   'raw-fish-safety',
   'gluten-free',
   'opening-hours',
@@ -149,4 +150,4 @@ export const faqIds = [
   'gift-voucher',
 ] as const;
 
-export const pendingFaqs = ['faqCancel'] as const;
+export const pendingFaqs = [] as const;

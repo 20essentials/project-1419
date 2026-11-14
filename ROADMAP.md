@@ -39,7 +39,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 17 · Experiencias al reservar | ✅ done | `step-17-experiences-ordering.md` | opción A: CTAs → `/reserve/?experience=<id>`, wizard preselecciona y envía `experienceId`; experiencias `short`/`full` creadas en Wix (REST); FAQ experiences definitiva (en/es/it, push+seed+pull) |
 | 18 · Wording gluten-free | ✅ done | `step-18-gluten-free-wording.md` | wording avalado tal cual; pending key borrada (push+pull, 0 en 3 locales); Pending condicional fuera de `faq.astro` |
 | 19 · Reseñas Google | ✅ done | `step-19-google-reviews.md` | placeholder avalado (4.8 · 320 reseñas, link Maps) en `googleReviews`; bloque estrellas en prensa; pending borrado (push+seed+pull, 0 en 3 locales) |
-| 20 · Política de cancelación | ⏳ pending | `step-20-cancellation-policy.md` | pending `pending.faqCancel`: política de cancelación en FAQ + wizard |
+| 20 · Política de cancelación | ✅ done | `step-20-cancellation-policy.md` | FAQ `cancel` (24 h gratis, sin pago previo, mesa 15 min) en 3 idiomas (push+seed+pull); nota en wizard panel 4 con enlace al FAQ; `pending.faqCancel` cerrado (push+pull, 0 en 3 locales); E2E 33/1 skipped verdes |
 | 100 · Deploy | 🅿️ parket | `step-100-deploy.md` | `wrangler deploy` al querer publicar |
 
 ## Fases
@@ -50,7 +50,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 3 — Carta y páginas de contenido**: step-10, step-11 → ✅ 2/2
 - **Fase 4 — Miembros / Account (login custom)**: step-12, step-13, step-14 → ✅ 3/3
 - **Fase 5 — Regalar / pagos**: step-15 → ✅ 1/1 (pago real pendiente de premium, igual que reservas)
-- **Fase 6 — Pendings de contenido del propietario**: step-17 ✅, step-18 ✅, step-19 ✅, step-20 → ⏳ 3/4 (los restantes dependen de una decisión o asset que falta; se preguntan al propietario antes de codear)
+- **Fase 6 — Pendings de contenido del propietario**: step-17 ✅, step-18 ✅, step-19 ✅, step-20 ✅ → 4/4
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
   - 🅿️ Deploy hook/cron rebuild para `wix translation pull` tras ediciones en dashboard (Riesgo 4)
   - 🅿️ Redirect 301 `/reservar/` → `/reserve/` (el link histórico era español)
