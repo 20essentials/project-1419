@@ -1,12 +1,12 @@
 import { getAdminClient } from '@/shared/wix/admin-client';
 import type reservations from '@wix/table-reservations';
+import { isValidPhoneNumber } from 'libphonenumber-js/min';
 import { getReserveContext } from './reservation-context';
 import { slotIsAvailable } from './reserve-slots';
 import { ReserveError, RESERVE_ERROR_STATUS } from './reserve-error';
 import { isLocalDate, isLocalTime, localToInstant, localWindow } from './site-time';
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 
 export interface CreateReserveInput {
   date: string;
@@ -18,6 +18,7 @@ export interface CreateReserveInput {
   email: string;
   phone: string;
   note?: string;
+  contactId?: string;
 }
 
 export interface CreateReserveReceipt {
@@ -68,7 +69,7 @@ const USER_FIELD_BY_WIX_FIELD: Record<string, string> = {
 };
 
 const FIELD_DETAIL: Record<string, string> = {
-  phone: 'el teléfono no es válido (incluye el prefijo internacional, ej. +34)',
+  phone: 'el teléfono no es válido (incluye el prefijo internacional, ej. +34600600600)',
   email: 'el email no es válido',
   firstName: 'el nombre no es válido',
   lastName: 'los apellidos no son válidos',
@@ -99,7 +100,6 @@ export async function createReserveBooking(input: CreateReserveInput): Promise<C
   const email = input.email.trim();
   const phone = input.phone.trim().replace(/[()\s-]/g, '');
   const note = input.note?.trim() ?? '';
-
   if (!isLocalDate(input.date)) {
     throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'date inválido (YYYY-MM-DD)');
   }
@@ -119,11 +119,22 @@ export async function createReserveBooking(input: CreateReserveInput): Promise<C
   if (!Number.isInteger(partySize) || partySize < minPartySize || partySize > maxPartySize) {
     throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, `partySize entre ${minPartySize} y ${maxPartySize}`);
   }
-  if (!firstName || !phone || !PHONE_PATTERN.test(phone)) {
-    throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'nombre y teléfono son obligatorios');
+  if (!firstName) {
+    throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'el nombre es obligatorio', 'firstName');
+  }
+  if (!phone) {
+    throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'el teléfono es obligatorio', 'phone');
+  }
+  if (!phone.startsWith('+') || !isValidPhoneNumber(phone)) {
+    throw new ReserveError(
+      'INVALID_INPUT',
+      RESERVE_ERROR_STATUS.INVALID_INPUT,
+      'el teléfono no es válido (incluye el prefijo internacional, ej. +34600600600)',
+      'phone',
+    );
   }
   if (!email || !EMAIL_PATTERN.test(email)) {
-    throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'email inválido');
+    throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'email inválido', 'email');
   }
   if (note.length > 500) {
     throw new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'nota demasiado larga');
@@ -143,7 +154,13 @@ export async function createReserveBooking(input: CreateReserveInput): Promise<C
   if (experience) {
     details.experienceId = experience.id;
   }
-  const reservee: Record<string, unknown> = { firstName, lastName, email, phone };
+  const reservee: Record<string, unknown> = {
+    firstName,
+    lastName,
+    email,
+    phone,
+    ...(input.contactId ? { contactId: input.contactId } : {}),
+  };
 
   const payload = { details, reservee } as unknown as Parameters<typeof reservations.createReservation>[0];
   try {
@@ -167,14 +184,13 @@ export async function createReserveBooking(input: CreateReserveInput): Promise<C
 
 export function mapWixFailure(error: unknown): ReserveError {
   if (error instanceof ReserveError) return error;
+  const details = error && typeof error === 'object' ? (error as { details?: unknown }).details : undefined;
   const violations = wixFieldViolations(error);
   if (violations.length > 0) {
-    console.error(
-      '[reserve] wix validation',
-      violations.map((violation) => `${violation.field}:${violation.ruleName ?? '?'}`).join(', '),
-    );
+    console.error('[reserve] wix validation', JSON.stringify(details) ?? '', violations.map((violation) => `${violation.field}:${violation.ruleName ?? '?'}`).join(', '));
     const first = violations[0];
-    const field = USER_FIELD_BY_WIX_FIELD[first.field];
+    const field =
+      USER_FIELD_BY_WIX_FIELD[first.field] ?? USER_FIELD_BY_WIX_FIELD[first.field.split('.').pop() ?? ''];
     return new ReserveError(
       'INVALID_INPUT',
       RESERVE_ERROR_STATUS.INVALID_INPUT,
@@ -183,6 +199,10 @@ export function mapWixFailure(error: unknown): ReserveError {
     );
   }
   const { code, description: detail, validationRule } = wixApplicationError(error);
+  if (code === 'INVALID_ARGUMENT' || code === 'VALIDATION_ERROR' || validationRule) {
+    console.error('[reserve] wix invalid argument', JSON.stringify(details) ?? '');
+    return new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, detail ?? 'datos inválidos');
+  }
   if (code === 'MUST_BE_PREMIUM' || code === 'PREMIUM_ONLY') {
     console.error('[reserve] premium gate', detail ?? code);
     return new ReserveError('PREMIUM_ONLY', RESERVE_ERROR_STATUS.PREMIUM_ONLY, 'reservas online aún no activas (premium)');
@@ -196,9 +216,6 @@ export function mapWixFailure(error: unknown): ReserveError {
   ) {
     return new ReserveError('NO_AVAILABILITY', RESERVE_ERROR_STATUS.NO_AVAILABILITY, detail ?? 'sin disponibilidad');
   }
-  if (code === 'INVALID_ARGUMENT' || code === 'VALIDATION_ERROR' || validationRule) {
-    return new ReserveError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, detail ?? 'datos inválidos');
-  }
-  console.error('[reserve] wix failure', code ?? '<sin codigo>', detail ?? error);
+  console.error('[reserve] wix failure', JSON.stringify(details) || JSON.stringify(error), code ?? '<sin codigo>', detail ?? '');
   return new ReserveError('RESERVATION_UNAVAILABLE', RESERVE_ERROR_STATUS.RESERVATION_UNAVAILABLE, 'servicio de reservas no disponible');
 }

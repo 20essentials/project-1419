@@ -14,6 +14,7 @@ const faqHref = `${homeHref}#questions`;
 const payload = JSON.stringify({
   locale,
   home: localizedPathname('/', locale),
+  confirmPath: localizedPathname('/reserve/confirmation/', locale),
   back: t('reserve.back'),
   next: t('reserve.next'),
   submit: t('reserve.cta'),
@@ -39,7 +40,9 @@ const payload = JSON.stringify({
   form: {
     required: t('reserve.form.required'),
     email: t('reserve.form.email'),
+    phoneRequired: t('reserve.form.phone.required'),
     phone: t('reserve.form.phone'),
+    phonePlaceholder: t('reserve.phone.ph'),
     summary: t('reserve.form.summary'),
   },
   done: {
@@ -251,19 +254,63 @@ const pulse = [
               />
               <p id="reserve-email-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
             </div>
-            <div>
+            <div class="sm:col-span-2">
               <label for="reserve-phone" class="block text-sm text-crema/70">{t('reserve.phone')}</label>
-              <input
-                id="reserve-phone"
-                name="phone"
-                type="tel"
-                inputmode="tel"
-                autocomplete="tel"
-                required
-                placeholder={t('reserve.phone.ph')}
-                aria-describedby="reserve-phone-error"
-                class="mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
-              />
+              <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+                <div class="relative sm:w-52 sm:shrink-0">
+                  <button
+                    type="button"
+                    id="reserve-dial"
+                    data-dial-trigger
+                    aria-haspopup="listbox"
+                    aria-expanded="false"
+                    aria-label={t('reserve.phonePrefix')}
+                    class="flex w-full cursor-pointer items-center justify-between gap-2 rounded-2xl bg-crema/10 px-4 py-3 text-left text-base text-crema ring-1 ring-crema/25 outline-none transition-all duration-700 ease-[cubic-bezier(0.72,0.72,0,1)] hover:bg-crema/15 hover:ring-crema/40 focus:ring-2 focus:ring-teja"
+                  >
+                    <span data-dial-label class="truncate"></span>
+                    <Icon name="arrowDown" data-dial-chevron class="pointer-events-none size-4 shrink-0 text-crema/70 transition-transform duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]" />
+                  </button>
+                  <div
+                    data-dial-panel
+                    hidden
+                    class="absolute inset-x-0 top-full z-20 mt-2 rounded-2xl bg-bg/95 p-2 ring-1 ring-crema/20 shadow-2xl backdrop-blur-xl"
+                  >
+                    <div class="relative">
+                      <Icon name="search" class="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-crema/50" />
+                      <input
+                        id="reserve-dial-search"
+                        data-dial-search
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                        aria-label={t('reserve.dialSearch')}
+                        aria-controls="reserve-dial-list"
+                        placeholder={t('reserve.dialSearch')}
+                        class="w-full rounded-xl bg-crema/5 py-2 pr-3 pl-9 text-sm text-crema ring-1 ring-crema/15 outline-none transition-all duration-700 ease-[cubic-bezier(0.72,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja"
+                      />
+                    </div>
+                    <div
+                      id="reserve-dial-list"
+                      data-dial-list
+                      role="listbox"
+                      aria-labelledby="reserve-dial"
+                      class="mt-2 max-h-64 overflow-y-auto overscroll-contain"
+                    ></div>
+                    <p data-dial-empty hidden class="px-3 py-2 text-sm text-crema/50">{t('reserve.dialEmpty')}</p>
+                  </div>
+                </div>
+                <input
+                  id="reserve-phone"
+                  name="phone"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel-national"
+                  required
+                  placeholder={t('reserve.phone.ph')}
+                  aria-describedby="reserve-phone-error"
+                  class="w-full min-w-0 flex-1 rounded-2xl bg-crema/10 px-4 py-3 text-base text-crema ring-1 ring-crema/25 outline-none transition-all duration-700 ease-[cubic-bezier(0.72,0.72,0,1)] placeholder:text-crema/40 hover:ring-crema/40 focus:ring-2 focus:ring-teja"
+                />
+              </div>
               <p id="reserve-phone-error" role="alert" hidden class="mt-2 text-sm text-teja"></p>
             </div>
             <div class="sm:col-span-2">

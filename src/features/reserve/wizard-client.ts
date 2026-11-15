@@ -1,3 +1,6 @@
+import { parsePhoneNumberFromString, type CountryCode } from 'libphonenumber-js/min';
+import { DIAL_BY_CODE, DIAL_CODES, dialNumber, type DialCode } from './dial-codes';
+
 type Slot = { time: string; available: boolean };
 
 type ReserveExperience = {
@@ -28,6 +31,7 @@ type Reservation = {
 type Data = {
   locale: string;
   home: string;
+  confirmPath: string;
   back: string;
   next: string;
   submit: string;
@@ -38,7 +42,7 @@ type Data = {
   guests: string;
   experience: { title: string; table: string; short: string; full: string };
   errors: Record<string, string>;
-  form: { required: string; email: string; phone: string; summary: string };
+  form: { required: string; email: string; phoneRequired: string; phone: string; phonePlaceholder: string; summary: string };
   done: {
     reservedTitle: string;
     requestedTitle: string;
@@ -54,8 +58,8 @@ const PILL_ON = 'bg-teja text-bg ring-teja';
 const PILL_DIM = 'text-crema/40 ring-crema/10 pointer-events-none';
 const PILL_PAST = 'text-crema/20 ring-0 line-through pointer-events-none';
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_PATTERN = /^\+?[0-9]{7,15}$/;
 const STEP_NAMES = ['people', 'date', 'time', 'details'];
+const DEFAULT_COUNTRY: Record<string, CountryCode> = { en: 'ES', es: 'ES', it: 'IT' };
 
 const setPillVariant = (element: HTMLElement, variant: string) => {
   element.classList.remove(...PILL_ON.split(' '), ...PILL_OFF.split(' '), ...PILL_DIM.split(' '));
@@ -103,6 +107,170 @@ if (wizard && payloadBox && payloadBox.textContent) {
   const nextButtons = new Map<number, HTMLButtonElement>();
   const prevButtons = new Map<number, HTMLButtonElement>();
   const panelErrors = new Map<number, HTMLElement>();
+
+  const dialTrigger = wizard.querySelector<HTMLButtonElement>('[data-dial-trigger]')!;
+  const dialPanel = wizard.querySelector<HTMLElement>('[data-dial-panel]')!;
+  const dialSearch = dialPanel.querySelector<HTMLInputElement>('[data-dial-search]')!;
+  const dialList = dialPanel.querySelector<HTMLElement>('[data-dial-list]')!;
+  const dialEmpty = dialPanel.querySelector<HTMLElement>('[data-dial-empty]')!;
+  const dialLabel = dialTrigger.querySelector<HTMLElement>('[data-dial-label]')!;
+  const dialChevron = dialTrigger.querySelector<HTMLElement>('[data-dial-chevron]')!;
+  const dialRoot = dialTrigger.parentElement as HTMLElement;
+
+  const countryNames = new Intl.DisplayNames([data.locale], { type: 'region' });
+  const searchNames = ['en', 'es', 'it'].map((locale) => new Intl.DisplayNames([locale], { type: 'region' }));
+  const dialOptions = DIAL_CODES.map((entry) => ({
+    entry,
+    name: countryNames.of(entry.code) ?? entry.code,
+    haystack: searchNames.map((names) => names.of(entry.code) ?? '').join(' ') + ` +${entry.dial}`,
+  }));
+  dialOptions.sort((a, b) => a.name.localeCompare(b.name, data.locale));
+
+  let dialCountry: string = DEFAULT_COUNTRY[data.locale] ?? 'ES';
+  let dialOpen = false;
+  let dialActive = dialCountry;
+  const dialOptionMap = new Map<string, HTMLDivElement>();
+
+  dialOptions.forEach(({ entry, name }) => {
+    const option = document.createElement('div');
+    option.id = `dial-option-${entry.code}`;
+    option.setAttribute('role', 'option');
+    option.dataset.code = entry.code;
+    option.textContent = `${name} +${entry.dial}`;
+    option.className = 'cursor-pointer rounded-xl px-4 py-2.5 text-sm text-crema/80 transition-colors duration-300 hover:bg-crema/10';
+    option.addEventListener('click', () => {
+      pickDial(entry.code);
+      closeDial(true);
+    });
+    dialList.append(option);
+    dialOptionMap.set(entry.code, option);
+  });
+
+  const paintDial = () => {
+    const current = dialOptions.find((item) => item.entry.code === dialCountry) ?? dialOptions[0];
+    dialLabel.textContent = `${current.name} +${current.entry.dial}`;
+    dialOptionMap.forEach((option, code) => {
+      const selected = code === dialCountry;
+      option.setAttribute('aria-selected', String(selected));
+      option.classList.toggle('bg-teja/15', selected);
+      option.classList.toggle('text-teja', selected);
+      option.classList.toggle('text-crema/80', !selected);
+    });
+  };
+
+  const visibleDialCodes = () =>
+    dialOptions.filter((item) => !dialOptionMap.get(item.entry.code)!.hidden).map((item) => item.entry.code);
+
+  const paintDialActive = () => {
+    dialOptionMap.forEach((option, code) => {
+      const active = code === dialActive && code !== dialCountry;
+      option.classList.toggle('bg-crema/10', active);
+      option.classList.toggle('text-crema', active);
+    });
+    const activeOption = dialOptionMap.get(dialActive);
+    if (activeOption && dialOpen) {
+      activeOption.scrollIntoView({ block: 'nearest' });
+      dialSearch.setAttribute('aria-activedescendant', activeOption.id);
+    }
+  };
+
+  const setDialActiveIndex = (index: number) => {
+    const codes = visibleDialCodes();
+    if (codes.length === 0) return;
+    dialActive = codes[((index % codes.length) + codes.length) % codes.length];
+    paintDialActive();
+  };
+
+  const pickDial = (code: string) => {
+    dialCountry = code;
+    paintDial();
+  };
+
+  const normalizeText = (value: string) => value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase();
+
+  const filterDial = (query: string) => {
+    const needle = normalizeText(query.trim());
+    dialOptionMap.forEach((option, code) => {
+      const item = dialOptions.find((candidate) => candidate.entry.code === code)!;
+      option.hidden = needle !== '' && !normalizeText(item.haystack).includes(needle);
+    });
+    const codes = visibleDialCodes();
+    dialEmpty.hidden = codes.length > 0;
+    dialActive = codes.includes(dialActive) ? dialActive : (codes[0] ?? dialActive);
+    paintDialActive();
+  };
+
+  const openDial = () => {
+    if (dialOpen) return;
+    dialOpen = true;
+    dialPanel.hidden = false;
+    dialSearch.value = '';
+    filterDial('');
+    dialTrigger.setAttribute('aria-expanded', 'true');
+    dialRoot.classList.add('z-30');
+    dialChevron.classList.add('-rotate-180');
+    dialActive = dialCountry;
+    paintDialActive();
+    dialSearch.focus();
+  };
+
+  const closeDial = (focus: boolean) => {
+    if (!dialOpen) return;
+    dialOpen = false;
+    dialPanel.hidden = true;
+    dialTrigger.setAttribute('aria-expanded', 'false');
+    dialSearch.removeAttribute('aria-activedescendant');
+    dialRoot.classList.remove('z-30');
+    dialChevron.classList.remove('-rotate-180');
+    if (focus) dialTrigger.focus();
+  };
+
+  const selectedEntry = (): DialCode => ({
+    code: dialCountry,
+    dial: DIAL_BY_CODE.get(dialCountry) ?? '34',
+  });
+
+  dialTrigger.addEventListener('click', () => {
+    if (dialOpen) closeDial(false);
+    else openDial();
+  });
+
+  dialTrigger.addEventListener('keydown', (event) => {
+    if (dialOpen) return;
+    if (event.key === 'ArrowDown' || event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      openDial();
+    }
+  });
+
+  dialSearch.addEventListener('input', () => filterDial(dialSearch.value));
+
+  dialSearch.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setDialActiveIndex(visibleDialCodes().indexOf(dialActive) + 1);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setDialActiveIndex(visibleDialCodes().indexOf(dialActive) - 1);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (visibleDialCodes().includes(dialActive)) {
+        pickDial(dialActive);
+        closeDial(true);
+      }
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      closeDial(true);
+    } else if (event.key === 'Tab') {
+      closeDial(false);
+    }
+  });
+
+  document.addEventListener('pointerdown', (event) => {
+    if (dialOpen && event.target instanceof Node && !dialRoot.contains(event.target)) closeDial(false);
+  });
+
+  paintDial();
 
   r.panels.forEach((panel) => {
     const index = Number(panel.dataset.panel);
@@ -377,10 +545,10 @@ if (wizard && payloadBox && payloadBox.textContent) {
     paintTime();
   };
 
-  const loadSlots = async () => {
+  const loadSlots = async (notice?: string) => {
     const token = ++slotsToken;
     r.slots.replaceChildren();
-    panelError(3);
+    panelError(3, notice);
     r.slotsRetry.hidden = true;
     r.slotsSkeleton.hidden = false;
     r.slots.setAttribute('aria-busy', 'true');
@@ -409,7 +577,7 @@ if (wizard && payloadBox && payloadBox.textContent) {
         return;
       }
       renderSlots(body.slots);
-      announce('');
+      announce(notice ?? '');
     } catch {
       if (token !== slotsToken) return;
       r.slotsSkeleton.hidden = true;
@@ -452,11 +620,32 @@ if (wizard && payloadBox && payloadBox.textContent) {
     const firstName = firstNameInput?.value.trim() ?? '';
     const email = emailInput?.value.trim() ?? '';
     const lastName = r.form.querySelector<HTMLInputElement>('[name="lastName"]')?.value.trim() ?? '';
-    const phone = (phoneInput?.value ?? '').replace(/[()\s-]/g, '');
+    const phoneRaw = phoneInput?.value.trim() ?? '';
     const note = noteInput?.value.trim() ?? '';
+    let phone = '';
+    if (phoneRaw.startsWith('+')) {
+      const parsed = parsePhoneNumberFromString(phoneRaw);
+      if (parsed?.number) {
+        phone = parsed.number;
+        if (parsed.country && DIAL_BY_CODE.has(parsed.country)) {
+          dialCountry = parsed.country;
+          paintDial();
+        }
+      }
+    } else {
+      const digits = phoneRaw.replace(/\D/g, '');
+      if (digits) phone = dialNumber(selectedEntry(), digits);
+    }
     mark('firstName', firstName ? undefined : data.form.required);
     mark('email', email && EMAIL_PATTERN.test(email) ? undefined : data.form.email);
-    mark('phone', phone && PHONE_PATTERN.test(phone) ? undefined : data.form.phone);
+    mark(
+      'phone',
+      phone && parsePhoneNumberFromString(phone)?.isValid()
+        ? undefined
+        : phoneRaw
+          ? data.form.phone
+          : data.form.phoneRequired,
+    );
     if (firstBroken) {
       panelError(4, data.form.summary);
       r.form.querySelector<HTMLElement>(`[name="${firstBroken}"]`)?.focus({ preventScroll: true });
@@ -485,6 +674,11 @@ if (wizard && payloadBox && payloadBox.textContent) {
     r.doneParty.textContent = guestCount(reservation.partySize);
     r.doneRef.textContent = reservation.id;
     setState('done');
+    window.history.replaceState(
+      {},
+      '',
+      `${data.confirmPath}?ref=${encodeURIComponent(reservation.id)}`,
+    );
   };
 
   const send = async () => {
@@ -509,8 +703,9 @@ if (wizard && payloadBox && payloadBox.textContent) {
       const code = payload?.error ?? 'fallback';
       if (code === 'NO_AVAILABILITY') {
         announce(data.errors.NO_AVAILABILITY);
+        state.time = '';
         goStep(3);
-        await loadSlots();
+        await loadSlots(data.errors.NO_AVAILABILITY);
         return;
       }
       if (code === 'PREMIUM_ONLY') {
@@ -538,6 +733,17 @@ if (wizard && payloadBox && payloadBox.textContent) {
       r.submit.removeAttribute('aria-busy');
     }
   };
+
+  const phoneInput = r.form.querySelector<HTMLInputElement>('[name="phone"]');
+  phoneInput?.addEventListener('blur', () => {
+    const value = phoneInput.value.trim();
+    if (!value.startsWith('+')) return;
+    const parsed = parsePhoneNumberFromString(value);
+    if (!parsed?.country || !DIAL_BY_CODE.has(parsed.country)) return;
+    dialCountry = parsed.country;
+    paintDial();
+    if (parsed.isValid()) phoneInput.value = parsed.nationalNumber;
+  });
 
   r.form.addEventListener('submit', (event) => {
     event.preventDefault();

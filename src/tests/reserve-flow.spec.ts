@@ -12,7 +12,7 @@ type SetupPayload = {
   slotsEmpty: string;
   experience: { title: string; table: string; short: string; full: string };
   errors: Record<string, string>;
-  form: { required: string; email: string; phone: string; summary: string };
+  form: { required: string; email: string; phoneRequired: string; phone: string; summary: string };
   done: { reservedTitle: string; requestedTitle: string; reservedBody: string; requestedBody: string };
 };
 
@@ -121,12 +121,50 @@ test.describe('wizard /reserve/ (API mocked)', () => {
     await expect(page.locator('[data-done-ref]')).toHaveText('res-e2e-93a3bc');
     await expect(page.locator('[data-done-when]')).toContainText('19:00');
     await expect(page.locator('[data-done-party]')).toContainText('2');
+    await expect(page).toHaveURL(/\/reserve\/confirmation\/\?ref=res-e2e-93a3bc$/);
     expect(sent).toHaveLength(1);
     expect(sent[0].date).toBe(await selectedDate(page));
     expect(sent[0].time).toBe('19:00');
     expect(sent[0].partySize).toBe(2);
     expect(sent[0].email).toBe('smoke-test@example.com');
+    expect(sent[0].phone).toBe('+34600600600');
     expect(sent[0].note).toBe('Cena silenciosa');
+  });
+
+  test('el prefijo del selector se combina con el numero local', async ({ page }) => {
+    const sent: PostBody[] = [];
+    mockPost(page, 200, (body) => {
+      sent.push(body);
+      return {
+        reservation: { id: 'res-e2e-dial', status: 'RESERVED', localStart: `${body.date}T${body.time}:00`, partySize: body.partySize },
+      };
+    });
+    await openWizard(page);
+    await pickParty(page, 2);
+    await pickDay(page, 2);
+    await pickTime(page, '19:00');
+    await fillGuest(page);
+    await page.locator('[name="phone"]').fill('600600600');
+    await page.locator('[name="note"]').fill('');
+    await page.locator('[data-submit]').click();
+    await expect(page.locator('[data-state="done"]')).toBeVisible();
+    expect(sent[0].phone).toBe('+34600600600');
+  });
+
+  test('un numero corto muestra el error de validacion y bloquea el envio', async ({ page }) => {
+    const sent: PostBody[] = [];
+    mockPost(page, 200, () => (sent.push({} as PostBody), {}));
+    await openWizard(page);
+    const data = await payloadOf(page);
+    await pickParty(page, 2);
+    await pickDay(page, 2);
+    await pickTime(page, '19:00');
+    await fillGuest(page);
+    await page.locator('[name="phone"]').fill('123');
+    await page.locator('[data-submit]').click();
+    await expect(page.locator('#reserve-phone-error')).toHaveText(data.form.phone);
+    await expect(page.locator('[data-state="wizard"]')).toBeVisible();
+    expect(sent).toHaveLength(0);
   });
 
   test('status REQUESTED muestra el titulo de confirmacion solicitada', async ({ page }) => {
@@ -153,7 +191,7 @@ test.describe('wizard /reserve/ (API mocked)', () => {
     await page.locator('[data-submit]').click();
     await expect(page.locator('#reserve-first-name-error')).toHaveText(data.form.required);
     await expect(page.locator('#reserve-email-error')).toHaveText(data.form.email);
-    await expect(page.locator('#reserve-phone-error')).toHaveText(data.form.phone);
+    await expect(page.locator('#reserve-phone-error')).toHaveText(data.form.phoneRequired);
     await expect(page.locator('[name="firstName"]')).toBeFocused();
     await expect(page.locator('[data-panel="4"]')).toBeVisible();
   });
@@ -173,9 +211,15 @@ test.describe('wizard /reserve/ (API mocked)', () => {
     await expect(page.locator('[name="firstName"]')).toHaveValue('Humo');
   });
 
-  test('NO_AVAILABILITY tras el POST devuelve al paso de horas y recarga slots', async ({ page }) => {
+  test('la confirmacion sin ref muestra el estado de no encontrada', async ({ page }) => {
+    await page.goto('/reserve/confirmation/');
+    await expect(page.locator('h1')).toHaveText("We couldn't find that reservation");
+  });
+
+  test('NO_AVAILABILITY tras el POST devuelve al paso de horas, recarga slots y avisa', async ({ page }) => {
     mockPost(page, 409, () => ({ error: 'NO_AVAILABILITY', detail: 'sin hueco' }));
     await openWizard(page);
+    const data = await payloadOf(page);
     await pickParty(page, 2);
     await pickDay(page, 2);
     await pickTime(page, '19:00');
@@ -184,6 +228,7 @@ test.describe('wizard /reserve/ (API mocked)', () => {
     await expect(page.locator('[data-state="wizard"]')).toBeVisible();
     await expect(page.locator('[data-panel="3"]')).toBeVisible();
     await expect(page.locator('[data-slots] button[data-time]:not(:disabled)')).toHaveCount(3);
+    await expect(page.locator('[data-panel="3"] [data-panel-error]')).toHaveText(data.errors.NO_AVAILABILITY);
   });
 
   test('slots con error 409 muestra mensaje y boton de retry', async ({ page }) => {

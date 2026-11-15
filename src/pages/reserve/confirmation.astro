@@ -1,0 +1,90 @@
+---
+import Layout from '@/app/layout.astro';
+import Icon from '@/shared/ui/icon.astro';
+import Spiral from '@/shared/ui/spiral.astro';
+import { getReserveReceipt } from '@/features/reserve/reserve-receipt';
+import { getT, type Locale } from '@/shared/i18n/t';
+import { localizedPathname } from '@/shared/i18n/routing';
+
+const locale = Astro.currentLocale as Locale;
+const t = getT(locale);
+const reserveHref = localizedPathname('/reserve/', locale);
+const homeHref = localizedPathname('/', locale);
+const receipt = await getReserveReceipt(Astro.url.searchParams.get('ref'));
+
+const localeTags: Record<Locale, string> = { en: 'en-GB', es: 'es-ES', it: 'it-IT' };
+const slotFormatter = new Intl.DateTimeFormat(localeTags[locale], {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Europe/Madrid',
+});
+const formatSlot = (value: string) => {
+  const time = Date.parse(value);
+  return Number.isFinite(time) ? slotFormatter.format(time) : '—';
+};
+
+const statusLabel = (status: string) => {
+  const key = `account.reservations.status.${status}`;
+  const label = t(key);
+  return label === key ? status.toLowerCase() : label;
+};
+---
+
+<Layout title={t('seo.confirm.title')} description={t('seo.reserve.description')} noindex>
+  <section class="relative overflow-hidden px-4 pt-40 pb-24 md:px-12 xl:px-24">
+    <Spiral
+      rings={12}
+      class="pointer-events-none absolute top-0 right-0 w-140 translate-x-1/3 -translate-y-1/3 text-crema/10"
+    />
+    <div class="relative mx-auto max-w-2xl rounded-3xl bg-bg/60 p-6 text-center ring-1 ring-crema/10 backdrop-blur-xl md:p-10">
+      {
+        receipt ? (
+          <>
+            <h1 class="text-3xl lg:text-4xl">
+              {receipt.status === 'RESERVED'
+                ? t('reserve.confirm.title.reserved')
+                : receipt.status === 'REQUESTED'
+                  ? t('reserve.confirm.title.requested')
+                  : statusLabel(receipt.status)}
+            </h1>
+            <p class="mx-auto mt-4 max-w-md text-base text-crema/70">
+              {receipt.status === 'RESERVED'
+                ? t('reserve.confirm.body.reserved')
+                : receipt.status === 'REQUESTED'
+                  ? t('reserve.confirm.body.requested')
+                  : t('reserve.confirm.body.reserved')}
+            </p>
+            <dl class="mx-auto mt-8 grid max-w-sm gap-3 text-left text-sm">
+              <div class="flex justify-between gap-6">
+                <dt class="text-crema/50">{t('reserve.confirm.when')}</dt>
+                <dd class="text-crema">{formatSlot(receipt.instant)}</dd>
+              </div>
+              <div class="flex justify-between gap-6">
+                <dt class="text-crema/50">{t('reserve.steps.people')}</dt>
+                <dd class="text-crema">{t('reserve.confirm.guests', { count: receipt.partySize })}</dd>
+              </div>
+              <div class="flex justify-between gap-6">
+                <dt class="text-crema/50">{t('reserve.confirm.reference')}</dt>
+                <dd class="text-crema/70 break-all">{receipt.id}</dd>
+              </div>
+            </dl>
+            <a href={reserveHref} class="btn btn-ghost mt-10">
+              <Icon name="clock" class="size-5" />
+              <span>{t('common.reserveTable')}</span>
+            </a>
+          </>
+        ) : (
+          <>
+            <h1 class="text-3xl lg:text-4xl">{t('reserve.missing.title')}</h1>
+            <p class="mx-auto mt-4 max-w-md text-base text-crema/70">{t('reserve.missing.body')}</p>
+            <a href={reserveHref} class="btn btn-primary mt-10">
+              <Icon name="clock" class="size-5" />
+              <span>{t('common.reserveTable')}</span>
+            </a>
+          </>
+        )
+      }
+    </div>
+    <p class="relative mx-auto mt-6 max-w-2xl text-center text-sm text-crema/50">{t('contact.hoursText')}</p>
+  </section>
+</Layout>

@@ -10,18 +10,24 @@ import instagram from '@phosphor-icons/core/assets/light/instagram-logo-light.sv
 import mapPin from '@phosphor-icons/core/assets/light/map-pin-light.svg?raw';
 import phone from '@phosphor-icons/core/assets/light/phone-light.svg?raw';
 import plus from '@phosphor-icons/core/assets/light/plus-light.svg?raw';
+import search from '@phosphor-icons/core/assets/light/magnifying-glass-light.svg?raw';
 import star from '@phosphor-icons/core/assets/fill/star-fill.svg?raw';
 import starHalf from '@phosphor-icons/core/assets/fill/star-half-fill.svg?raw';
 
-const icons = { arrowUpRight, arrowLeft, arrowRight, arrowDown, clock, envelope, gift, instagram, mapPin, phone, plus, star, starHalf };
+const icons = { arrowUpRight, arrowLeft, arrowRight, arrowDown, clock, envelope, gift, instagram, mapPin, phone, plus, search, star, starHalf };
 
 interface Props {
   name: keyof typeof icons;
   class?: string;
+  [key: string]: unknown;
 }
 
-const { name, class: className = 'size-4' } = Astro.props;
-const svg = icons[name].replace('<svg ', `<svg aria-hidden="true" focusable="false" class="${className}" `);
+const { name, class: className = 'size-4', ...rest } = Astro.props;
+const extra = Object.entries(rest)
+  .filter(([, value]) => ['string', 'boolean', 'number'].includes(typeof value))
+  .map(([key, value]) => ` ${key}="${String(value).replaceAll('"', '&quot;')}"`)
+  .join('');
+const svg = icons[name].replace('<svg ', `<svg aria-hidden="true" focusable="false" class="${className}"${extra} `);
 ---
 
 <Fragment set:html={svg} />
