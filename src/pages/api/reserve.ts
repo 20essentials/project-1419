@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { createReserveBooking } from '@/features/reserve/create-reservation';
 import { jsonOk, isReserveError, jsonError, RESERVE_ERROR_STATUS } from '@/features/reserve/reserve-error';
+import { getMemberSession, requestIsSecure } from '@/shared/auth/session';
+import { getMemberContactId } from '@/features/account/account-data';
 
 interface CreateReserveBody {
   date?: unknown;
@@ -18,11 +20,20 @@ function asString(value: unknown): string {
   return typeof value === 'string' ? value : '';
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const body = (await request.json().catch(() => null)) as CreateReserveBody | null;
     if (!body) {
       return jsonError('INVALID_INPUT', RESERVE_ERROR_STATUS.INVALID_INPUT, 'JSON inválido');
+    }
+    let contactId: string | undefined;
+    const session = await getMemberSession(cookies, requestIsSecure(request));
+    if (session) {
+      try {
+        contactId = (await getMemberContactId(session)) ?? undefined;
+      } catch {
+        contactId = undefined;
+      }
     }
     const receipt = await createReserveBooking({
       date: asString(body.date),
@@ -34,6 +45,7 @@ export const POST: APIRoute = async ({ request }) => {
       email: asString(body.email),
       phone: asString(body.phone),
       note: asString(body.note) || undefined,
+      contactId,
     });
     return jsonOk(
       {

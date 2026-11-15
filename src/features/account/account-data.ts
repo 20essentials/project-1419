@@ -1,8 +1,10 @@
 import type { Tokens } from '@wix/sdk';
 import { getMemberClient } from '@/shared/wix/member-client';
+import { getAdminClient } from '@/shared/wix/admin-client';
 
 export interface AccountProfile {
   id: string;
+  contactId: string;
   firstName: string;
   lastName: string;
   nickname: string;
@@ -20,8 +22,20 @@ export interface AccountOrder {
   status: string;
 }
 
+export interface AccountReservation {
+  id: string;
+  date: string;
+  partySize: number;
+  status: string;
+}
+
 export type AccountOrdersResult =
   | { state: 'ready'; orders: AccountOrder[] }
+  | { state: 'empty' }
+  | { state: 'error' };
+
+export type AccountReservationsResult =
+  | { state: 'ready'; reservations: AccountReservation[] }
   | { state: 'empty' }
   | { state: 'error' };
 
@@ -46,6 +60,7 @@ export const getAccountProfile = async (tokens: Tokens): Promise<AccountProfile>
   const nickname = profile?.nickname ?? '';
   return {
     id: member._id,
+    contactId: member.contactId ?? '',
     firstName,
     lastName,
     nickname,
@@ -87,6 +102,52 @@ export const getAccountOrders = async (tokens: Tokens, memberId: string): Promis
   if (mapped.length === 0) return { state: 'empty' };
   mapped.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
   return { state: 'ready', orders: mapped.slice(0, MAX_ORDERS) };
+};
+
+export const getAccountReservations = async (
+  tokens: Tokens,
+  contactId: string,
+): Promise<AccountReservationsResult> => {
+  if (!contactId) return { state: 'empty' };
+  try {
+    const client = getAdminClient();
+    const { reservations: list } = await client.reservations.searchReservations({
+      cursorPaging: { limit: MAX_ORDERS },
+      filter: {
+        'reservee.contactId': { $eq: contactId },
+        status: { $in: ['RESERVED', 'REQUESTED', 'HELD', 'SEATED'] },
+        archived: { $ne: true },
+      },
+      sort: [{ fieldName: 'details.startDate', order: 'DESC' }],
+      timeZone: 'Europe/Madrid',
+    });
+    const mapped = (list ?? []).flatMap((reservation) => {
+      const id = reservation._id;
+      const date = reservation.details?.startDate;
+      if (!id || !date) return [];
+      const instant = date instanceof Date ? date.toISOString() : String(date);
+      return [
+        {
+          id,
+          date: instant,
+          partySize: reservation.details?.partySize ?? 0,
+          status: typeof reservation.status === 'string' ? reservation.status : '',
+        },
+      ];
+    });
+    if (mapped.length === 0) return { state: 'empty' };
+    mapped.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+    return { state: 'ready', reservations: mapped.slice(0, MAX_ORDERS) };
+  } catch (error) {
+    console.error('[account] reservations lookup failed', error);
+    return { state: 'error' };
+  }
+};
+
+export const getMemberContactId = async (tokens: Tokens): Promise<string | null> => {
+  const client = getMemberClient(tokens);
+  const { member } = await client.members.getCurrentMember({ fieldsets: ['FULL'] });
+  return member?.contactId ?? null;
 };
 
 export const updateAccountProfile = async (

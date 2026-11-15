@@ -3,15 +3,16 @@ import Icon from '@/shared/ui/icon.astro';
 import Spiral from '@/shared/ui/spiral.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
-import type { AccountOrdersResult, AccountProfile } from './account-data';
+import type { AccountOrdersResult, AccountProfile, AccountReservationsResult } from './account-data';
 
 interface Props {
   profile: AccountProfile | null;
   orders: AccountOrdersResult | null;
   ordersError?: boolean;
+  reservations?: AccountReservationsResult | null;
 }
 
-const { profile, orders, ordersError = false } = Astro.props;
+const { profile, orders, ordersError = false, reservations = null } = Astro.props;
 const locale = Astro.currentLocale as Locale;
 const t = getT(locale);
 
@@ -21,6 +22,7 @@ const formError = params.get('error') === 'profile' ? 'profile' : params.get('er
 
 const homeHref = localizedPathname('/', locale);
 const giftHref = localizedPathname('/gift/', locale);
+const reserveHref = localizedPathname('/reserve/', locale);
 const profileAction = '/api/account/profile';
 
 const displayName = (profile?.firstName || profile?.nickname || '').trim();
@@ -31,6 +33,21 @@ const dateFormatter = new Intl.DateTimeFormat(localeTags[locale], { dateStyle: '
 const formatDate = (value: string) => {
   const time = Date.parse(value);
   return Number.isFinite(time) ? dateFormatter.format(time) : '—';
+};
+const slotFormatter = new Intl.DateTimeFormat(localeTags[locale], {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Europe/Madrid',
+});
+const formatSlot = (value: string) => {
+  const time = Date.parse(value);
+  return Number.isFinite(time) ? slotFormatter.format(time) : '—';
+};
+
+const reservationStatusLabel = (status: string) => {
+  const key = `account.reservations.status.${status}`;
+  const label = t(key);
+  return label === key ? status.toLowerCase() : label;
 };
 
 const statusLabel = (status: string) => {
@@ -69,6 +86,52 @@ const rowClass = 'flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 
   {
     profile && (
       <div class="relative mx-auto mt-16 grid max-w-4xl gap-6 lg:grid-cols-2">
+        <div
+          data-reveal
+          class="rounded-3xl bg-bg/60 p-6 ring-1 ring-crema/10 backdrop-blur-xl md:p-10 lg:col-span-2"
+        >
+          <h2 class="text-2xl">{t('account.reservations.title')}</h2>
+
+          {reservations?.state === 'error' && (
+            <p role="alert" class="mt-6 rounded-2xl bg-teja/10 px-4 py-3 text-left text-sm text-teja ring-1 ring-teja/40">
+              {t('account.reservations.error')}
+            </p>
+          )}
+
+          {
+            reservations?.state === 'ready' && reservations.reservations.length > 0 && (
+              <ul class="mt-6 divide-y divide-crema/10 text-sm">
+                {reservations.reservations.map((reservation) => (
+                  <li class={rowClass}>
+                    <div class="min-w-0 flex-1 text-left">
+                      <p class="text-base text-crema">{formatSlot(reservation.date)}</p>
+                      <p class="mt-1 text-crema/60">
+                        {t('account.reservations.guests', { count: reservation.partySize })}
+                      </p>
+                    </div>
+                    <span class="rounded-full bg-crema/5 px-3 py-1 text-xs text-crema/70 ring-1 ring-crema/15">
+                      {reservationStatusLabel(reservation.status)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+
+          {
+            reservations?.state === 'empty' && (
+              <div class="mt-8 text-left">
+                <p class="text-base text-crema/70">{t('account.reservations.empty.title')}</p>
+                <p class="mt-2 max-w-xs text-sm text-crema/50">{t('account.reservations.empty.body')}</p>
+                <a href={reserveHref} class="btn btn-primary mt-6">
+                  <Icon name="clock" class="size-5" />
+                  <span>{t('account.reservations.empty.cta')}</span>
+                </a>
+              </div>
+            )
+          }
+        </div>
+
         <div
           data-reveal
           class="rounded-3xl bg-bg/60 p-6 ring-1 ring-crema/10 backdrop-blur-xl md:p-10"

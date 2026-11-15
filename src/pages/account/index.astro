@@ -4,8 +4,10 @@ import AccountPage from '@/features/account/account-page.astro';
 import {
   getAccountOrders,
   getAccountProfile,
+  getAccountReservations,
   type AccountOrdersResult,
   type AccountProfile,
+  type AccountReservationsResult,
 } from '@/features/account/account-data';
 import { getMemberSession, requestIsSecure } from '@/shared/auth/session';
 import { getT, type Locale } from '@/shared/i18n/t';
@@ -24,6 +26,7 @@ let ordersError = params.get('orders') === 'error';
 
 let profile: AccountProfile | null = null;
 let orders: AccountOrdersResult | null = null;
+let reservations: AccountReservationsResult | null = null;
 try {
   profile = await getAccountProfile(session);
   if (!ordersError) {
@@ -34,6 +37,7 @@ try {
       ordersError = true;
     }
   }
+  reservations = await getAccountReservations(session, profile.contactId);
 } catch {
   profile = null;
 }
@@ -45,5 +49,5 @@ try {
   noindex
   session={profile ? { name: profile.firstName || profile.nickname } : null}
 >
-  <AccountPage profile={profile} orders={orders} ordersError={ordersError} />
+  <AccountPage profile={profile} orders={orders} ordersError={ordersError} reservations={reservations} />
 </Layout>
