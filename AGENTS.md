@@ -24,4 +24,4 @@
 
 ## Siguientes pasos
 - La marca del restaurante es Nami (inventada): las paginas existen; email hola@namicrestaurant.com, Instagram @nami.barcelona.
-- El dominio inventado es namicrestaurant.com: registrar dominio y cuentas cuando exista el proyecto real (ver step-100).
+- No habra dominio propio: la URL publica y canonica es https://nami-sushi.nami-sushi.workers.dev/ (ver step-100/step-101). `namicrestaurant.com` queda solo como marca/email inventados.

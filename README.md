@@ -273,8 +273,9 @@ English is the primary language and the source of keys: `src/translations.json` 
 The site is a **Wix Headless self-managed** project: it does *not* deploy to Wix Hosting.
 
 - `pnpm deploy` builds with Astro and publishes to **Cloudflare Workers** with `wrangler` (`wrangler.jsonc`).
+- Live site: **https://nami-sushi.nami-sushi.workers.dev** — the public and canonical URL (no custom domain; canonical, sitemap, hreflang and JSON-LD all use it).
 - Secrets live in `.dev.vars` locally and as Cloudflare/Wix secrets in production — never commit them.
-- Real payments (Wix Payments) and the custom domain `namicrestaurant.com` are parked until the owner publishes; online reservations already work.
+- Real payments (Wix Payments) are parked until the owner upgrades; online reservations already work. There is no custom domain: the workers.dev URL is the production site.
 
 ([back to top](#readme-top))
 
@@ -289,7 +290,7 @@ The site is developed **step by step**. Every `.opencode/commands/step-N-*.md` f
 - `ROADMAP.md` — backlog status (`pending` → `✅ done` → `🅿️ parket`) and closed decisions.
 - `AGENTS.md` — conventions, work rules and environment.
 
-Current state: **18 / 21 steps done** — infrastructure, i18n, reservations (wizard + E2E), live menu, legal pages, custom auth, account, gift cards, dish photos, experiences, cancellation policy and Google reviews. Parked: deploy hook, `/reservar/` 301 redirect and domain registration.
+Current state: **22 / 24 steps done** — infrastructure, i18n, reservations (wizard + E2E), live menu, legal pages, custom auth, account, gift cards, dish photos, experiences, cancellation policy, Google reviews and the Cloudflare deploy. Pending: production auth allow-list on the workers.dev URL. Parked: runtime translations (replacing the old deploy-hook plan).
 
 ([back to top](#readme-top))
 
