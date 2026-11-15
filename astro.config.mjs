@@ -13,13 +13,19 @@ export default defineConfig({
   adapter: cloudflare({ imageService: { build: 'compile' }, prerenderEnvironment: 'node' }),
   site: import.meta.env.DEV
     ? 'http://localhost:4321/'
-    : 'https://namicrestaurant.com/',
+    : 'https://nami-sushi.nami-sushi.workers.dev/',
 
   i18n: {
     defaultLocale,
     locales: [...locales],
     fallback: { es: defaultLocale, it: defaultLocale },
     routing: { prefixDefaultLocale: false, fallbackType: 'rewrite' },
+  },
+
+  redirects: {
+    '/reservar': '/reserve/',
+    '/es/reservar': '/es/reserve/',
+    '/it/reservar': '/it/reserve/',
   },
 
   // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.

@@ -55,3 +55,13 @@ URL pública real servida por Workers: obtener el subdominio workers.dev (o domi
 - Si el dominio propio aún no existe, el deploy igual es válido: los auth redirects de Wix (allow-list del step-02) deben linkear la URL PÚBLICA REAL elegida.
 - Deploy re-pedido tras cada `wix translation pull` (Fase 1) — el deploy es manual durante el proyecto (ROADMAP "Extras futuros": deploy hook opcional).
 - Liberar puerto local al terminar la validación (AGENTS.md).
+
+## Resultado
+
+- 2026-11-15: cuenta `d960960gm@gmail.com` (`6e282139d74dddffddc8affdd92a11c1`) verificada; `wrangler login` OAuth OK.
+- Worker `nami-sushi` publicado en `https://nami-sushi.nami-sushi.workers.dev` (Version ID `51109f61-a18d-43d5-8260-ee96ffbd7b7f`).
+- KV `SESSION` provisionado como `nami-sushi-session` (`c427c19f2d9b4e198200952223b34268`) y fijado en `wrangler.jsonc#kv_namespaces`; sin el id, el segundo deploy falla con `10014` al re-provisionar.
+- `WIX_CLIENT_ID` como var pública en `wrangler.jsonc#vars`; `WIX_API_KEY`, `WIX_SITE_ID` y `WIX_CLIENT_SECRET` subidos con `wrangler secret bulk` (fichero temporal borrado).
+- Validación: `/`, `/menu/`, `/reserve/`, `/legal/`, `/robots.txt`, `/sitemap-index.xml` 200; ruta inexistente 404. Canonical `https://nami-sushi.nami-sushi.workers.dev/` y hreflang en/es/it/x-default correctos.
+- **Decisión del owner (2026-11-15):** no habrá dominio propio; la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/` (`site` actualizado y re-deploy, Version ID `8e3731e8-4a68-4480-80a3-1622aa5b5b7f`).
+- Pendiente para step-101: añadir esa URL a la allow-list de redirects de Wix antes de probar login en producción.

@@ -4,6 +4,15 @@
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "WIX_CLIENT_ID": "dcb89266-8d8c-4df3-ae46-b8772491bd28"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SESSION",
+      "id": "c427c19f2d9b4e198200952223b34268"
+    }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"

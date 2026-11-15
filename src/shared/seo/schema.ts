@@ -119,7 +119,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
           closes: '00:00',
         },
         contactPoint: { '@type': 'ContactPoint', telephone, contactType: 'reservations' },
-        sameAs: [links.instagram, 'https://www.namicrestaurant.com/'],
+        sameAs: [links.instagram, 'https://nami-sushi.nami-sushi.workers.dev/'],
         mainEntityOfPage: { '@id': webpageId },
         potentialAction: {
           '@type': 'ReserveAction',
