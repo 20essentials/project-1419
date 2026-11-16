@@ -27,6 +27,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+zyo/*
 
 # media de trabajo: vídeos, keyframes y respuestas de Higgsfield (pesan mucho o llevan URLs de la cuenta)
 media/**/*.mp4

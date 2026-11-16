@@ -61,3 +61,23 @@ Paso **pendiente**: se ejecuta tras step-23. **Decisión cerrada:** no habrá do
 - Si el app de Wix no permite varios orígenes, usar un app de producción separado del de desarrollo (misma site) en vez de romper dev.
 - No hay step de dominio: `namicrestaurant.com` queda solo como marca/email inventados; no añadir rutas ni redirects de dominio.
 - Los textos legales ya usan `nami-sushi.nami-sushi.workers.dev` (en/es/it); el email `hola@namicrestaurant.com` se mantiene como contacto de marca.
+
+## Resultado
+
+🔶 En curso (2026-11-16) — todo el tramo automatizable está verificado contra producción real; queda el tramo humano del roundtrip.
+
+- **Allow-list final** (leída con `GET oauth-app/v1/oauth-apps/{id}` usando `client_credentials` con los secretos de `.dev.vars` — el token del MCP da 403 por falta de scope `SCOPE.OAUTH_APP.READ`): `allowedRedirectUris` = 10 URIs, 5 de dev en `http://localhost:4321/...` y 5 de producción en `https://nami-sushi.nami-sushi.workers.dev/...` (`/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/`, `/it/login/`); `allowedRedirectDomains` = `localhost:4321` + `nami-sushi.nami-sushi.workers.dev`. Sin restos de `namicrestaurant.com` (retirados, como preveía el paso 2). El aviso "Not a valid domain" del dashboard es cosmético (AGENTS.md).
+- **Verificado con curl contra producción** (https://nami-sushi.nami-sushi.workers.dev):
+  - Rutas 200: `/`, `/menu/`, `/reserve/`, 4 legales, `/gift/`, `/login/`, `/signup/`, `/sitemap-index.xml`, `/robots.txt`. `/account/` → 302 a login localizado con `returnTo` (en/es/it).
+  - Seguridad de origen: `returnTo` a dominio ajeno sanatizado (renderiza, no redirige); `/api/auth/callback` sin `code` → 302 a `/login/?error=oauth_callback` (sin 500); `/api/auth/session` POST vacío → 400; `/api/gift/checkout` con `Origin` ajeno → 403.
+  - **Arranque OAuth**: `/api/auth/login` → 302 a la página hosted de Wix con `redirectUri=https://nami-sushi.nami-sushi.workers.dev/api/auth/callback` y Wix **la acepta** (emite authorize + sessionToken, sin error de redirect URI inválido).
+  - SEO: canonical, hreflang (en/es/it/x-default) y `og:url` con la URL de producción.
+  - `/api/reserve/setup` 200 completo: Europe/Madrid, `onlineReservationsEnabled` true, approval AUTOMATIC, partySize 1–8, notice 60 MIN, turnover 90, slotInterval 15, ventana 60 días, 2 experiencias (`short`/`full` del step-17).
+- **Verificado en Chrome real (DevTools)**: `/login/` renderiza form email/password + botones Google/Facebook + enlace reset con `returnTo=/account/` + iframe reCAPTCHA enterprise cargado. Tabs cerradas y Chrome del MCP matado al terminar; sin restos `.tmp-step24-*` en la raíz.
+- **Pendiente (tramo humano — el login email/password contra Wix no se puede automatizar: rechaza tokens reCAPTCHA generados por bots, AGENTS.md):**
+  1. Login real en incógnito (Google con `d3m0ns300@gmail.com`, o un miembro con password conocida creado a mano) → volver a `/account/` con sesión y nombre en el header.
+  2. Logout desde el header → home + cookies limpias.
+  3. Signup con email nuevo de prueba → verificar por código → entrar → borrar el miembro al terminar (no inventar/borrar miembros sin permiso).
+  4. Password reset: solicitar el enlace y comprobar que vuelve a la URL de producción.
+  5. Gift checkout completo desde `/gift/` → hosted checkout de Wix → retorno a la URL de producción.
+- Al cerrar el tramo humano: ROADMAP fila 24 → ✅ y resumen rápido → 24/24.

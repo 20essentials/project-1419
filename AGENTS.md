@@ -38,6 +38,36 @@
 - No inventes ni borres miembros sin permiso. Si necesitas uno con password conocida, pide al usuario que lo cree a mano.
 - La allow-list OAuth ya incluye `localhost:4321` y `nami-sushi.nami-sushi.workers.dev` con redirects a `/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/` e `/it/login/`. El aviso "Not a valid domain" del dashboard es cosmetico: no elimines el dominio guardado.
 
+## Auth en produccion (step-24, verificado 2026-11-16)
+
+- La allow-list quedó cerrada y verificada leyendo el app con `GET oauth-app/v1/oauth-apps/{id}` autenticado con `client_credentials` y scope `SCOPE.OAUTH_APP.READ` (token de `client_credentials` desde `.dev.vars` con curl; el token del MCP de Wix da 403 para este endpoint). Nunca imprimir el access token ni el secret al hacer esto.
+- Contenido final: 10 URIs exactas (5 dev en `http://localhost:4321/...` + 5 produccion en `https://nami-sushi.nami-sushi.workers.dev/...`: `/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/`, `/it/login/`) y 2 dominios permitidos (`localhost:4321`, `nami-sushi.nami-sushi.workers.dev`). Los URIs de `namicrestaurant.com` fueron retirados. Detalle completo en el `## Resultado` de `step-24-auth-allowlist.md`.
+- El arranque OAuth real ya funciona en produccion: `/api/auth/login` -> 302 a la pagina hosted de Wix con `redirectUri=https://nami-sushi.nami-sushi.workers.dev/api/auth/callback` y Wix lo acepta (sin error de redirect URI invalido).
+- Verificado contra produccion con curl + Chrome DevTools (no repetir sin necesidad): rutas 200 (/, /menu/, /reserve/, 4 legales, /gift/, /login/, /signup/, sitemap, robots); `/account/` -> 302 a login localizado + returnTo en 3 locales; returnTo a dominio ajeno sanatizado; `/api/auth/callback` sin code -> 302 `/login/?error=oauth_callback`; `/api/auth/session` POST vacio -> 400; `/api/gift/checkout` con Origin ajeno -> 403; canonical/hreflang/og:url en la URL workers.dev; `/api/reserve/setup` completo (Europe/Madrid, reservas enabled, AUTOMATIC, party 1-8, notice 60 MIN, 2 experiencias); `/login/` renderiza form + social + reCAPTCHA enterprise.
+- Solo queda el tramo humano del roundtrip (ver la seccion Manual Human).
+
+## Manual Human — lo que yo debo probar
+
+Ultimo tramo del step-24, solo ejecutable por el owner: el login real contra Wix no se
+puede automatizar (rechaza tokens reCAPTCHA generados por bots, ver arriba). Todo lo
+automatizable ya esta verificado contra produccion (seccion anterior y `## Resultado`
+de `.opencode/commands/step-24-auth-allowlist.md`).
+
+En incognito sobre `https://nami-sushi.nami-sushi.workers.dev`:
+
+1. **Login real**: Google con `d3m0ns300@gmail.com` (o un miembro email/password con
+   password conocida, creado a mano) -> volver a `/account/` con sesion y nombre en el header.
+2. **Logout** desde el header -> vuelta a home + cookies limpias.
+3. **Signup** con un email nuevo de prueba -> verificar por el codigo de email -> entrar
+   -> borrar el miembro de prueba al terminar.
+4. **Password reset**: pedir el enlace desde "Forgot your password?" y comprobar que
+   vuelve a la URL de produccion.
+5. **Gift checkout** completo desde `/gift/` -> hosted checkout de Wix -> retorno a la
+   URL de produccion.
+
+Al cerrar los 5 checks: marca el step-24 como ✅ en `ROADMAP.md` (resumen rapido -> 24/24)
+y añade las evidencias al `## Resultado` del step file.
+
 ## Server Islands y sesion
 
 - En este proyecto el header usa Server Islands (`src/app/header-account.astro` con `server:defer`) para leer la sesion. En Astro 7 **no** se renderiza un `<astro-island>` para `server:defer`: Astro emite el fallback + un `<script data-island-id>` que hace fetch a `/_server-islands/HeaderAccount` y reemplaza el nodo. Para verificar que el island corre, busca `data-island-id` / `server-island` en el HTML y la peticion en `performance.getEntriesByType('resource')`; no busques `<astro-island>`.

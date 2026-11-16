@@ -40,9 +40,9 @@ Table of contents
 - **Experiences** for two with fixed price: Short (€150), Full (€250, most popular) and wine pairing (+€100).
 - **Gift cards** (`/gift/`) — real Wix product with presets 150/250 + custom 50–1000, add-to-cart and **hosted checkout**.
 - **Members** — custom login (`/login/`) and signup with email/password and Google/Facebook, HttpOnly cookie sessions, invisible captcha.
-- **Account** (`/account/`) — editable profile and order history via `@wix/ecom`.
+- **Account** (`/account/`) — editable profile, order history via `@wix/ecom` and reservation history via `searchReservations`.
 - **FAQs**, press quotes and Google reviews rating (4.8 · 320 reviews).
-- **4 legal pages** (legal notice, privacy, cookies, purchase terms) prerendered with JSON-LD.
+- **4 legal pages** (legal notice, privacy, cookies, purchase terms) with JSON-LD.
 - **Multilingual** — English default + `/es/` + `/it/` with a language switcher, per-locale SEO, hreflang and i18n sitemap.
 
 <div align="center">
@@ -253,11 +253,11 @@ Push new keys from `src/translations.json` to the Wix dashboard
 
 [](#languages--translations)
 
-English is the primary language and the source of keys: `src/translations.json` (≈ 350 keys). Push/pull flow with the Wix dashboard's Translation Manager (`Wix Multilingual`):
+English is the primary language and the source of keys: `src/translations.json` (≈ 460 keys). Push/pull flow with the Wix dashboard's Translation Manager (`Wix Multilingual`):
 
-- Editors translate in the dashboard: **Website Content → Multilingual → Edit Translations → Headless tab**, then _Save and Publish_.
-- `pnpm translations:pull` downloads the JSON to `.wix/multilingual/translations/{es,it}.json`; `getT()` (`src/shared/i18n/`) consumes them at build time with a per-key fallback to English.
-- The pulled JSON is committed, so builds are reproducible without a CLI session. `pnpm build` attempts `wix translation pull` before `astro build`; in CI use `wix login --api-key`.
+- Editors translate in the dashboard: **Website Content → Multilingual → Edit Translations → Headless tab**, then _Save and Publish_. Since the runtime-translations step, published edits go live in **~5 minutes** without a deploy.
+- `getT()` (`src/shared/i18n/`) is async and serves es/it **at runtime** from the Wix translation-content API, cached in memory (60 s) and in KV (`TRANSLATIONS`, 5 min TTL + warm backup), with the build-time JSON as final fallback.
+- `pnpm translations:pull` downloads the JSON to `.wix/multilingual/translations/{es,it}.json`; the pulled JSON is committed, so builds are reproducible without a CLI session. `pnpm build` attempts `wix translation pull` before `astro build`; in CI use `wix login --api-key`.
 - To push new keys to the dashboard: `pnpm translations:push` (it deletes unused keys — careful).
 
 ([back to top](#readme-top))
@@ -288,7 +288,7 @@ The site is developed **step by step**. Every `.opencode/commands/step-N-*.md` f
 - `ROADMAP.md` — backlog status (`pending` → `✅ done` → `🅿️ parket`) and closed decisions.
 - `AGENTS.md` — conventions, work rules and environment.
 
-Current state: **22 / 24 steps done** — infrastructure, i18n, reservations (wizard + E2E), live menu, legal pages, custom auth, account, gift cards, dish photos, experiences, cancellation policy, Google reviews and the Cloudflare deploy. Pending: production auth allow-list on the workers.dev URL. Parked: runtime translations (replacing the old deploy-hook plan).
+Current state: **23 / 24 steps done, 1 in progress** — infrastructure, i18n (with runtime translations from the Wix API + KV), reservations (wizard + E2E), live menu, legal pages, custom auth, account (orders + reservations), gift cards, dish photos, experiences, cancellation policy, Google reviews and the Cloudflare deploy. In progress: production auth smoke on the workers.dev URL (the OAuth allow-list is already registered there).
 
 ([back to top](#readme-top))
 
