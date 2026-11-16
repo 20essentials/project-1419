@@ -10,7 +10,7 @@ import { getT, locales, defaultLocale } from './src/shared/i18n/t.ts';
 // https://astro.build/config
 export default defineConfig({
   output: 'server',
-  adapter: cloudflare({ imageService: { build: 'compile' }, prerenderEnvironment: 'node' }),
+  adapter: cloudflare({ imageService: { build: 'compile' }, prerenderEnvironment: 'workerd' }),
   site: import.meta.env.DEV
     ? 'http://localhost:4321/'
     : 'https://nami-sushi.nami-sushi.workers.dev/',
