@@ -23,7 +23,7 @@ con `pnpm deploy` (= `astro build && wrangler deploy`). Por defecto commit + pus
 ## Deploy
 
 5. `pnpm deploy`. OJO: usa `astro build` (no `pnpm build`, que corre `wix translation
-   pull` y exige login del CLI de Wix). Las traducciones se sirven runtime (step-22):
+pull` y exige login del CLI de Wix). Las traducciones se sirven runtime (step-22):
    no hacen falta en el build.
 6. Verifica que el deploy se completó (la salida de `wrangler deploy` imprime la
    Version ID y el upload). Si falla con error de KV `10014`, no re-provisionar

@@ -115,7 +115,8 @@ const fetchAll = async (): Promise<Record<string, Dictionary>> => {
     cursor = data.pagingMetadata?.cursors?.next;
   } while (cursor);
   for (const locale of RUNTIME_LOCALES) {
-    if (!payload[locale]) throw new Error(`Wix no devolvió contenido ${locale}`);
+    if (!payload[locale])
+      throw new Error(`Wix no devolvió contenido ${locale}`);
   }
   return payload;
 };
@@ -166,9 +167,7 @@ const loadPayload = async (): Promise<Record<string, Dictionary>> => {
   }
 };
 
-export const loadDictionary = async (
-  locale: Locale,
-): Promise<Dictionary> => {
+export const loadDictionary = async (locale: Locale): Promise<Dictionary> => {
   if (!RUNTIME_LOCALES.includes(locale)) return {};
   const payload = await loadPayload();
   return payload[locale] ?? { ...buildDictionaries[locale] };
