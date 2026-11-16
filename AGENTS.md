@@ -22,6 +22,28 @@
   - `src/pages/`: rutas thin que solo componen, sin logica
   - Deprecated: crear carpetas genericas tipo `src/components/`, `src/utils/`, `src/data/`, `src/layouts/`, `src/scripts/`, `src/wix/`, `src/i18n/` (quedan vacias tras el refactor, no reutilizarse)
 
+## Auth (Wix) y pruebas
+- No intentes automatizar login email/password contra Wix con Playwright ni Chrome DevTools: Wix detecta el navegador como bot y rechaza el token de reCAPTCHA (`invalidCaptchaToken` / `missingCaptchaToken`). No es un bug del codigo ni de la allow-list. Verifica el login real a mano o usa una sesion ya existente.
+- El login no pide reCAPTCHA (signup usa reCAPTCHA invisible "Per bot sospetti"), pero la pagina de auth compartida igual carga el script de reCAPTCHA. Un token generado por automatizacion falla aunque el login no lo exija.
+- `invalidEmail` en el login de Wix puede significar "identity not found" (el email no existe como miembro), no que el formato sea invalido. Antes de probar credenciales, confirma que el miembro existe.
+- Para inspeccionar miembros reales usa la API de Members, no supongas emails de prueba:
+  `POST https://www.wixapis.com/members/v1/members/query` con `{ "query": { "filter": { "loginEmail": "..." } }, "fieldsets": ["FULL"] }`.
+  Miembros reales de este sitio: `auth-smoke@namicrestaurant.com` (password desconocida) y `d3m0ns300@gmail.com` (creado con Google, nickname "Papi Papi"). `auth-prod-manual@namicrestaurant.com` NO existe; no lo uses.
+- No inventes ni borres miembros sin permiso. Si necesitas uno con password conocida, pide al usuario que lo cree a mano.
+- La allow-list OAuth ya incluye `localhost:4321` y `nami-sushi.nami-sushi.workers.dev` con redirects a `/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/` e `/it/login/`. El aviso "Not a valid domain" del dashboard es cosmetico: no elimines el dominio guardado.
+
+## Server Islands y sesion
+- En este proyecto el header usa Server Islands (`src/app/header-account.astro` con `server:defer`) para leer la sesion. En Astro 7 **no** se renderiza un `<astro-island>` para `server:defer`: Astro emite el fallback + un `<script data-island-id>` que hace fetch a `/_server-islands/HeaderAccount` y reemplaza el nodo. Para verificar que el island corre, busca `data-island-id` / `server-island` en el HTML y la peticion en `performance.getEntriesByType('resource')`; no busques `<astro-island>`.
+- Los Server Islands **si funcionan en paginas con `export const prerender = true`** (verificado en `/`): el HTML trae 2 scripts de `HeaderAccount` y el navegador hace 2 fetch a `/_server-islands/HeaderAccount` (~430 ms en dev). No quites el prerender solo por esto.
+- No agregues `astro-island { display: contents; }` para `server:defer`: en Astro 7 no existe ese elemento para Server Islands. Solo seria necesario si se agrega una isla de componente de framework cliente.
+- `src/shared/wix/env.ts` importa `cloudflare:workers`; con `prerenderEnvironment: 'node'` el dev/SSR falla con "Could not import `cloudflare:workers`" y el prerender del build falla con `ERR_UNSUPPORTED_ESM_URL_SCHEME` (`cloudflare:`). Los unicos valores validos del adapter son `'workerd'` y `'node'`: usar `prerenderEnvironment: 'workerd'` en `astro.config.mjs`.
+- El nombre de la cuenta usa `max-w-24 truncate` dentro de `.btn > span`, que aplica `text-box: trim-both cap alphabetic`. Esa combinacion recorta los descendentes (la "p" de "Papi") porque `truncate` agrega `overflow: hidden`. Solucion: desactivar `text-box` solo para el nombre (`.account-name { text-box: normal; }`), no quitar el truncado.
+
+## Dev / entorno
+- El puerto 4321 puede estar ocupado por OTRO proyecto de la maquina (por ejemplo `opencode-grabador-con-guias`). Antes de matar el PID LISTENING revisa su `CommandLine`; nunca cierres un servidor que no abriste.
+- Para pruebas de UI sin auth usa otro puerto (`pnpm astro dev --port 4322`) y matalo al terminar. Para callbacks OAuth usa 4321 porque es el unico localhost permitido en la allow-list.
+- Los scripts y logs temporales de auth viven en la raiz como `.tmp-step24-*`; borrarlos al cerrar el step. No dejar HTMLs ni tokens de prueba en `public/`.
+
 ## Siguientes pasos
 - La marca del restaurante es Nami (inventada): las paginas existen; email hola@namicrestaurant.com, Instagram @nami.barcelona.
-- No habra dominio propio: la URL publica y canonica es https://nami-sushi.nami-sushi.workers.dev/ (ver step-100/step-101). `namicrestaurant.com` queda solo como marca/email inventados.
+- No habra dominio propio: la URL publica y canonica es https://nami-sushi.nami-sushi.workers.dev/ (ver step-23/step-24). `namicrestaurant.com` queda solo como marca/email inventados.
