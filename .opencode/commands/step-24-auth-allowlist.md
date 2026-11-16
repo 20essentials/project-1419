@@ -64,7 +64,7 @@ Paso **pendiente**: se ejecuta tras step-23. **Decisión cerrada:** no habrá do
 
 ## Resultado
 
-🔶 En curso (2026-11-16) — todo el tramo automatizable está verificado contra producción real; queda el tramo humano del roundtrip.
+✅ Cerrado (2026-11-16). Allow-list verificada + tramo automatizable verificado contra producción (curl/Chrome) + roundtrip humano completado en incógnito.
 
 - **Allow-list final** (leída con `GET oauth-app/v1/oauth-apps/{id}` usando `client_credentials` con los secretos de `.dev.vars` — el token del MCP da 403 por falta de scope `SCOPE.OAUTH_APP.READ`): `allowedRedirectUris` = 10 URIs, 5 de dev en `http://localhost:4321/...` y 5 de producción en `https://nami-sushi.nami-sushi.workers.dev/...` (`/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/`, `/it/login/`); `allowedRedirectDomains` = `localhost:4321` + `nami-sushi.nami-sushi.workers.dev`. Sin restos de `namicrestaurant.com` (retirados, como preveía el paso 2). El aviso "Not a valid domain" del dashboard es cosmético (AGENTS.md).
 - **Verificado con curl contra producción** (https://nami-sushi.nami-sushi.workers.dev):
@@ -74,10 +74,10 @@ Paso **pendiente**: se ejecuta tras step-23. **Decisión cerrada:** no habrá do
   - SEO: canonical, hreflang (en/es/it/x-default) y `og:url` con la URL de producción.
   - `/api/reserve/setup` 200 completo: Europe/Madrid, `onlineReservationsEnabled` true, approval AUTOMATIC, partySize 1–8, notice 60 MIN, turnover 90, slotInterval 15, ventana 60 días, 2 experiencias (`short`/`full` del step-17).
 - **Verificado en Chrome real (DevTools)**: `/login/` renderiza form email/password + botones Google/Facebook + enlace reset con `returnTo=/account/` + iframe reCAPTCHA enterprise cargado. Tabs cerradas y Chrome del MCP matado al terminar; sin restos `.tmp-step24-*` en la raíz.
-- **Pendiente (tramo humano — el login email/password contra Wix no se puede automatizar: rechaza tokens reCAPTCHA generados por bots, AGENTS.md):**
-  1. Login real en incógnito (Google con `d3m0ns300@gmail.com`, o un miembro con password conocida creado a mano) → volver a `/account/` con sesión y nombre en el header.
-  2. Logout desde el header → home + cookies limpias.
-  3. Signup con email nuevo de prueba → verificar por código → entrar → borrar el miembro al terminar (no inventar/borrar miembros sin permiso).
-  4. Password reset: solicitar el enlace y comprobar que vuelve a la URL de producción.
-  5. Gift checkout completo desde `/gift/` → hosted checkout de Wix → retorno a la URL de producción.
-- Al cerrar el tramo humano: ROADMAP fila 24 → ✅ y resumen rápido → 24/24.
+- **Roundtrip humano (cerrado 2026-11-16, incógnito sobre producción — el login email/password contra Wix no se puede automatizar: rechaza tokens reCAPTCHA generados por bots, AGENTS.md):**
+  1. Login (Google) → `/account/` con sesión y nombre en el header. ✅
+  2. Logout desde el header → home + cookies limpias. ✅
+  3. Signup con un email de prueba → verificación por código de email → entrar; miembro de prueba borrado al terminar. ✅
+  4. Password reset: el enlace del email apunta al root del dominio de páginas de Wix (`wix-site-host.com/?forgotPasswordToken=...`) y da 404; la página real es `/__auth/forgot-password` y con el mismo token el reset se completa. Bug de Wix (reproducido también en el flujo interno de la página hosted), reportado; el `redirectUri` del SDK sí apunta a producción y se honra. Flujo verificado end-to-end salvo el path del link.
+  5. Gift checkout desde `/gift/` → hosted checkout de Wix → retorno a la URL de producción. ✅
+- ROADMAP 24/24 ✅. Sin secretos ni datos personales en el repo.

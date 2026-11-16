@@ -34,7 +34,7 @@
 - `invalidEmail` en el login de Wix puede significar "identity not found" (el email no existe como miembro), no que el formato sea invalido. Antes de probar credenciales, confirma que el miembro existe.
 - Para inspeccionar miembros reales usa la API de Members, no supongas emails de prueba:
   `POST https://www.wixapis.com/members/v1/members/query` con `{ "query": { "filter": { "loginEmail": "..." } }, "fieldsets": ["FULL"] }`.
-  Miembros reales de este sitio: `auth-smoke@namicrestaurant.com` (password desconocida) y `d3m0ns300@gmail.com` (creado con Google, nickname "Papi Papi"). `auth-prod-manual@namicrestaurant.com` NO existe; no lo uses.
+  Los emails de los miembros reales no se listan aqui: pedirselos al owner cuando hagan falta.
 - No inventes ni borres miembros sin permiso. Si necesitas uno con password conocida, pide al usuario que lo cree a mano.
 - La allow-list OAuth ya incluye `localhost:4321` y `nami-sushi.nami-sushi.workers.dev` con redirects a `/api/auth/callback`, `/auth/callback`, `/login/`, `/es/login/` e `/it/login/`. El aviso "Not a valid domain" del dashboard es cosmetico: no elimines el dominio guardado.
 
@@ -46,27 +46,23 @@
 - Verificado contra produccion con curl + Chrome DevTools (no repetir sin necesidad): rutas 200 (/, /menu/, /reserve/, 4 legales, /gift/, /login/, /signup/, sitemap, robots); `/account/` -> 302 a login localizado + returnTo en 3 locales; returnTo a dominio ajeno sanatizado; `/api/auth/callback` sin code -> 302 `/login/?error=oauth_callback`; `/api/auth/session` POST vacio -> 400; `/api/gift/checkout` con Origin ajeno -> 403; canonical/hreflang/og:url en la URL workers.dev; `/api/reserve/setup` completo (Europe/Madrid, reservas enabled, AUTOMATIC, party 1-8, notice 60 MIN, 2 experiencias); `/login/` renderiza form + social + reCAPTCHA enterprise.
 - Solo queda el tramo humano del roundtrip (ver la seccion Manual Human).
 
-## Manual Human — lo que yo debo probar
+## Manual Human — roundtrip de auth (cerrado 2026-11-16)
 
-Ultimo tramo del step-24, solo ejecutable por el owner: el login real contra Wix no se
-puede automatizar (rechaza tokens reCAPTCHA generados por bots, ver arriba). Todo lo
-automatizable ya esta verificado contra produccion (seccion anterior y `## Resultado`
-de `.opencode/commands/step-24-auth-allowlist.md`).
+Ultimo tramo del step-24, ejecutado por el owner en incognito sobre la URL de
+produccion (el login real contra Wix no se puede automatizar: rechaza tokens
+reCAPTCHA generados por bots, ver arriba). Resultados:
 
-En incognito sobre `https://nami-sushi.nami-sushi.workers.dev`:
-
-1. **Login real**: Google con `d3m0ns300@gmail.com` (o un miembro email/password con
-   password conocida, creado a mano) -> volver a `/account/` con sesion y nombre en el header. ✅
-2. **Logout** desde el header -> vuelta a home + cookies limpias.
-3. **Signup** con un email nuevo de prueba -> verificar por el codigo de email -> entrar
-   -> borrar el miembro de prueba al terminar.
-4. **Password reset**: pedir el enlace desde "Forgot your password?" y comprobar que
-   vuelve a la URL de produccion.
-5. **Gift checkout** completo desde `/gift/` -> hosted checkout de Wix -> retorno a la
-   URL de produccion.
-
-Al cerrar los 5 checks: marca el step-24 como ✅ en `ROADMAP.md` (resumen rapido -> 24/24)
-y añade las evidencias al `## Resultado` del step file.
+1. **Login** (Google) -> `/account/` con sesion y nombre en el header. ✅
+2. **Logout** desde el header -> home + cookies limpias. ✅
+3. **Signup** con un email de prueba -> verificacion por codigo de email -> entrar
+   -> miembro de prueba borrado al terminar. ✅
+4. **Password reset**: el enlace del email apunta al root del dominio de paginas
+   de Wix (`wix-site-host.com/?forgotPasswordToken=...`) y da 404. La pagina real
+   es `/__auth/forgot-password` y con el mismo token el reset se completa. Bug de
+   Wix (reproducido tambien en el flujo interno de la pagina hosted), reportado;
+   el `redirectUri` del SDK si apunta a produccion y se honra.
+5. **Gift checkout** desde `/gift/` -> hosted checkout de Wix -> retorno a la URL
+   de produccion. ✅
 
 ## Server Islands y sesion
 
