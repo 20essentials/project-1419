@@ -1,29 +1,61 @@
 ---
-import Icon from '@/shared/ui/icon.astro';
-import { getT } from '@/shared/i18n/t';
-import { press, googleReviews } from '@/shared/site/nami';
+import Icon from "@/shared/ui/icon.astro";
+import { getT } from "@/shared/i18n/t";
+import { press, googleReviews } from "@/shared/site/nami";
 
 const t = getT(Astro.currentLocale);
-const ratingLabel = googleReviews.rating.toLocaleString(Astro.currentLocale === 'en' ? 'en-GB' : 'es-ES');
+const ratingLabel = googleReviews.rating.toLocaleString(
+  Astro.currentLocale === "en" ? "en-GB" : "es-ES",
+);
 ---
 
-<section id="press" aria-labelledby="press-title" class="px-4 py-24 md:px-12 xl:px-24">
+<section
+  id="press"
+  aria-labelledby="press-title"
+  class="px-4 py-24 md:px-12 xl:px-24"
+>
   <figure class="mx-auto flex max-w-4xl flex-col items-center text-center">
-    <p id="press-title" data-reveal class="text-sm text-teja">{t('press.eyebrow')}</p>
+    <p id="press-title" data-reveal class="text-sm text-teja">
+      {t("press.eyebrow")}
+    </p>
     <blockquote data-reveal style="--d:100ms" cite={press.url} class="mt-6">
-      <p class="font-display text-3xl lg:text-5xl">“{t('press.quoteTitle')}”</p>
-      <p class="mx-auto mt-6 max-w-2xl text-base text-crema/70 lg:text-lg">{t('press.quoteExcerpt')}</p>
+      <p class="font-display text-3xl lg:text-5xl">“{t("press.quoteTitle")}”</p>
+      <p class="mx-auto mt-6 max-w-2xl text-base text-crema/70 lg:text-lg">
+        {t("press.quoteExcerpt")}
+      </p>
     </blockquote>
-    <figcaption data-reveal style="--d:200ms" class="mt-8 flex flex-col items-center gap-2 text-sm">
-      <span>{press.outlet} · {t('press.date')}</span>
-      <a href={press.url} class="link inline-flex items-center gap-2 text-crema/70" rel="noopener" target="_blank">
-        {t('press.readArticle')}
+    <figcaption
+      data-reveal
+      style="--d:200ms"
+      class="mt-8 flex flex-col items-center gap-2 text-sm"
+    >
+      <span>
+        {press.outlet} · {t("press.date")}
+      </span>
+      <a
+        href={press.url}
+        class="link inline-flex items-center gap-2 text-crema/70"
+        rel="noopener"
+        target="_blank"
+      >
+        {t("press.readArticle")}
         <Icon name="arrowUpRight" />
       </a>
     </figcaption>
   </figure>
-  <div data-reveal style="--d:300ms" class="mx-auto mt-10 flex max-w-4xl flex-col items-center gap-3">
-    <div class="flex items-center gap-1 text-teja" role="img" aria-label={t('press.reviews.stars', { rating: ratingLabel, count: googleReviews.count })}>
+  <div
+    data-reveal
+    style="--d:300ms"
+    class="mx-auto mt-10 flex max-w-4xl flex-col items-center gap-3"
+  >
+    <div
+      class="flex items-center gap-1 text-teja"
+      role="img"
+      aria-label={t("press.reviews.stars", {
+        rating: ratingLabel,
+        count: googleReviews.count,
+      })}
+    >
       <Icon name="star" class="size-4" />
       <Icon name="star" class="size-4" />
       <Icon name="star" class="size-4" />
@@ -31,9 +63,16 @@ const ratingLabel = googleReviews.rating.toLocaleString(Astro.currentLocale === 
       <Icon name="starHalf" class="size-4" />
       <span class="ms-2 font-display text-lg text-crema">{ratingLabel}</span>
     </div>
-    <p class="text-sm text-crema/60">{t('press.reviews.count', { count: googleReviews.count })}</p>
-    <a href={googleReviews.url} class="link inline-flex items-center gap-2 text-crema/70" rel="noopener" target="_blank">
-      {t('press.reviews.read')}
+    <p class="text-sm text-crema/60">
+      {t("press.reviews.count", { count: googleReviews.count })}
+    </p>
+    <a
+      href={googleReviews.url}
+      class="link inline-flex items-center gap-2 text-crema/70"
+      rel="noopener"
+      target="_blank"
+    >
+      {t("press.reviews.read")}
       <Icon name="arrowUpRight" />
     </a>
   </div>

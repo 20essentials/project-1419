@@ -1,6 +1,11 @@
-import type { Locale } from '@/shared/i18n/t';
-import { mapWixMenu, staticMenu, type MenuDataShape, type MenuSource } from '@/shared/site/menu-mapper';
-import { getWixMenu } from '@/shared/wix/menu-client';
+import type { Locale } from "@/shared/i18n/t";
+import {
+  mapWixMenu,
+  staticMenu,
+  type MenuDataShape,
+  type MenuSource,
+} from "@/shared/site/menu-mapper";
+import { getWixMenu } from "@/shared/wix/menu-client";
 
 export interface MenuData {
   source: MenuSource;
@@ -22,11 +27,11 @@ export async function getMenuData(locale: Locale): Promise<MenuData> {
     const menu = mapWixMenu(payload);
     if (menu.sections.length > 0) {
       cache = {
-        data: { source: 'wix', menu },
+        data: { source: "wix", menu },
         expiresAt: Date.now() + CACHE_TTL_MS,
       };
       return cache.data;
     }
   }
-  return { source: 'static', menu: staticMenu(locale) };
+  return { source: "static", menu: staticMenu(locale) };
 }

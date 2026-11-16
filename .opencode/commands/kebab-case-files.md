@@ -27,6 +27,7 @@ kebab-case y deja el proyecto compilando.
 5. Quita guiones duplicados y guiones al inicio/final.
 
 Ejemplos:
+
 - `MyComponent.astro` -> `my-component.astro`
 - `helperFunc.ts` -> `helper-func.ts`
 - `guias-75-percent.astro` -> `guias-75-percent.astro`
@@ -35,6 +36,7 @@ Ejemplos:
 
 NO renombres estos archivos: el codigo del proyecto debe vivir
 en ellos por contrato (ver AGENTS.md):
+
 - `src/components/Main.astro`
 - `src/components/app.tsx` (si existe)
 

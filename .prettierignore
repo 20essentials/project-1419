@@ -1,0 +1,9 @@
+dist/
+.astro/
+node_modules/
+.wrangler/
+pnpm-lock.yaml
+test-results/
+playwright-report/
+media/
+---notes--.txt

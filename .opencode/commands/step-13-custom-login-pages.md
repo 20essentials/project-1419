@@ -28,9 +28,14 @@ Cero marca Wix en el login: form propio + ambos proveedores sociales funcionando
 3. **Botones Google/Facebook (client-side, doc identidad)**
    - Script inline/isla que en click:
      ```js
-     const loginRequestData = client.auth.generateOAuthData(callbackUri, originalUrl);
-     localStorage.setItem('wixOAuthData', JSON.stringify(loginRequestData));
-     const { authUrl } = await client.auth.getAuthUrl(loginRequestData, { idp: 'google' });
+     const loginRequestData = client.auth.generateOAuthData(
+       callbackUri,
+       originalUrl,
+     );
+     localStorage.setItem("wixOAuthData", JSON.stringify(loginRequestData));
+     const { authUrl } = await client.auth.getAuthUrl(loginRequestData, {
+       idp: "google",
+     });
      window.location.href = authUrl;
      ```
      (idp `'facebook'` para el otro button; el client se crea en JS con OAuthStrategy clientId público).
@@ -66,6 +71,7 @@ Cero marca Wix en el login: form propio + ambos proveedores sociales funcionando
 **Ejecutado el 11/11/2026.** Ver también ROADMAP.md (detalle histórico).
 
 **Archivos**
+
 - `src/features/auth/auth-flow.ts`: handlers server (`handlePasswordLogin/Register/Verify/Reset`), `beginMemberSession()` (redirect-session), `routeStateMachine()` (mapea estados a redirects), guard `isSameOrigin` (403), `failureRedirect` con params sanatizados.
 - `src/features/auth/auth-page.astro`: UI única para login/signup (props `mode`, `returnTo`). Estados por query: form principal, `?verify=required` (código 6 dígitos), `?reset=1` (form reset), `?reset=sent` (panel neutro), `?error=` (banner role=alert), `?email=` prefill. Payload JSON `[data-auth-config]` (clientId + captchaSiteKey + callbackPath + returnTo + loginPath). SVGs Google/Facebook inline. Sin `getMemberTokensForDirectLogin`.
 - `src/features/auth/auth-client.ts`: carga reCAPTCHA Enterprise con la site key invisible de Wix y en submit pone token en input `captchaToken`; botones `[data-idp]` → `generateOAuthData` → `localStorage['wixOAuthData']` → `getAuthUrl(oauthData, {idp})` → `location.href`.
@@ -76,6 +82,7 @@ Cero marca Wix en el login: form propio + ambos proveedores sociales funcionando
 - Tests: `src/tests/auth-pages.spec.ts` (9 verdes).
 
 **Hallazgos**
+
 - **Móvil / login directo**: `getMemberTokensForDirectLogin` usa iframe oculto (prohibido en móvil, confirmado). Se usa en su lugar el full-page redirect: `auth.login/register` → en SUCCESS, `redirects.createRedirectSession({ auth: { authRequest: { sessionToken, responseMode: 'query', ... }, prompt: 'none' } })` → 303 → Wix authorize → `/api/auth/callback?code&state` (ruta step-12 reutilizada) → cookie + 303 returnTo. Probado real end-to-end con signOn: sesión OK en `/api/dev/auth-check` y visit `/login/` logueado → 303 returnTo.
 - **Captcha**: este sitio Wix exige reCAPTCHA en register (`auth.register` → FAILURE `missingCaptchaToken`; el login no lo exige salvo bots). Solución: script `recaptcha/enterprise.js` con la site key invisible que expone `OAuthStrategy.captchaInvisibleSiteKey` (`6LdoPaUfAAAAAJphvHoUoOob7mx0KDlXyXlgrx5v`), token en submit → `captchaTokens: { invisibleRecaptchaToken }` (aceptado por `auth.login` y `auth.register`, mismo `LoginParams`). `@wix/captcha` NO hace falta (es para backend `Authorize`).
 - **`StateMachine`/`LoginState`**: exportados desde `@wix/sdk` (re-export de `./auth/oauth2/types.js`). `processVerification(nextInputs, state?)` acepta el `stateToken` guardado para continuar el flujo en una nueva instancia de client (verificación email). Estados del union: `SILENT_CAPTCHA_REQUIRED`/`USER_CAPTCHA_REQUIRED` además de los esperados → mapeados a error genérico.
@@ -86,6 +93,7 @@ Cero marca Wix en el login: form propio + ambos proveedores sociales funcionando
 - **Preview**: solo escucha en `[::1]` (IPv6); los tests Playwright usan localhost y conectan, pero los scripts node standalone deben usar `http://[::1]:4321/`.
 
 **Verificación**
+
 - Build (`pnpm build` con Node 24.22.1 portable) + preview: login/signup/callback 200 en en/es/it; copy localizado; banner de error traducido.
 - Smoke real (Node): register/ login negativos → 303 con error correcto; origin ajeno → 403; `returnTo=//evil.test` → sanatizado a `/account/`; verify sin cookie → generic; reset real (sendRecoveryEmail con `/login/` en allow-list) → `reset=sent`; flujo signOn → redirect-session → callback → `wix-session` → auth-check `loggedIn:true` → visit `/login/` → 303 returnTo.
 - E2E Playwright: `src/tests/auth-pages.spec.ts` 9/9 verdes (render 3 locales, payload con clientId, estados verify/reset/sent/error, forgot→reset→back, login real contraseña mala → banner, social mocked completo → cookie real `wix-session` + auth-check loggedIn + localStorage limpio + logged-in visit redirect, callback sin fragment → oauth_callback, state mismatch → oauth_state + localStorage limpio, access_denied → banner, signup minlength 8 + nota legal + switch).
@@ -93,6 +101,7 @@ Cero marca Wix en el login: form propio + ambos proveedores sociales funcionando
 - i18n: 50 claves (390 en) → `translations:push` OK → seed es/it REST (translation-content bulk, 100/100) → pull roundtrip OK (es/it 388/390; 2 faltantes preexistentes de carta, step-10).
 
 **Pendiente / parket**
+
 - Conexiones IdP ya registradas y habilitadas en Wix (verificado vía REST `iam/connection/v1/connections`): Google (gestionada por Wix, sin config expuesta), Facebook (app propia clientId 309042052760104) y Password (minLength 4 del lado Wix; la UI exige 8). Los connection ids coinciden con los hardcodeados del SDK (`IDP_CONNECTION_IDS`). `getAuthUrl({idp})` real funciona para ambos y la cadena llega hasta la pantalla de consentimiento del proveedor (`accounts.google.com/o/oauth2/auth` y `facebook.com/v25.0/dialog/oauth` con redirect_uri hospedado por Wix, que luego vuelve a nuestro `/auth/callback#code&state` ya allow-listeado). Únicamente no verificable sin humano: completar el consentimiento con una cuenta real y aterrizar de vuelta con cookie de sesión.
 - Verificación de email real: el código llega al email del miembro; el flujo `?verify=required` + `processVerification` está implementado y probada la lógica, no el email real (member de prueba).
 - Signup con captcha real en producción depende de que Google reCAPTCHA puntúe bien el navegador del usuario; si falla, error genérico (mensaje claro).

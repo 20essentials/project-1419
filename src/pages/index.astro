@@ -1,25 +1,27 @@
 ---
 export const prerender = true;
 
-import Layout from '@/app/layout.astro';
-import ScrollWorld from '@/features/home/scroll-world.astro';
-import Tagline from '@/features/home/tagline.astro';
-import Dishes from '@/features/menu/dishes.astro';
-import Press from '@/features/press/press.astro';
-import Experiences from '@/features/experiences/experiences.astro';
-import Faq from '@/features/faq/faq.astro';
-import Gift from '@/features/gift/gift.astro';
-import FinalCta from '@/features/final-cta/final-cta.astro';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { structuredData } from '@/shared/seo/schema';
+import Layout from "@/app/layout.astro";
+import ScrollWorld from "@/features/home/scroll-world.astro";
+import Tagline from "@/features/home/tagline.astro";
+import Dishes from "@/features/menu/dishes.astro";
+import Press from "@/features/press/press.astro";
+import Experiences from "@/features/experiences/experiences.astro";
+import Faq from "@/features/faq/faq.astro";
+import Gift from "@/features/gift/gift.astro";
+import FinalCta from "@/features/final-cta/final-cta.astro";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { structuredData } from "@/shared/seo/schema";
 
 const t = getT(Astro.currentLocale);
 const site = Astro.site;
-if (!site) throw new Error('Falta site en astro.config.mjs');
-const jsonLd = JSON.stringify(structuredData(site, Astro.currentLocale as Locale)).replaceAll('<', '\\u003c');
+if (!site) throw new Error("Falta site en astro.config.mjs");
+const jsonLd = JSON.stringify(
+  structuredData(site, Astro.currentLocale as Locale),
+).replaceAll("<", "\\u003c");
 ---
 
-<Layout title={t('seo.title')} description={t('seo.description')}>
+<Layout title={t("seo.title")} description={t("seo.description")}>
   <script slot="head" type="application/ld+json" set:html={jsonLd} />
   <ScrollWorld />
   <Tagline />

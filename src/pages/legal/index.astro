@@ -1,13 +1,16 @@
 ---
 export const prerender = true;
 
-import Layout from '@/app/layout.astro';
-import LegalDoc from '@/features/legal/legal-doc.astro';
-import { getT } from '@/shared/i18n/t';
+import Layout from "@/app/layout.astro";
+import LegalDoc from "@/features/legal/legal-doc.astro";
+import { getT } from "@/shared/i18n/t";
 
 const t = getT(Astro.currentLocale);
 ---
 
-<Layout title={t('seo.legal.notices.title')} description={t('seo.legal.notices.description')}>
+<Layout
+  title={t("seo.legal.notices.title")}
+  description={t("seo.legal.notices.description")}
+>
   <LegalDoc id="legal-notices" />
 </Layout>

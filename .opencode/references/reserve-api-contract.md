@@ -31,7 +31,12 @@ Cache: `Cache-Control: public, max-age=600`. Respuesta 200 (estado real 2026-11-
   "timeSlotInterval": 15,
   "advanceWindowDays": 60,
   "schedule": [
-    { "openDay": "MONDAY", "openTime": "13:00", "closeDay": "MONDAY", "closeTime": "23:00" }
+    {
+      "openDay": "MONDAY",
+      "openTime": "13:00",
+      "closeDay": "MONDAY",
+      "closeTime": "23:00"
+    }
   ],
   "experiences": []
 }
@@ -52,7 +57,10 @@ Cache: `no-store` (disponibilidad real). 200:
   "timeZone": "Europe/Madrid",
   "date": "2026-11-16",
   "partySize": 2,
-  "slots": [ { "time": "13:00", "available": true }, { "time": "10:30", "available": false } ]
+  "slots": [
+    { "time": "13:00", "available": true },
+    { "time": "10:30", "available": false }
+  ]
 }
 ```
 
@@ -100,13 +108,13 @@ Body:
 
 Mapeo de errores (los códigos a pintar en el front, con status HTTP):
 
-| Status | Codigo | Cuando |
-|:--|:--|:--|
-| 400 | `INVALID_INPUT` | formatos, partySize, email/teléfono, JSON inválido |
-| 404 | `EXPERIENCE_NOT_FOUND` | experienceId desconocido |
-| 409 | `NO_AVAILABILITY` | slot fuera de horario/pasado por notice/dedo, o Wix `TIME_NOT_AVAILABLE` |
-| 428 | `PREMIUM_ONLY` | Wix `MUST_BE_PREMIUM`/`PREMIUM_ONLY` (trial: "reservas online aún no activas") |
-| 502 | `RESERVATION_UNAVAILABLE` | fallo de Wix no mapeado / falta `_id` en la respuesta |
+| Status | Codigo                    | Cuando                                                                         |
+| :----- | :------------------------ | :----------------------------------------------------------------------------- |
+| 400    | `INVALID_INPUT`           | formatos, partySize, email/teléfono, JSON inválido                             |
+| 404    | `EXPERIENCE_NOT_FOUND`    | experienceId desconocido                                                       |
+| 409    | `NO_AVAILABILITY`         | slot fuera de horario/pasado por notice/dedo, o Wix `TIME_NOT_AVAILABLE`       |
+| 428    | `PREMIUM_ONLY`            | Wix `MUST_BE_PREMIUM`/`PREMIUM_ONLY` (trial: "reservas online aún no activas") |
+| 502    | `RESERVATION_UNAVAILABLE` | fallo de Wix no mapeado / falta `_id` en la respuesta                          |
 
 Nunca 500. Todos los errores: `{ "error": "<CODIGO>", "detail": "<mensaje interno en español, no para el usuario>" }`.
 

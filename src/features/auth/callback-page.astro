@@ -1,28 +1,41 @@
 ---
-import Spiral from '@/shared/ui/spiral.astro';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { getWixConfig } from '@/shared/wix/env';
+import Spiral from "@/shared/ui/spiral.astro";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { getWixConfig } from "@/shared/wix/env";
 
 const locale = Astro.currentLocale as Locale;
 const t = getT(locale);
 
 const payload = JSON.stringify({
   clientId: getWixConfig().clientId,
-  loginPath: localizedPathname('/login/', locale),
-  fallbackPath: '/account/',
-}).replaceAll('<', '\\u003c');
+  loginPath: localizedPathname("/login/", locale),
+  fallbackPath: "/account/",
+}).replaceAll("<", "\\u003c");
 ---
 
 <section class="relative flex min-h-svh items-center justify-center overflow-hidden px-4">
-  <Spiral rings={12} class="pointer-events-none absolute top-0 right-0 w-140 translate-x-1/3 -translate-y-1/3 text-crema/10" />
-  <script type="application/json" is:inline set:html={payload} data-callback-config></script>
+  <Spiral
+    rings={12}
+    class="pointer-events-none absolute top-0 right-0 w-140 translate-x-1/3 -translate-y-1/3 text-crema/10"
+  />
+  <script
+    type="application/json"
+    is:inline
+    set:html={payload}
+    data-callback-config
+  ></script>
   <div class="relative text-center">
-    <span data-callback-spinner class="mx-auto block size-10 animate-spin rounded-full border-2 border-crema/15 border-t-teja"></span>
-    <p data-callback-working class="mt-6 text-base text-crema/70">{t('auth.working')}</p>
+    <span
+      data-callback-spinner
+      class="mx-auto block size-10 animate-spin rounded-full border-2 border-crema/15 border-t-teja"
+    ></span>
+    <p data-callback-working class="mt-6 text-base text-crema/70">
+      {t("auth.working")}
+    </p>
   </div>
 </section>
 
 <script>
-  import '@/features/auth/callback-client';
+  import "@/features/auth/callback-client";
 </script>

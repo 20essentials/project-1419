@@ -8,13 +8,48 @@
   "timeSlotInterval": 15,
   "advanceWindowDays": 60,
   "schedule": [
-    { "openDay": "MONDAY", "openTime": "13:00", "closeDay": "MONDAY", "closeTime": "23:00" },
-    { "openDay": "TUESDAY", "openTime": "13:00", "closeDay": "TUESDAY", "closeTime": "23:00" },
-    { "openDay": "WEDNESDAY", "openTime": "13:00", "closeDay": "WEDNESDAY", "closeTime": "23:00" },
-    { "openDay": "THURSDAY", "openTime": "13:00", "closeDay": "THURSDAY", "closeTime": "23:00" },
-    { "openDay": "FRIDAY", "openTime": "13:00", "closeDay": "FRIDAY", "closeTime": "23:00" },
-    { "openDay": "SATURDAY", "openTime": "13:00", "closeDay": "SATURDAY", "closeTime": "23:00" },
-    { "openDay": "SUNDAY", "openTime": "13:00", "closeDay": "SUNDAY", "closeTime": "23:00" }
+    {
+      "openDay": "MONDAY",
+      "openTime": "13:00",
+      "closeDay": "MONDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "TUESDAY",
+      "openTime": "13:00",
+      "closeDay": "TUESDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "WEDNESDAY",
+      "openTime": "13:00",
+      "closeDay": "WEDNESDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "THURSDAY",
+      "openTime": "13:00",
+      "closeDay": "THURSDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "FRIDAY",
+      "openTime": "13:00",
+      "closeDay": "FRIDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "SATURDAY",
+      "openTime": "13:00",
+      "closeDay": "SATURDAY",
+      "closeTime": "23:00"
+    },
+    {
+      "openDay": "SUNDAY",
+      "openTime": "13:00",
+      "closeDay": "SUNDAY",
+      "closeTime": "23:00"
+    }
   ],
   "experiences": [
     {

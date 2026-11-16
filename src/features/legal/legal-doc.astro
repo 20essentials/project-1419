@@ -1,8 +1,8 @@
 ---
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { contact, legal, links } from '@/shared/site/nami';
-import { legalDocs, type LegalDocId } from '@/features/legal/legal-content';
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { contact, legal, links } from "@/shared/site/nami";
+import { legalDocs, type LegalDocId } from "@/features/legal/legal-content";
 
 interface Props {
   id: LegalDocId;
@@ -12,14 +12,18 @@ const { id } = Astro.props;
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const doc = legalDocs[id];
-const homeHref = localizedPathname('/', locale);
+const homeHref = localizedPathname("/", locale);
 ---
 
 <article class="px-4 pt-36 pb-24 md:px-12 xl:px-24">
   <div class="mx-auto max-w-3xl">
-    <nav aria-label={t('legal.breadcrumb')} class="text-sm text-crema/60">
+    <nav aria-label={t("legal.breadcrumb")} class="text-sm text-crema/60">
       <ol class="flex flex-wrap items-center gap-2">
-        <li><a href={homeHref} class="link">{t('legal.home')}</a></li>
+        <li>
+          <a href={homeHref} class="link">
+            {t("legal.home")}
+          </a>
+        </li>
         <li aria-hidden="true">/</li>
         <li aria-current="page">{t(doc.titleKey)}</li>
       </ol>
@@ -28,45 +32,50 @@ const homeHref = localizedPathname('/', locale);
     <header data-reveal class="mt-8">
       <h1 class="text-4xl lg:text-6xl">{t(doc.titleKey)}</h1>
       <p class="mt-6 text-base text-crema/75 lg:text-lg">{t(doc.introKey)}</p>
-      <p class="mt-3 text-sm text-crema/50">{t('legal.lastUpdated')}</p>
+      <p class="mt-3 text-sm text-crema/50">{t("legal.lastUpdated")}</p>
     </header>
 
     <div class="mt-14 space-y-12">
-      {
-        doc.sections.map((section) => (
-          <section>
-            <h2 class="text-2xl lg:text-3xl">{t(section.headingKey)}</h2>
-            <p class="mt-3 text-base leading-relaxed text-crema/75 lg:text-lg">{t(section.bodyKey)}</p>
-          </section>
-        ))
-      }
+      {doc.sections.map((section) => (
+        <section>
+          <h2 class="text-2xl lg:text-3xl">{t(section.headingKey)}</h2>
+          <p class="mt-3 text-base leading-relaxed text-crema/75 lg:text-lg">
+            {t(section.bodyKey)}
+          </p>
+        </section>
+      ))}
     </div>
 
     <div class="mt-16 rounded-3xl p-6 ring-1 ring-crema/15 lg:p-8">
       <p class="text-base text-crema/75 lg:text-lg">
-        {t('legal.contact', { email: contact.email, phone: contact.phone })}
+        {t("legal.contact", { email: contact.email, phone: contact.phone })}
       </p>
       <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        <a href={links.email} class="link">{contact.email}</a>
-        <a href={links.phone} class="link">{contact.phone}</a>
+        <a href={links.email} class="link">
+          {contact.email}
+        </a>
+        <a href={links.phone} class="link">
+          {contact.phone}
+        </a>
       </div>
     </div>
 
-    <nav aria-label={t('legal.navLabel')} class="mt-12 border-t border-crema/10 pt-8">
+    <nav
+      aria-label={t("legal.navLabel")}
+      class="mt-12 border-t border-crema/10 pt-8"
+    >
       <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-        {
-          legal.map((item) => (
-            <li>
-              <a
-                href={localizedPathname(item.href, locale)}
-                class:list={['link', item.id === id && 'text-teja']}
-                aria-current={item.id === id ? 'page' : undefined}
-              >
-                {t(`legal.${item.id}`)}
-              </a>
-            </li>
-          ))
-        }
+        {legal.map((item) => (
+          <li>
+            <a
+              href={localizedPathname(item.href, locale)}
+              class:list={["link", item.id === id && "text-teja"]}
+              aria-current={item.id === id ? "page" : undefined}
+            >
+              {t(`legal.${item.id}`)}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
   </div>

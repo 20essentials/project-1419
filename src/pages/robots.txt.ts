@@ -1,12 +1,12 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute } from "astro";
 
 export const prerender = true;
 
 export const GET: APIRoute = ({ site }) => {
-  if (!site) throw new Error('Falta site en astro.config.mjs');
-  const sitemap = new URL('/sitemap-index.xml', site).href;
+  if (!site) throw new Error("Falta site en astro.config.mjs");
+  const sitemap = new URL("/sitemap-index.xml", site).href;
   const body = `User-agent: *\nAllow: /\n\nSitemap: ${sitemap}\n`;
   return new Response(body, {
-    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    headers: { "Content-Type": "text/plain; charset=utf-8" },
   });
 };

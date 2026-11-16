@@ -6,36 +6,51 @@ interface Props {
   draw?: boolean;
 }
 
-const { class: className = '', rings = 14, draw = false } = Astro.props;
+const { class: className = "", rings = 14, draw = false } = Astro.props;
 const size = 400;
 const c = size / 2;
 const step = (c - 8) / rings;
 
 // Tenths of a unit without the leading zero (0.4 → .4) so the path weighs less in the HTML.
-const num = (tenths: number) => String(tenths / 10).replace(/^(-?)0\./, '$1.');
+const num = (tenths: number) => String(tenths / 10).replace(/^(-?)0\./, "$1.");
 
 // Anillos ligeramente irregulares, como surcos hechos a mano. Coordenadas relativas (`l`) calculadas sobre puntos
 // already rounded, so rounding does not accumulate and the ring closes where it started.
 const ring = (r: number, i: number) => {
   const points = 72;
-  let d = '';
+  let d = "";
   let px = 0;
   let py = 0;
   for (let p = 0; p < points; p++) {
     const a = (p / points) * Math.PI * 2;
-    const wobble = 1 + Math.sin(a * 3 + i * 0.7) * 0.012 + Math.cos(a * 5 + i) * 0.008;
+    const wobble =
+      1 + Math.sin(a * 3 + i * 0.7) * 0.012 + Math.cos(a * 5 + i) * 0.008;
     const x = Math.round((c + Math.cos(a) * r * wobble) * 10);
     const y = Math.round((c + Math.sin(a) * r * wobble) * 10);
     d += p === 0 ? `M${num(x)} ${num(y)}` : `l${num(x - px)} ${num(y - py)}`;
     px = x;
     py = y;
   }
-  return d + 'Z';
+  return d + "Z";
 };
 
 const paths = Array.from({ length: rings }, (_, i) => ring(step * (i + 1), i));
 ---
 
-<svg viewBox={`0 0 ${size} ${size}`} fill="none" stroke="currentColor" class={className} aria-hidden="true" data-spiral-draw={draw ? '' : undefined}>
-  {paths.map((d) => <path d={d} pathLength="1" stroke-width="1" vector-effect="non-scaling-stroke" />)}
+<svg
+  viewBox={`0 0 ${size} ${size}`}
+  fill="none"
+  stroke="currentColor"
+  class={className}
+  aria-hidden="true"
+  data-spiral-draw={draw ? "" : undefined}
+>
+  {paths.map((d) => (
+    <path
+      d={d}
+      pathLength="1"
+      stroke-width="1"
+      vector-effect="non-scaling-stroke"
+    />
+  ))}
 </svg>

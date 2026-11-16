@@ -52,6 +52,7 @@ El flujo termina con los tokens del miembro guardados en una cookie HttpOnly, y 
 Ejecutado el 2026-11-11. Infra de sesión server-side lista y verificada contra Wix real.
 
 **Archivos**
+
 - `src/shared/auth/session.ts`: cookie `wix-session` (HttpOnly, SameSite=Lax, `Secure` según proto del request, 30 días) con tokens serializados en base64url; cookie temporal `wix-oauth` (10 min) con `OauthData` (state + PKCE); `getMemberSession()` renueva el access token vencido con `auth.renewToken(refreshToken)` y limpia la cookie si falla; `safeReturnTo()` bloquea `//`, `\` y saltos de línea.
 - `src/shared/auth/http.ts`: redirects `no-store`, `requestOrigin()` (respeta `x-forwarded-proto`), `isSameOrigin()`, helper de `/login/?error=`.
 - `src/shared/wix/member-client.ts`: `getMemberClient(tokens?)` = `createClient({ auth: OAuthStrategy({ clientId, tokens }), modules: { members } })`. La API key no se usa en auth de miembros.
@@ -59,6 +60,7 @@ Ejecutado el 2026-11-11. Infra de sesión server-side lista y verificada contra 
 - `src/pages/api/dev/auth-check.ts`: ruta de humo SSR que llama `getCurrentMember({ fieldsets: ['FULL'] })` y devuelve solo id/email/nickname (nunca tokens).
 
 **Contrato**
+
 - `GET /api/auth/login?returnTo=/es/account/` → 302 a Wix con `responseMode=query` + cookie `wix-oauth`; `returnTo` no local cae a `/account/`.
 - `GET /api/auth/callback?code&state` → valida state contra la cookie, `getMemberTokens()` → cookie `wix-session` → 303 al `returnTo`; errores → 302 a `/login/?error=oauth_state|oauth_callback|oauth_failed|access_denied|oauth_error|oauth_start`. Nunca devuelve tokens.
 - `POST /api/auth/session` (JSON `{ tokens }` o tokens planos) → 204 sin body; valida shape (refresh role `member`), `Content-Type` JSON y mismo origin (403 si no).
@@ -66,12 +68,14 @@ Ejecutado el 2026-11-11. Infra de sesión server-side lista y verificada contra 
 - Renew: `expiresAt` del SDK está en **segundos** (no ms); el helper compara contra `Math.floor(Date.now()/1000) + 60`.
 
 **Allow-list OAuth (hallazgo y fix)**
+
 - `allowedRedirectUris` estaba **vacío** en el OAuth app (`oauth-app/v1`), por lo que Wix devolvía `400 Invalid redirect URI` al autorizar. Se registró vía `PATCH` con `client_credentials` (la API key da 403):
   - URIs: `http://localhost:4321/api/auth/callback`, `http://localhost:4321/auth/callback`, `https://namicrestaurant.com/api/auth/callback`, `https://namicrestaurant.com/auth/callback` (+ variantes `www.`).
   - Domains: `localhost:4321`, `namicrestaurant.com`, `www.namicrestaurant.com` (necesarios para el post-logout redirect).
   - El `PATCH` exige `mask.paths` o no-op silencioso. Las URIs de `/auth/callback` quedan listas para el social login del step-13.
 
 **Verificación** (`pnpm astro build && pnpm preview`, Node 24.22.1)
+
 - `GET /api/auth/login` → 302 a Wix, cookie `wix-oauth` compacta (base64url), sin tokens en body.
 - Flujo completo real: se obtuvo un authorization code real con PKCE + `signOn` (miembro de prueba `auth-smoke@namicrestaurant.com`) → `/api/auth/callback` → 303 `/es/account/` + cookie `wix-session` → `/api/dev/auth-check` 200 con `loggedIn:true` y email del miembro (`getCurrentMember` OK).
 - Renew: cookie con access vencido → auth-check 200, `Set-Cookie` nuevo con `expiresAt` a 14400 s y refresh role `member`.

@@ -1,6 +1,6 @@
 ---
-import { getT } from '@/shared/i18n/t';
-import { tour } from '@/shared/site/nami';
+import { getT } from "@/shared/i18n/t";
+import { tour } from "@/shared/site/nami";
 
 const t = getT(Astro.currentLocale);
 
@@ -13,9 +13,9 @@ interface Props {
   spy?: string;
 }
 
-const { index, eyebrow, spy = '#nikkei' } = Astro.props;
+const { index, eyebrow, spy = "#nikkei" } = Astro.props;
 const stop = tour.stops[index];
-const pad = (n: number) => String(n).padStart(2, '0');
+const pad = (n: number) => String(n).padStart(2, "0");
 ---
 
 <article
@@ -25,15 +25,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
   data-spy={spy}
   class="stop pointer-events-none flex min-h-[200svh] flex-col justify-end"
 >
-  <div
-    class="stop-body pointer-events-auto sticky bottom-0 flex w-full max-w-2xl xl:max-w-3xl flex-col items-start px-4 pt-32 pb-12 md:px-12 lg:pb-16 xl:px-20"
-  >
+  <div class="stop-body pointer-events-auto sticky bottom-0 flex w-full max-w-2xl xl:max-w-3xl flex-col items-start px-4 pt-32 pb-12 md:px-12 lg:pb-16 xl:px-20">
     <p class="flex items-center gap-2 text-xs tracking-widest text-crema/60 uppercase">
-      <span class="tabular-nums">{pad(index + 1)} / {pad(tour.stops.length)}</span>
+      <span class="tabular-nums">
+        {pad(index + 1)} / {pad(tour.stops.length)}
+      </span>
       <span aria-hidden="true" class="size-1 rounded-full bg-teja"></span>
       <span>{t(`stop.${stop.id}.place`)}</span>
     </p>
-    {eyebrow && <p class="mt-4 text-xs font-medium tracking-widest text-teja uppercase">{eyebrow}</p>}
+    {eyebrow && (
+      <p class="mt-4 text-xs font-medium tracking-widest text-teja uppercase">
+        {eyebrow}
+      </p>
+    )}
     <slot />
   </div>
 </article>
@@ -54,13 +58,27 @@ const pad = (n: number) => String(n).padStart(2, '0');
     transition-duration: 1000ms;
   }
 
-  .stop.is-current .stop-body > :global(:nth-child(2)) { transition-delay: 60ms; }
-  .stop.is-current .stop-body > :global(:nth-child(3)) { transition-delay: 120ms; }
-  .stop.is-current .stop-body > :global(:nth-child(4)) { transition-delay: 180ms; }
-  .stop.is-current .stop-body > :global(:nth-child(5)) { transition-delay: 240ms; }
-  .stop.is-current .stop-body > :global(:nth-child(6)) { transition-delay: 300ms; }
-  .stop.is-current .stop-body > :global(:nth-child(7)) { transition-delay: 360ms; }
-  .stop.is-current .stop-body > :global(:nth-child(8)) { transition-delay: 420ms; }
+  .stop.is-current .stop-body > :global(:nth-child(2)) {
+    transition-delay: 60ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(3)) {
+    transition-delay: 120ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(4)) {
+    transition-delay: 180ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(5)) {
+    transition-delay: 240ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(6)) {
+    transition-delay: 300ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(7)) {
+    transition-delay: 360ms;
+  }
+  .stop.is-current .stop-body > :global(:nth-child(8)) {
+    transition-delay: 420ms;
+  }
 
   :global(.js) .stop:not(.is-current) .stop-body:not(:focus-within) {
     pointer-events: none;

@@ -1,11 +1,11 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute } from "astro";
 
 export type ReserveErrorCode =
-  | 'INVALID_INPUT'
-  | 'EXPERIENCE_NOT_FOUND'
-  | 'NO_AVAILABILITY'
-  | 'PREMIUM_ONLY'
-  | 'RESERVATION_UNAVAILABLE';
+  | "INVALID_INPUT"
+  | "EXPERIENCE_NOT_FOUND"
+  | "NO_AVAILABILITY"
+  | "PREMIUM_ONLY"
+  | "RESERVATION_UNAVAILABLE";
 
 export class ReserveError extends Error {
   constructor(
@@ -15,7 +15,7 @@ export class ReserveError extends Error {
     public readonly field?: string,
   ) {
     super(message);
-    this.name = 'ReserveError';
+    this.name = "ReserveError";
   }
 }
 
@@ -27,20 +27,33 @@ export const RESERVE_ERROR_STATUS: Record<ReserveErrorCode, number> = {
   RESERVATION_UNAVAILABLE: 502,
 };
 
-export function jsonError(code: ReserveErrorCode | string, status: number, detail?: string, field?: string): Response {
+export function jsonError(
+  code: ReserveErrorCode | string,
+  status: number,
+  detail?: string,
+  field?: string,
+): Response {
   return new Response(
-    JSON.stringify({ error: code, ...(field ? { field } : {}), ...(detail ? { detail } : {}) }),
+    JSON.stringify({
+      error: code,
+      ...(field ? { field } : {}),
+      ...(detail ? { detail } : {}),
+    }),
     {
       status,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     },
   );
 }
 
-export function jsonOk(data: Record<string, unknown>, status = 200, headers: Record<string, string> = {}): Response {
+export function jsonOk(
+  data: Record<string, unknown>,
+  status = 200,
+  headers: Record<string, string> = {},
+): Response {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...headers },
+    headers: { "Content-Type": "application/json", ...headers },
   });
 }
 

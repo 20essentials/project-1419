@@ -13,7 +13,9 @@
     "translations:push": "wix translation push --json",
     "translations:pull": "wix translation pull --json",
     "test:e2e": "playwright test && node src/tests/free-port-4321.cjs",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
     "@astrojs/cloudflare": "14.4.6",
@@ -38,6 +40,9 @@
   "devDependencies": {
     "@playwright/test": "1.65.0",
     "@wix/cli": "1.2.9",
+    "prettier": "3.10.1",
+    "prettier-plugin-astro": "1.1.2",
+    "prettier-plugin-tailwindcss": "0.8.1",
     "typescript": "5.9.3",
     "wrangler": "4.158.0"
   }

@@ -1,13 +1,13 @@
 ---
-import Icon from '@/shared/ui/icon.astro';
-import Spiral from '@/shared/ui/spiral.astro';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { getWixConfig } from '@/shared/wix/env';
-import { getMemberClient } from '@/shared/wix/member-client';
+import Icon from "@/shared/ui/icon.astro";
+import Spiral from "@/shared/ui/spiral.astro";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { getWixConfig } from "@/shared/wix/env";
+import { getMemberClient } from "@/shared/wix/member-client";
 
 interface Props {
-  mode: 'login' | 'signup';
+  mode: "login" | "signup";
   returnTo: string;
 }
 
@@ -16,63 +16,75 @@ const locale = Astro.currentLocale as Locale;
 const t = getT(locale);
 
 const params = Astro.url.searchParams;
-const error = params.get('error');
-const emailParam = params.get('email') ?? '';
-const verifyMode = params.get('verify') === 'required' && emailParam.length > 0;
-const resetParam = params.get('reset');
-const resetForm = mode === 'login' && resetParam === '1';
-const resetSent = mode === 'login' && resetParam === 'sent' && emailParam.length > 0;
-const cardMode = verifyMode ? 'verify' : resetSent ? 'sent' : resetForm ? 'reset' : mode;
-const formActive = cardMode === 'login' || cardMode === 'signup';
+const error = params.get("error");
+const emailParam = params.get("email") ?? "";
+const verifyMode = params.get("verify") === "required" && emailParam.length > 0;
+const resetParam = params.get("reset");
+const resetForm = mode === "login" && resetParam === "1";
+const resetSent =
+  mode === "login" && resetParam === "sent" && emailParam.length > 0;
+const cardMode = verifyMode
+  ? "verify"
+  : resetSent
+    ? "sent"
+    : resetForm
+      ? "reset"
+      : mode;
+const formActive = cardMode === "login" || cardMode === "signup";
 
 const errorKeys: Record<string, string> = {
-  invalidEmail: 'auth.errors.invalidEmail',
-  invalidPassword: 'auth.errors.invalidPassword',
-  emailAlreadyExists: 'auth.errors.emailAlreadyExists',
-  resetPassword: 'auth.errors.resetPassword',
-  invalidCode: 'auth.errors.invalidCode',
-  access_denied: 'auth.errors.accessDenied',
-  oauth_start: 'auth.errors.generic',
-  oauth_callback: 'auth.errors.generic',
-  oauth_state: 'auth.errors.generic',
-  oauth_failed: 'auth.errors.generic',
-  oauth_error: 'auth.errors.generic',
-  generic: 'auth.errors.generic',
+  invalidEmail: "auth.errors.invalidEmail",
+  invalidPassword: "auth.errors.invalidPassword",
+  emailAlreadyExists: "auth.errors.emailAlreadyExists",
+  resetPassword: "auth.errors.resetPassword",
+  invalidCode: "auth.errors.invalidCode",
+  access_denied: "auth.errors.accessDenied",
+  oauth_start: "auth.errors.generic",
+  oauth_callback: "auth.errors.generic",
+  oauth_state: "auth.errors.generic",
+  oauth_failed: "auth.errors.generic",
+  oauth_error: "auth.errors.generic",
+  generic: "auth.errors.generic",
 };
 const errorMessage =
-  error === 'ownerApproval'
-    ? t('auth.pending.body')
+  error === "ownerApproval"
+    ? t("auth.pending.body")
     : error && errorKeys[error]
       ? t(errorKeys[error])
       : null;
 
-const loginPath = localizedPathname('/login/', locale);
-const signupPath = localizedPathname('/signup/', locale);
-const privacyPath = localizedPathname('/privacy/', locale);
-const failureUrl = mode === 'login' ? loginPath : signupPath;
+const loginPath = localizedPathname("/login/", locale);
+const signupPath = localizedPathname("/signup/", locale);
+const privacyPath = localizedPathname("/privacy/", locale);
+const failureUrl = mode === "login" ? loginPath : signupPath;
 const returnQuery = `returnTo=${encodeURIComponent(returnTo)}`;
 const switchHref =
-  mode === 'login' ? `${signupPath}?${returnQuery}` : `${loginPath}?${returnQuery}`;
+  mode === "login"
+    ? `${signupPath}?${returnQuery}`
+    : `${loginPath}?${returnQuery}`;
 const forgotHref = `${loginPath}?reset=1&${returnQuery}`;
 
 const socialPayload = formActive
   ? JSON.stringify({
       clientId: getWixConfig().clientId,
       captchaSiteKey: getMemberClient().auth.captchaInvisibleSiteKey,
-      callbackPath: '/auth/callback',
+      callbackPath: "/auth/callback",
       returnTo,
       loginPath,
-    }).replaceAll('<', '\\u003c')
+    }).replaceAll("<", "\\u003c")
   : null;
 
-const eyebrow = mode === 'login' ? t('auth.login.eyebrow') : t('auth.signup.eyebrow');
-const title = mode === 'login' ? t('auth.login.title') : t('auth.signup.title');
-const body = mode === 'login' ? t('auth.login.body') : t('auth.signup.body');
-const submitLabel = mode === 'login' ? t('auth.login.cta') : t('auth.signup.cta');
-const submitAction = mode === 'login' ? '/api/auth/password-login' : '/api/auth/password-register';
+const eyebrow =
+  mode === "login" ? t("auth.login.eyebrow") : t("auth.signup.eyebrow");
+const title = mode === "login" ? t("auth.login.title") : t("auth.signup.title");
+const body = mode === "login" ? t("auth.login.body") : t("auth.signup.body");
+const submitLabel =
+  mode === "login" ? t("auth.login.cta") : t("auth.signup.cta");
+const submitAction =
+  mode === "login" ? "/api/auth/password-login" : "/api/auth/password-register";
 
 const inputClass =
-  'mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja';
+  "mt-2 w-full rounded-2xl bg-crema/5 px-4 py-3 text-base ring-1 ring-crema/15 outline-none transition-shadow duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-crema/30 focus:ring-2 focus:ring-teja";
 ---
 
 <section class="relative overflow-hidden px-4 pt-40 pb-24 md:px-12 xl:px-24">
@@ -81,9 +93,17 @@ const inputClass =
     class="pointer-events-none absolute top-0 right-0 w-140 translate-x-1/3 -translate-y-1/3 text-crema/10"
   />
   <div class="relative mx-auto max-w-md text-center">
-    <p data-reveal class="text-sm text-teja">{eyebrow}</p>
-    <h1 data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-5xl">{title}</h1>
-    <p data-reveal style="--d:200ms" class="mx-auto mt-6 max-w-lg text-base text-crema/70 lg:text-lg">
+    <p data-reveal class="text-sm text-teja">
+      {eyebrow}
+    </p>
+    <h1 data-reveal style="--d:100ms" class="mt-4 text-4xl lg:text-5xl">
+      {title}
+    </h1>
+    <p
+      data-reveal
+      style="--d:200ms"
+      class="mx-auto mt-6 max-w-lg text-base text-crema/70 lg:text-lg"
+    >
       {body}
     </p>
   </div>
@@ -93,228 +113,250 @@ const inputClass =
     style="--d:300ms"
     class="relative mx-auto mt-16 max-w-md rounded-3xl bg-bg/60 p-6 ring-1 ring-crema/10 backdrop-blur-xl md:p-10"
   >
-    {socialPayload && <script type="application/json" is:inline set:html={socialPayload} data-auth-config></script>}
+    {socialPayload && (
+      <script
+        type="application/json"
+        is:inline
+        set:html={socialPayload}
+        data-auth-config
+      ></script>
+    )}
 
     {errorMessage && (
-      <p role="alert" class="mb-8 rounded-2xl bg-teja/10 px-4 py-3 text-left text-sm text-teja ring-1 ring-teja/40">
+      <p
+        role="alert"
+        class="mb-8 rounded-2xl bg-teja/10 px-4 py-3 text-left text-sm text-teja ring-1 ring-teja/40"
+      >
         {errorMessage}
       </p>
     )}
 
-    {
-      cardMode === 'verify' && (
-        <form method="post" action="/api/auth/password-verify">
-          <input type="hidden" name="returnTo" value={returnTo} />
-          <input type="hidden" name="failureUrl" value={failureUrl} />
-          <h2 class="text-center text-2xl lg:text-3xl">{t('auth.verify.title')}</h2>
-          <p class="mx-auto mt-3 max-w-sm text-center text-sm text-crema/60">
-            {t('auth.verify.body', { email: emailParam })}
-          </p>
-          <label for="auth-code" class="mt-8 block text-sm text-crema/70">
-            {t('auth.verify.code')}
-          </label>
-          <input
-            id="auth-code"
-            name="code"
-            type="text"
-            inputmode="numeric"
-            autocomplete="one-time-code"
-            maxlength="6"
-            required
-            placeholder={t('auth.verify.code.ph')}
-            class={inputClass}
-          />
-          <button type="submit" class="btn btn-primary mt-8 w-full">
-            <span>{t('auth.verify.cta')}</span>
-          </button>
-        </form>
-      )
-    }
+    {cardMode === "verify" && (
+      <form method="post" action="/api/auth/password-verify">
+        <input type="hidden" name="returnTo" value={returnTo} />
+        <input type="hidden" name="failureUrl" value={failureUrl} />
+        <h2 class="text-center text-2xl lg:text-3xl">
+          {t("auth.verify.title")}
+        </h2>
+        <p class="mx-auto mt-3 max-w-sm text-center text-sm text-crema/60">
+          {t("auth.verify.body", { email: emailParam })}
+        </p>
+        <label for="auth-code" class="mt-8 block text-sm text-crema/70">
+          {t("auth.verify.code")}
+        </label>
+        <input
+          id="auth-code"
+          name="code"
+          type="text"
+          inputmode="numeric"
+          autocomplete="one-time-code"
+          maxlength="6"
+          required
+          placeholder={t("auth.verify.code.ph")}
+          class={inputClass}
+        />
+        <button type="submit" class="btn btn-primary mt-8 w-full">
+          <span>{t("auth.verify.cta")}</span>
+        </button>
+      </form>
+    )}
 
-    {
-      cardMode === 'sent' && (
-        <div class="text-center">
-          <h2 class="text-2xl lg:text-3xl">{t('auth.reset.sent.title')}</h2>
-          <p class="mx-auto mt-3 max-w-sm text-sm text-crema/60">
-            {t('auth.reset.sent.body', { email: emailParam })}
-          </p>
-          <a href={loginPath} class="btn btn-ghost mt-8 w-full">
-            <Icon name="arrowLeft" class="size-5" />
-            <span>{t('auth.reset.back')}</span>
+    {cardMode === "sent" && (
+      <div class="text-center">
+        <h2 class="text-2xl lg:text-3xl">{t("auth.reset.sent.title")}</h2>
+        <p class="mx-auto mt-3 max-w-sm text-sm text-crema/60">
+          {t("auth.reset.sent.body", { email: emailParam })}
+        </p>
+        <a href={loginPath} class="btn btn-ghost mt-8 w-full">
+          <Icon name="arrowLeft" class="size-5" />
+          <span>{t("auth.reset.back")}</span>
+        </a>
+      </div>
+    )}
+
+    {cardMode === "reset" && (
+      <form method="post" action="/api/auth/password-reset">
+        <input type="hidden" name="failureUrl" value={loginPath} />
+        <h2 class="text-center text-2xl lg:text-3xl">
+          {t("auth.reset.title")}
+        </h2>
+        <p class="mx-auto mt-3 max-w-sm text-center text-sm text-crema/60">
+          {t("auth.reset.body")}
+        </p>
+        <label for="reset-email" class="mt-8 block text-sm text-crema/70">
+          {t("auth.email")}
+        </label>
+        <input
+          id="reset-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder={t("auth.email.ph")}
+          class={inputClass}
+        />
+        <button type="submit" class="btn btn-primary mt-8 w-full">
+          <span>{t("auth.reset.cta")}</span>
+        </button>
+        <p class="mt-6 text-center text-sm">
+          <a href={`${loginPath}?${returnQuery}`} class="link">
+            {t("auth.reset.back")}
           </a>
-        </div>
-      )
-    }
+        </p>
+      </form>
+    )}
 
-    {
-      cardMode === 'reset' && (
-        <form method="post" action="/api/auth/password-reset">
-          <input type="hidden" name="failureUrl" value={loginPath} />
-          <h2 class="text-center text-2xl lg:text-3xl">{t('auth.reset.title')}</h2>
-          <p class="mx-auto mt-3 max-w-sm text-center text-sm text-crema/60">{t('auth.reset.body')}</p>
-          <label for="reset-email" class="mt-8 block text-sm text-crema/70">
-            {t('auth.email')}
+    {formActive && (
+      <form method="post" action={submitAction} data-auth-form>
+        <input type="hidden" name="returnTo" value={returnTo} />
+        <input type="hidden" name="failureUrl" value={failureUrl} />
+        <input type="hidden" name="captchaToken" value="" />
+        {mode === "signup" && (
+          <div class="grid gap-5 text-left sm:grid-cols-2">
+            <div>
+              <label for="auth-first-name" class="block text-sm text-crema/70">
+                {t("auth.firstName")}
+              </label>
+              <input
+                id="auth-first-name"
+                name="firstName"
+                type="text"
+                autocomplete="given-name"
+                maxlength="80"
+                placeholder="—"
+                class={inputClass}
+              />
+            </div>
+            <div>
+              <label for="auth-last-name" class="block text-sm text-crema/70">
+                {t("auth.lastName")}
+              </label>
+              <input
+                id="auth-last-name"
+                name="lastName"
+                type="text"
+                autocomplete="family-name"
+                maxlength="80"
+                placeholder="—"
+                class={inputClass}
+              />
+            </div>
+          </div>
+        )}
+        <div class={mode === "signup" ? "mt-5" : ""}>
+          <label for="auth-email" class="block text-sm text-crema/70">
+            {t("auth.email")}
           </label>
           <input
-            id="reset-email"
+            id="auth-email"
             name="email"
             type="email"
             autocomplete="email"
             required
-            placeholder={t('auth.email.ph')}
+            value={emailParam}
+            placeholder={t("auth.email.ph")}
             class={inputClass}
           />
-          <button type="submit" class="btn btn-primary mt-8 w-full">
-            <span>{t('auth.reset.cta')}</span>
-          </button>
-          <p class="mt-6 text-center text-sm">
-            <a href={`${loginPath}?${returnQuery}`} class="link">{t('auth.reset.back')}</a>
+        </div>
+        <div class="mt-5">
+          <label for="auth-password" class="block text-sm text-crema/70">
+            {t("auth.password")}
+          </label>
+          <input
+            id="auth-password"
+            name="password"
+            type="password"
+            autocomplete={
+              mode === "login" ? "current-password" : "new-password"
+            }
+            minlength="8"
+            required
+            placeholder={mode === "login" ? "••••••••" : t("auth.password.ph")}
+            class={inputClass}
+          />
+        </div>
+        {mode === "login" && (
+          <p class="mt-3 text-right">
+            <a href={forgotHref} class="link text-sm text-crema/60">
+              {t("auth.forgot")}
+            </a>
           </p>
-        </form>
-      )
-    }
+        )}
+        <button type="submit" class="btn btn-primary mt-8 w-full">
+          <span>{submitLabel}</span>
+          <Icon name="arrowRight" class="size-5" />
+        </button>
+      </form>
+    )}
 
-    {
-      formActive && (
-        <form method="post" action={submitAction} data-auth-form>
-          <input type="hidden" name="returnTo" value={returnTo} />
-          <input type="hidden" name="failureUrl" value={failureUrl} />
-          <input type="hidden" name="captchaToken" value="" />
-          {mode === 'signup' && (
-            <div class="grid gap-5 text-left sm:grid-cols-2">
-              <div>
-                <label for="auth-first-name" class="block text-sm text-crema/70">
-                  {t('auth.firstName')}
-                </label>
-                <input
-                  id="auth-first-name"
-                  name="firstName"
-                  type="text"
-                  autocomplete="given-name"
-                  maxlength="80"
-                  placeholder="—"
-                  class={inputClass}
-                />
-              </div>
-              <div>
-                <label for="auth-last-name" class="block text-sm text-crema/70">
-                  {t('auth.lastName')}
-                </label>
-                <input
-                  id="auth-last-name"
-                  name="lastName"
-                  type="text"
-                  autocomplete="family-name"
-                  maxlength="80"
-                  placeholder="—"
-                  class={inputClass}
-                />
-              </div>
-            </div>
-          )}
-          <div class={mode === 'signup' ? 'mt-5' : ''}>
-            <label for="auth-email" class="block text-sm text-crema/70">
-              {t('auth.email')}
-            </label>
-            <input
-              id="auth-email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-              value={emailParam}
-              placeholder={t('auth.email.ph')}
-              class={inputClass}
-            />
-          </div>
-          <div class="mt-5">
-            <label for="auth-password" class="block text-sm text-crema/70">
-              {t('auth.password')}
-            </label>
-            <input
-              id="auth-password"
-              name="password"
-              type="password"
-              autocomplete={mode === 'login' ? 'current-password' : 'new-password'}
-              minlength="8"
-              required
-              placeholder={mode === 'login' ? '••••••••' : t('auth.password.ph')}
-              class={inputClass}
-            />
-          </div>
-          {mode === 'login' && (
-            <p class="mt-3 text-right">
-              <a href={forgotHref} class="link text-sm text-crema/60">{t('auth.forgot')}</a>
-            </p>
-          )}
-          <button type="submit" class="btn btn-primary mt-8 w-full">
-            <span>{submitLabel}</span>
-            <Icon name="arrowRight" class="size-5" />
+    {formActive && (
+      <>
+        <div class="mt-8 flex items-center gap-4" aria-hidden="true">
+          <span class="h-px flex-1 bg-crema/10"></span>
+          <span class="text-xs text-crema/40">{t("auth.or")}</span>
+          <span class="h-px flex-1 bg-crema/10"></span>
+        </div>
+        <div data-auth-social class="mt-6 grid gap-3">
+          <button type="button" data-idp="google" class="btn btn-ghost w-full">
+            <svg viewBox="0 0 18 18" aria-hidden="true" class="size-5 shrink-0">
+              <path
+                fill="#4285F4"
+                d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
+              ></path>
+              <path
+                fill="#34A853"
+                d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.711H.96v2.332A8.997 8.997 0 0 0 9 18z"
+              ></path>
+              <path
+                fill="#FBBC05"
+                d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.96A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.96 4.042l3.004-2.332z"
+              ></path>
+              <path
+                fill="#EA4335"
+                d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .96 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
+              ></path>
+            </svg>
+            <span>{t("auth.social.google")}</span>
           </button>
-        </form>
-      )
-    }
-
-    {
-      formActive && (
-        <>
-          <div class="mt-8 flex items-center gap-4" aria-hidden="true">
-            <span class="h-px flex-1 bg-crema/10"></span>
-            <span class="text-xs text-crema/40">{t('auth.or')}</span>
-            <span class="h-px flex-1 bg-crema/10"></span>
-          </div>
-          <div data-auth-social class="mt-6 grid gap-3">
-            <button type="button" data-idp="google" class="btn btn-ghost w-full">
-              <svg viewBox="0 0 18 18" aria-hidden="true" class="size-5 shrink-0">
-                <path
-                  fill="#4285F4"
-                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"
-                ></path>
-                <path
-                  fill="#34A853"
-                  d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.583-5.036-3.711H.96v2.332A8.997 8.997 0 0 0 9 18z"
-                ></path>
-                <path
-                  fill="#FBBC05"
-                  d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.96A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.96 4.042l3.004-2.332z"
-                ></path>
-                <path
-                  fill="#EA4335"
-                  d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .96 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"
-                ></path>
-              </svg>
-              <span>{t('auth.social.google')}</span>
-            </button>
-            <button type="button" data-idp="facebook" class="btn btn-ghost w-full">
-              <svg viewBox="0 0 18 18" aria-hidden="true" class="size-5 shrink-0">
-                <path
-                  fill="#1877F2"
-                  d="M16.5 9A7.5 7.5 0 1 0 7.5 16.5v-5.25H5.25V9h2.25V7.125c0-2.22 1.32-3.375 3.27-3.375.95 0 1.9.17 1.9.17v2.08h-1.07c-1.05 0-1.38.65-1.38 1.32V9h2.35l-.38 2.25H10.47v5.25A7.5 7.5 0 0 0 16.5 9z"
-                ></path>
-              </svg>
-              <span>{t('auth.social.facebook')}</span>
-            </button>
-          </div>
-          <p class="mt-8 text-center text-sm text-crema/60">
-            {mode === 'login' ? t('auth.switch.toSignup') : t('auth.switch.toLogin')}
-            <a href={switchHref} class="link ml-1">{mode === 'login' ? t('auth.switch.toSignupCta') : t('auth.switch.toLoginCta')}</a>
-          </p>
-        </>
-      )
-    }
-
-    {
-      mode === 'signup' && cardMode === 'signup' && (
-        <p class="mt-6 text-center text-xs text-crema/50">
-          {t('auth.legalA')}
-          <a href={privacyPath} class="link">{t('legal.privacy')}</a>
-          {t('auth.legalB')}
+          <button
+            type="button"
+            data-idp="facebook"
+            class="btn btn-ghost w-full"
+          >
+            <svg viewBox="0 0 18 18" aria-hidden="true" class="size-5 shrink-0">
+              <path
+                fill="#1877F2"
+                d="M16.5 9A7.5 7.5 0 1 0 7.5 16.5v-5.25H5.25V9h2.25V7.125c0-2.22 1.32-3.375 3.27-3.375.95 0 1.9.17 1.9.17v2.08h-1.07c-1.05 0-1.38.65-1.38 1.32V9h2.35l-.38 2.25H10.47v5.25A7.5 7.5 0 0 0 16.5 9z"
+              ></path>
+            </svg>
+            <span>{t("auth.social.facebook")}</span>
+          </button>
+        </div>
+        <p class="mt-8 text-center text-sm text-crema/60">
+          {mode === "login"
+            ? t("auth.switch.toSignup")
+            : t("auth.switch.toLogin")}
+          <a href={switchHref} class="link ml-1">
+            {mode === "login"
+              ? t("auth.switch.toSignupCta")
+              : t("auth.switch.toLoginCta")}
+          </a>
         </p>
-      )
-    }
+      </>
+    )}
+
+    {mode === "signup" && cardMode === "signup" && (
+      <p class="mt-6 text-center text-xs text-crema/50">
+        {t("auth.legalA")}
+        <a href={privacyPath} class="link">
+          {t("legal.privacy")}
+        </a>
+        {t("auth.legalB")}
+      </p>
+    )}
   </div>
 </section>
 
 <script>
-  import '@/features/auth/auth-client';
+  import "@/features/auth/auth-client";
 </script>

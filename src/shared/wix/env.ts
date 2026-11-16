@@ -1,4 +1,4 @@
-import { env } from 'cloudflare:workers';
+import { env } from "cloudflare:workers";
 
 interface WixConfig {
   clientId: string;
@@ -11,11 +11,21 @@ export const getWixConfig = (): WixConfig => {
   const clientId = runtime.WIX_CLIENT_ID;
   const apiKey = runtime.WIX_API_KEY;
   const siteId = runtime.WIX_SITE_ID;
-  const missing = Object.entries({ WIX_CLIENT_ID: clientId, WIX_API_KEY: apiKey, WIX_SITE_ID: siteId })
-    .filter(([, value]) => typeof value !== 'string' || value.length === 0)
+  const missing = Object.entries({
+    WIX_CLIENT_ID: clientId,
+    WIX_API_KEY: apiKey,
+    WIX_SITE_ID: siteId,
+  })
+    .filter(([, value]) => typeof value !== "string" || value.length === 0)
     .map(([key]) => key);
   if (missing.length > 0) {
-    throw new Error(`faltan variables de Wix en el runtime: ${missing.join(', ')}`);
+    throw new Error(
+      `faltan variables de Wix en el runtime: ${missing.join(", ")}`,
+    );
   }
-  return { clientId: clientId as string, apiKey: apiKey as string, siteId: siteId as string };
+  return {
+    clientId: clientId as string,
+    apiKey: apiKey as string,
+    siteId: siteId as string,
+  };
 };

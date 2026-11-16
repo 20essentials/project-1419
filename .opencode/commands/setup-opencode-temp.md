@@ -9,11 +9,13 @@ Crear `./.tmp/` en la raíz del proyecto, ignorarlo en `.gitignore` y usarlo com
 ## Pasos
 
 ### 1) Crear carpeta temporal
+
 ```bash
 mkdir -p ./.tmp
 ```
 
 ### 2) Añadir a .gitignore si falta
+
 Añade esta línea si no existe:
 
 ```gitignore
@@ -40,6 +42,7 @@ Si tu `opencode.json` / `.opencode/opencode.json` soporta `permission`, añade:
 ## Uso
 
 Usa siempre `./.tmp/` para:
+
 - Parchear archivos
 - Generar dumps/logs
 - Descargas temporales

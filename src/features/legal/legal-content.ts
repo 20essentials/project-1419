@@ -1,4 +1,5 @@
-export type LegalDocId = 'legal-notices' | 'privacy' | 'cookies' | 'purchase-terms';
+export type LegalDocId =
+  "legal-notices" | "privacy" | "cookies" | "purchase-terms";
 
 export interface LegalSection {
   headingKey: string;
@@ -23,28 +24,28 @@ function buildSections(id: LegalDocId, count: number): LegalSection[] {
 }
 
 export const legalDocs: Record<LegalDocId, LegalDoc> = {
-  'legal-notices': {
-    id: 'legal-notices',
-    titleKey: 'legal.legal-notices.title',
-    introKey: 'legal.legal-notices.intro',
-    sections: buildSections('legal-notices', 6),
+  "legal-notices": {
+    id: "legal-notices",
+    titleKey: "legal.legal-notices.title",
+    introKey: "legal.legal-notices.intro",
+    sections: buildSections("legal-notices", 6),
   },
   privacy: {
-    id: 'privacy',
-    titleKey: 'legal.privacy.title',
-    introKey: 'legal.privacy.intro',
-    sections: buildSections('privacy', 8),
+    id: "privacy",
+    titleKey: "legal.privacy.title",
+    introKey: "legal.privacy.intro",
+    sections: buildSections("privacy", 8),
   },
   cookies: {
-    id: 'cookies',
-    titleKey: 'legal.cookies.title',
-    introKey: 'legal.cookies.intro',
-    sections: buildSections('cookies', 5),
+    id: "cookies",
+    titleKey: "legal.cookies.title",
+    introKey: "legal.cookies.intro",
+    sections: buildSections("cookies", 5),
   },
-  'purchase-terms': {
-    id: 'purchase-terms',
-    titleKey: 'legal.purchase-terms.title',
-    introKey: 'legal.purchase-terms.intro',
-    sections: buildSections('purchase-terms', 7),
+  "purchase-terms": {
+    id: "purchase-terms",
+    titleKey: "legal.purchase-terms.title",
+    introKey: "legal.purchase-terms.intro",
+    sections: buildSections("purchase-terms", 7),
   },
 };

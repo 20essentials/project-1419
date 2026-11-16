@@ -3,7 +3,15 @@ interface Props {
   class?: string;
 }
 
-const { class: className = 'text-2xl' } = Astro.props;
+const { class: className = "text-2xl" } = Astro.props;
 ---
 
-<span class={`font-display leading-none tracking-[0.08em] ${className}`} aria-label="Nami">Nami<span aria-hidden="true" class="ml-2 text-[0.9em] text-teja">波</span></span>
+<span
+  class={`font-display leading-none tracking-[0.08em] ${className}`}
+  aria-label="Nami"
+>
+  Nami
+  <span aria-hidden="true" class="ml-2 text-[0.9em] text-teja">
+    波
+  </span>
+</span>

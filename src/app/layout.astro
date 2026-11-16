@@ -1,12 +1,12 @@
 ---
-import { Font } from 'astro:assets';
-import '../styles/global.css';
-import Header from '@/app/header.astro';
-import Footer from '@/app/footer.astro';
-import { ogImage } from '@/shared/site/imagenes';
-import { getT, locales, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { baseUrl } from '@/shared/site/base-url';
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Header from "@/app/header.astro";
+import Footer from "@/app/footer.astro";
+import { ogImage } from "@/shared/site/imagenes";
+import { getT, locales, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { baseUrl } from "@/shared/site/base-url";
 
 interface Props {
   title: string;
@@ -18,13 +18,22 @@ interface Props {
 const { title, description, noindex = false, header = true } = Astro.props;
 const locale: Locale = Astro.currentLocale as Locale;
 const t = getT(locale);
-const ogLocales: Record<Locale, string> = { en: 'en_US', es: 'es_ES', it: 'it_IT' };
-const alternateHrefs = locales.map((l) => new URL(localizedPathname(Astro.url.pathname, l), Astro.site).href);
-const canonical = new URL(localizedPathname(Astro.url.pathname, locale), Astro.site);
+const ogLocales: Record<Locale, string> = {
+  en: "en_US",
+  es: "es_ES",
+  it: "it_IT",
+};
+const alternateHrefs = locales.map(
+  (l) => new URL(localizedPathname(Astro.url.pathname, l), Astro.site).href,
+);
+const canonical = new URL(
+  localizedPathname(Astro.url.pathname, locale),
+  Astro.site,
+);
 const ogUrl = new URL(ogImage.src, Astro.site);
 const robots = noindex
-  ? 'noindex, follow'
-  : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1';
+  ? "noindex, follow"
+  : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1";
 ---
 
 <!doctype html>
@@ -32,37 +41,37 @@ const robots = noindex
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content={robots} />
     <meta name="theme-color" content="#131209" />
 
-    <link rel="icon" type="image/webp" href={baseUrl('/assets/favicon.webp')} />
+    <link rel="icon" type="image/webp" href={baseUrl("/assets/favicon.webp")} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
-    {
-      !noindex && (
-        <>
-          <link rel="canonical" href={canonical} />
-          {alternateHrefs.map((href, i) => (
-            <link rel="alternate" hreflang={locales[i]} href={href} />
-          ))}
-          <link rel="alternate" hreflang="x-default" href={alternateHrefs[0]} />
-        </>
-      )
-    }
+    {!noindex && (
+      <>
+        <link rel="canonical" href={canonical} />
+        {alternateHrefs.map((href, i) => (
+          <link rel="alternate" hreflang={locales[i]} href={href} />
+        ))}
+        <link rel="alternate" hreflang="x-default" href={alternateHrefs[0]} />
+      </>
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:locale" content={ogLocales[locale]} />
-    {
-      locales
-        .filter((l) => l !== locale)
-        .map((l) => <meta property="og:locale:alternate" content={ogLocales[l]} />)
-    }
+    {locales
+      .filter((l) => l !== locale)
+      .map((l) => (
+        <meta property="og:locale:alternate" content={ogLocales[l]} />
+      ))}
     <meta property="og:site_name" content="Nami Restaurant" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -72,14 +81,14 @@ const robots = noindex
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={t('og.imageAlt')} />
+    <meta property="og:image:alt" content={t("og.imageAlt")} />
     {/* Sin twitter:site: no hay cuenta de X enlazada y @nami.barcelona (inventado) es su Instagram. */}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:url" content={canonical} />
     <meta name="twitter:image" content={ogUrl} />
-    <meta name="twitter:image:alt" content={t('og.imageAlt')} />
+    <meta name="twitter:image:alt" content={t("og.imageAlt")} />
 
     <Font cssVariable="--font-hina" preload />
     <Font cssVariable="--font-zen" preload />
@@ -93,7 +102,7 @@ const robots = noindex
     </main>
     <Footer />
     <script>
-      import '@/features/home/motion';
+      import "@/features/home/motion";
     </script>
   </body>
 </html>

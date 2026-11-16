@@ -1,8 +1,8 @@
 ---
-import { getMemberSession, requestIsSecure } from '@/shared/auth/session';
-import { getMemberName } from '@/shared/auth/member-name';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
+import { getMemberSession, requestIsSecure } from "@/shared/auth/session";
+import { getMemberName } from "@/shared/auth/member-name";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
 
 interface Props {
   locale: Locale;
@@ -12,61 +12,68 @@ interface Props {
 
 const { locale, mobile = false, index = 0 } = Astro.props;
 const t = getT(locale);
-const accountHref = localizedPathname('/account/', locale);
-const loginHref = localizedPathname('/login/', locale);
-const session = await getMemberSession(Astro.cookies, requestIsSecure(Astro.request));
-let name = '';
+const accountHref = localizedPathname("/account/", locale);
+const loginHref = localizedPathname("/login/", locale);
+const session = await getMemberSession(
+  Astro.cookies,
+  requestIsSecure(Astro.request),
+);
+let name = "";
 if (session) {
   try {
     name = await getMemberName(session);
   } catch {
-    name = '';
+    name = "";
   }
 }
-const label = name || t('account.nav');
+const label = name || t("account.nav");
 const shortName = label.length > 14 ? `${label.slice(0, 13)}…` : label;
 ---
 
-{
-  mobile ? (
-    session ? (
-      <li class="menu-item flex flex-col items-center gap-4" style={`--i:${index}`}>
-        <a href={accountHref} class="font-display text-2xl text-crema">
-          {shortName}
-        </a>
-        <form method="post" action="/api/auth/logout">
-          <button type="submit" class="link text-sm text-crema/70">
-            {t('account.logout')}
-          </button>
-        </form>
-      </li>
-    ) : (
-      <li class="menu-item" style={`--i:${index}`}>
-        <a href={loginHref} class="font-display text-2xl text-crema">
-          {t('footer.login')}
-        </a>
-      </li>
-    )
-  ) : session ? (
-    <>
-      <a href={accountHref} class="btn btn-ghost btn-sm hidden px-3 sm:inline-flex">
-        <span class="account-name max-w-24 truncate">{label}</span>
+{mobile ? (
+  session ? (
+    <li
+      class="menu-item flex flex-col items-center gap-4"
+      style={`--i:${index}`}
+    >
+      <a href={accountHref} class="font-display text-2xl text-crema">
+        {shortName}
       </a>
-      <form method="post" action="/api/auth/logout" class="hidden sm:block">
-        <button
-          type="submit"
-          class="btn btn-sm px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 hover:text-crema"
-        >
-          <span>{t('account.logout')}</span>
+      <form method="post" action="/api/auth/logout">
+        <button type="submit" class="link text-sm text-crema/70">
+          {t("account.logout")}
         </button>
       </form>
-    </>
+    </li>
   ) : (
-    <a href={loginHref} class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex">
-      <span>{t('footer.login')}</span>
-    </a>
+    <li class="menu-item" style={`--i:${index}`}>
+      <a href={loginHref} class="font-display text-2xl text-crema">
+        {t("footer.login")}
+      </a>
+    </li>
   )
-}
+) : session ? (
+  <>
+    <a
+      href={accountHref}
+      class="btn btn-ghost btn-sm hidden px-3 sm:inline-flex"
+    >
+      <span class="account-name max-w-24 truncate">{label}</span>
+    </a>
+    <form method="post" action="/api/auth/logout" class="hidden sm:block">
+      <button
+        type="submit"
+        class="btn btn-sm px-3 text-crema/70 transition-colors duration-700 ease-fluid hover:bg-crema/10 hover:text-crema"
+      >
+        <span>{t("account.logout")}</span>
+      </button>
+    </form>
+  </>
+) : (
+  <a href={loginHref} class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex">
+    <span>{t("footer.login")}</span>
+  </a>
+)}
 
 <style>
   .btn > .account-name {

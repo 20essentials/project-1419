@@ -1,53 +1,55 @@
 ---
-import Logo from './logo.astro';
-import Icon from '@/shared/ui/icon.astro';
-import LanguageSwitcher from './language-switcher.astro';
-import HeaderAccount from './header-account.astro';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { contact, links, nav } from '@/shared/site/nami';
+import Logo from "./logo.astro";
+import Icon from "@/shared/ui/icon.astro";
+import LanguageSwitcher from "./language-switcher.astro";
+import HeaderAccount from "./header-account.astro";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { contact, links, nav } from "@/shared/site/nami";
 
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
-const homeHref = localizedPathname('/', locale);
-const loginHref = localizedPathname('/login/', locale);
+const homeHref = localizedPathname("/", locale);
+const loginHref = localizedPathname("/login/", locale);
 const onHome = Astro.url.pathname === homeHref;
-const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}${href}` : href);
+const anchor = (href: string) =>
+  href.startsWith("#") && !onHome ? `${homeHref}${href}` : href;
 ---
 
 <a
   href="#contenido"
   class="btn btn-primary btn-sm fixed top-4 left-4 z-60 -translate-y-24 focus-visible:translate-y-0"
 >
-  <span>{t('common.skipToContent')}</span>
+  <span>{t("common.skipToContent")}</span>
 </a>
 
-<header
-  class="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-6 lg:justify-start lg:px-8 xl:px-20"
->
-  <div
-    class="pointer-events-auto flex w-max items-center gap-6 rounded-full bg-bg/60 p-2 pl-6 ring-1 ring-crema/10 backdrop-blur-xl lg:gap-5"
-  >
-    <a href={anchor('#intro')} class="flex h-9 items-center rounded-full text-crema" aria-label={t('common.backHome')}>
+<header class="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-6 lg:justify-start lg:px-8 xl:px-20">
+  <div class="pointer-events-auto flex w-max items-center gap-6 rounded-full bg-bg/60 p-2 pl-6 ring-1 ring-crema/10 backdrop-blur-xl lg:gap-5">
+    <a
+      href={anchor("#intro")}
+      class="flex h-9 items-center rounded-full text-crema"
+      aria-label={t("common.backHome")}
+    >
       <Logo class="text-xl" />
     </a>
 
-    <nav aria-label={t('nav.main')} class="relative hidden lg:block">
-      <span aria-hidden="true" class="nav-indicator absolute top-0 left-0 h-9 rounded-full bg-crema/[0.07]"></span>
+    <nav aria-label={t("nav.main")} class="relative hidden lg:block">
+      <span
+        aria-hidden="true"
+        class="nav-indicator absolute top-0 left-0 h-9 rounded-full bg-crema/[0.07]"
+      ></span>
       <ul class="relative flex items-center text-sm">
-        {
-          nav.map((item) => (
-            <li>
-              <a
-                data-nav-link
-                href={anchor(item.href)}
-                class="flex h-9 items-center rounded-full px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-crema aria-[current=true]:text-crema"
-              >
-                <span class="text-trim">{t(`nav.${item.id}`)}</span>
-              </a>
-            </li>
-          ))
-        }
+        {nav.map((item) => (
+          <li>
+            <a
+              data-nav-link
+              href={anchor(item.href)}
+              class="flex h-9 items-center rounded-full px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:text-crema aria-[current=true]:text-crema"
+            >
+              <span class="text-trim">{t(`nav.${item.id}`)}</span>
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
 
@@ -56,11 +58,15 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
         <LanguageSwitcher />
       </div>
       <a href={links.reserve} class="btn btn-primary btn-sm px-4">
-        <span>{t('common.reserve')}</span>
+        <span>{t("common.reserve")}</span>
       </a>
       <HeaderAccount locale={locale} server:defer>
-        <a slot="fallback" href={loginHref} class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex">
-          <span>{t('footer.login')}</span>
+        <a
+          slot="fallback"
+          href={loginHref}
+          class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex"
+        >
+          <span>{t("footer.login")}</span>
         </a>
       </HeaderAccount>
       <button
@@ -68,9 +74,9 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
         class="menu-toggle relative size-9 rounded-full text-crema transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 lg:hidden"
         aria-expanded="false"
         aria-controls="menu"
-        aria-label={t('common.openMenu')}
-        data-label-open={t('common.openMenu')}
-        data-label-close={t('common.closeMenu')}
+        aria-label={t("common.openMenu")}
+        data-label-open={t("common.openMenu")}
+        data-label-close={t("common.closeMenu")}
       >
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -84,19 +90,23 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
   class="menu invisible fixed inset-0 z-40 flex flex-col justify-between bg-bg/80 px-4 pt-32 pb-12 opacity-0 backdrop-blur-3xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden"
   inert
 >
-  <nav aria-label={t('nav.mobileMenu')}>
+  <nav aria-label={t("nav.mobileMenu")}>
     <ul class="flex flex-col items-center gap-6 text-center">
-      {
-        nav.map((item, i) => (
-          <li class="menu-item" style={`--i:${i}`}>
-            <a href={anchor(item.href)} data-menu-link class="font-display text-4xl text-crema">
-              {t(`nav.${item.id}`)}
-            </a>
-          </li>
-        ))
-      }
+      {nav.map((item, i) => (
+        <li class="menu-item" style={`--i:${i}`}>
+          <a
+            href={anchor(item.href)}
+            data-menu-link
+            class="font-display text-4xl text-crema"
+          >
+            {t(`nav.${item.id}`)}
+          </a>
+        </li>
+      ))}
       <li class="menu-item pt-2" style={`--i:${nav.length}`}>
-        <a href={links.reserve} class="btn btn-primary"><span>{t('common.reserveTable')}</span></a>
+        <a href={links.reserve} class="btn btn-primary">
+          <span>{t("common.reserveTable")}</span>
+        </a>
       </li>
       <li class="menu-item" style={`--i:${nav.length + 1}`}>
         <LanguageSwitcher />
@@ -104,19 +114,24 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
       <HeaderAccount locale={locale} mobile index={nav.length + 2} server:defer>
         <li slot="fallback" class="menu-item" style={`--i:${nav.length + 2}`}>
           <a href={loginHref} class="font-display text-2xl text-crema">
-            {t('footer.login')}
+            {t("footer.login")}
           </a>
         </li>
       </HeaderAccount>
     </ul>
   </nav>
 
-  <div class="menu-item flex flex-col items-center gap-2 text-sm text-crema/70" style={`--i:${nav.length + 3}`}>
+  <div
+    class="menu-item flex flex-col items-center gap-2 text-sm text-crema/70"
+    style={`--i:${nav.length + 3}`}
+  >
     <a href={links.phone} class="link inline-flex items-center gap-2">
       <Icon name="phone" />
       {contact.phone}
     </a>
-    <p>{contact.street} · {t('contact.hoursText')}</p>
+    <p>
+      {contact.street} · {t("contact.hoursText")}
+    </p>
   </div>
 </div>
 
@@ -141,11 +156,11 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
     transform: translateY(3px);
   }
 
-  .menu-toggle[aria-expanded='true'] span:nth-child(1) {
+  .menu-toggle[aria-expanded="true"] span:nth-child(1) {
     transform: translateY(0) rotate(45deg);
   }
 
-  .menu-toggle[aria-expanded='true'] span:nth-child(2) {
+  .menu-toggle[aria-expanded="true"] span:nth-child(2) {
     transform: translateY(0) rotate(-45deg);
   }
 
@@ -189,69 +204,92 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
 </style>
 
 <script>
-  const toggle = document.querySelector<HTMLButtonElement>('.menu-toggle');
-  const menu = document.getElementById('menu');
-  const main = document.getElementById('contenido');
-  const footer = document.querySelector('footer');
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const menu = document.getElementById("menu");
+  const main = document.getElementById("contenido");
+  const footer = document.querySelector("footer");
 
   const setOpen = (open: boolean) => {
     if (!toggle || !menu) return;
-    toggle.setAttribute('aria-expanded', String(open));
-    toggle.setAttribute('aria-label', open ? (toggle.dataset.labelClose ?? '') : (toggle.dataset.labelOpen ?? ''));
-    menu.toggleAttribute('data-open', open);
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute(
+      "aria-label",
+      open
+        ? (toggle.dataset.labelClose ?? "")
+        : (toggle.dataset.labelOpen ?? ""),
+    );
+    menu.toggleAttribute("data-open", open);
     menu.inert = !open;
     if (main) main.inert = open;
     if (footer) footer.inert = open;
     if (open) {
       window.lenis?.stop();
-      menu.querySelector<HTMLAnchorElement>('a')?.focus({ preventScroll: true });
+      menu
+        .querySelector<HTMLAnchorElement>("a")
+        ?.focus({ preventScroll: true });
     } else {
       window.lenis?.start();
     }
   };
 
-  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  toggle?.addEventListener("click", () =>
+    setOpen(toggle.getAttribute("aria-expanded") !== "true"),
+  );
 
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && toggle?.getAttribute('aria-expanded') === 'true') {
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.key === "Escape" &&
+      toggle?.getAttribute("aria-expanded") === "true"
+    ) {
       setOpen(false);
       toggle.focus();
     }
   });
 
-  menu?.querySelectorAll<HTMLAnchorElement>('[data-menu-link]').forEach((link) => {
-    link.addEventListener('click', (event) => {
-      const target = document.querySelector<HTMLElement>(link.hash);
-      if (!target) return;
-      event.preventDefault();
-      setOpen(false);
-      if (window.lenis) window.lenis.scrollTo(target);
-      else target.scrollIntoView();
+  menu
+    ?.querySelectorAll<HTMLAnchorElement>("[data-menu-link]")
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const target = document.querySelector<HTMLElement>(link.hash);
+        if (!target) return;
+        event.preventDefault();
+        setOpen(false);
+        if (window.lenis) window.lenis.scrollTo(target);
+        else target.scrollIntoView();
+      });
     });
-  });
 
-  window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
-    if (event.matches) setOpen(false);
-  });
+  window
+    .matchMedia("(min-width: 1024px)")
+    .addEventListener("change", (event) => {
+      if (event.matches) setOpen(false);
+    });
 
   // Marks the section currently in view in the navigation.
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
-  const indicator = document.querySelector<HTMLElement>('.nav-indicator');
+  const links = [
+    ...document.querySelectorAll<HTMLAnchorElement>("[data-nav-link]"),
+  ];
+  const indicator = document.querySelector<HTMLElement>(".nav-indicator");
 
   const moveIndicator = () => {
     if (!indicator) return;
-    const active = links.find((link) => link.getAttribute('aria-current') === 'true');
+    const active = links.find(
+      (link) => link.getAttribute("aria-current") === "true",
+    );
     if (!active) {
-      indicator.removeAttribute('data-visible');
+      indicator.removeAttribute("data-visible");
       return;
     }
     // If it was hidden, it appears in place instead of sliding from the previous one.
-    indicator.toggleAttribute('data-instant', !indicator.hasAttribute('data-visible'));
-    indicator.style.setProperty('--x', `${active.offsetLeft}px`);
-    indicator.style.setProperty('--w', `${active.offsetWidth}px`);
+    indicator.toggleAttribute(
+      "data-instant",
+      !indicator.hasAttribute("data-visible"),
+    );
+    indicator.style.setProperty("--x", `${active.offsetLeft}px`);
+    indicator.style.setProperty("--w", `${active.offsetWidth}px`);
     void indicator.offsetWidth;
-    indicator.removeAttribute('data-instant');
-    indicator.setAttribute('data-visible', '');
+    indicator.removeAttribute("data-instant");
+    indicator.setAttribute("data-visible", "");
   };
 
   const spy = new IntersectionObserver(
@@ -259,14 +297,19 @@ const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         const href = (entry.target as HTMLElement).dataset.spy;
-        links.forEach((link) => link.setAttribute('aria-current', String(link.getAttribute('href') === href)));
+        links.forEach((link) =>
+          link.setAttribute(
+            "aria-current",
+            String(link.getAttribute("href") === href),
+          ),
+        );
         moveIndicator();
       }
     },
-    { rootMargin: '-50% 0px -50% 0px' },
+    { rootMargin: "-50% 0px -50% 0px" },
   );
-  document.querySelectorAll('[data-spy]').forEach((el) => spy.observe(el));
+  document.querySelectorAll("[data-spy]").forEach((el) => spy.observe(el));
 
-  const list = links[0]?.closest('ul');
+  const list = links[0]?.closest("ul");
   if (list) new ResizeObserver(moveIndicator).observe(list);
 </script>

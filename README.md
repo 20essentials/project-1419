@@ -10,14 +10,14 @@
 
 Nikkei restaurant in Barcelona — Astro + Wix Headless, deployed on Cloudflare Workers. [Report a bug](https://github.com/20essentials/project-1419/issues) · [Suggest a feature](https://github.com/20essentials/project-1419/issues)
 
-An English-first restaurant site built on **Wix** as the backend (table reservations, menus, members, gift cards, hosted checkout) and **Astro 7** as the SSR frontend. The design is a dark, warm aesthetic driven by a cinematic *scroll-world*: six pre-rendered clips you walk through as you scroll — cherry tree entrance, mirrors, round table, dining room, sushi counter and bar. The step-by-step status lives in `ROADMAP.md`.
+An English-first restaurant site built on **Wix** as the backend (table reservations, menus, members, gift cards, hosted checkout) and **Astro 7** as the SSR frontend. The design is a dark, warm aesthetic driven by a cinematic _scroll-world_: six pre-rendered clips you walk through as you scroll — cherry tree entrance, mirrors, round table, dining room, sushi counter and bar. The step-by-step status lives in `ROADMAP.md`.
 
 Table of contents
 
 - [Features](#features)
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Contributing to the project](#contributing-to-the-project)
 - [🛠️ Stack](#%EF%B8%8F-stack)
 - [Wix apps](#wix-apps)
@@ -34,7 +34,7 @@ Table of contents
 
 [](#features)
 
-- **Home** with a cinematic *scroll-world* landing: 6 stops, each a pre-rendered clip with a poster (GSAP + Lenis).
+- **Home** with a cinematic _scroll-world_ landing: 6 stops, each a pre-rendered clip with a poster (GSAP + Lenis).
 - **Reservations** with a 4-step wizard (`/reserve/`): guests → day → time → details, slots from **Wix Table Reservations**, experience pre-selected via `?experience=`.
 - **Menu** (`/menu/`) rendered live from **Wix Restaurants** (5 categories × 16 dishes) with 600 s cache and a static fallback; 3 photos per dish.
 - **Experiences** for two with fixed price: Short (€150), Full (€250, most popular) and wine pairing (+€100).
@@ -62,13 +62,12 @@ Table of contents
 [](#prerequisites)
 
 - **Node ≥ 24.22.1** (required by the Wix CLI):
-    
-    pnpm runtime set node 24 -g
-    
+
+  pnpm runtime set node 24 -g
+
 - **pnpm** (the project uses exact versions, no carets):
-    
-    npm install pnpm@latest -g
-    
+
+  npm install pnpm@latest -g
 
 > **Why pnpm and not npm?** This project standardized on pnpm (see `AGENTS.md`); dependencies are pinned to exact versions and `pnpm-lock.yaml` is the only lockfile.
 
@@ -77,27 +76,26 @@ Table of contents
 [](#installation)
 
 1.  Clone the repository
-    
+
     git clone https://github.com/20essentials/project-1419.git
     cd project-1419
-    
+
 2.  Install dependencies
-    
+
     pnpm install
-    
+
 3.  Link the project to its Wix site (`wix.config.json`, already committed) and log in
-    
+
     pnpm wix login
-    
+
 4.  Run the project
-    
-    pnpm dev      # http://localhost:4321
-    
+
+    pnpm dev # http://localhost:4321
+
 5.  Build and deploy
-    
-    pnpm build    # wix translation pull + astro build
-    pnpm deploy   # astro build + wrangler deploy to Cloudflare Workers
-    
+
+    pnpm build # wix translation pull + astro build
+    pnpm deploy # astro build + wrangler deploy to Cloudflare Workers
 
 ([back to top](#readme-top))
 
@@ -107,15 +105,15 @@ Table of contents
 
 [](#contributing-to-the-project)
 
-Suggestions and improvements are welcome! Open an [*issue*](https://github.com/20essentials/project-1419/issues) with the "enhancement" tag, or fork the repository and open a [*pull request*](https://github.com/20essentials/project-1419/pulls).
+Suggestions and improvements are welcome! Open an [_issue_](https://github.com/20essentials/project-1419/issues) with the "enhancement" tag, or fork the repository and open a [_pull request_](https://github.com/20essentials/project-1419/pulls).
 
 Quick guide:
 
-1.  [*Fork*](https://github.com/20essentials/project-1419/fork) the Project
+1.  [_Fork_](https://github.com/20essentials/project-1419/fork) the Project
 2.  Clone your fork and create your feature branch (`git switch -c feature/AmazingFeature`)
 3.  Follow the conventions in `AGENTS.md` (pnpm, kebab-case files, no `export default`, Tailwind v4 canonical classes, no code comments)
 4.  Commit your changes and push the branch
-5.  Open a [*pull request*](https://github.com/20essentials/project-1419/pulls)
+5.  Open a [_pull request_](https://github.com/20essentials/project-1419/pulls)
 
 ([back to top](#readme-top))
 
@@ -257,7 +255,7 @@ Push new keys from `src/translations.json` to the Wix dashboard
 
 English is the primary language and the source of keys: `src/translations.json` (≈ 350 keys). Push/pull flow with the Wix dashboard's Translation Manager (`Wix Multilingual`):
 
-- Editors translate in the dashboard: **Website Content → Multilingual → Edit Translations → Headless tab**, then *Save and Publish*.
+- Editors translate in the dashboard: **Website Content → Multilingual → Edit Translations → Headless tab**, then _Save and Publish_.
 - `pnpm translations:pull` downloads the JSON to `.wix/multilingual/translations/{es,it}.json`; `getT()` (`src/shared/i18n/`) consumes them at build time with a per-key fallback to English.
 - The pulled JSON is committed, so builds are reproducible without a CLI session. `pnpm build` attempts `wix translation pull` before `astro build`; in CI use `wix login --api-key`.
 - To push new keys to the dashboard: `pnpm translations:push` (it deletes unused keys — careful).
@@ -270,7 +268,7 @@ English is the primary language and the source of keys: `src/translations.json` 
 
 [](#deployment)
 
-The site is a **Wix Headless self-managed** project: it does *not* deploy to Wix Hosting.
+The site is a **Wix Headless self-managed** project: it does _not_ deploy to Wix Hosting.
 
 - `pnpm deploy` builds with Astro and publishes to **Cloudflare Workers** with `wrangler` (`wrangler.jsonc`).
 - Live site: **https://nami-sushi.nami-sushi.workers.dev** — the public and canonical URL (no custom domain; canonical, sitemap, hreflang and JSON-LD all use it).

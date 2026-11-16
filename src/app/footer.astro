@@ -1,15 +1,16 @@
 ---
-import Logo from './logo.astro';
-import Icon from '@/shared/ui/icon.astro';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
-import { contact, legal, links, nav } from '@/shared/site/nami';
+import Logo from "./logo.astro";
+import Icon from "@/shared/ui/icon.astro";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
+import { contact, legal, links, nav } from "@/shared/site/nami";
 
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
-const homeHref = localizedPathname('/', locale);
+const homeHref = localizedPathname("/", locale);
 const onHome = Astro.url.pathname === homeHref;
-const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}${href}` : href);
+const anchor = (href: string) =>
+  href.startsWith("#") && !onHome ? `${homeHref}${href}` : href;
 const year = new Date().getFullYear();
 ---
 
@@ -17,48 +18,72 @@ const year = new Date().getFullYear();
   <div class="grid gap-12 md:grid-cols-2 xl:grid-cols-4">
     <div class="flex flex-col gap-4">
       <Logo class="text-3xl self-start text-crema" />
-      <p class="max-w-xs text-sm text-crema/70">{t('footer.tagline')}</p>
-      <nav aria-label={t('nav.sections')}>
+      <p class="max-w-xs text-sm text-crema/70">{t("footer.tagline")}</p>
+      <nav aria-label={t("nav.sections")}>
         <ul class="flex flex-wrap gap-x-4 gap-y-2 text-sm">
-          {
-            nav.map((item) => (
-              <li>
-                <a href={anchor(item.href)} class="link">
-                  {t(`nav.${item.id}`)}
-                </a>
-              </li>
-            ))
-          }
+          {nav.map((item) => (
+            <li>
+              <a href={anchor(item.href)} class="link">
+                {t(`nav.${item.id}`)}
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>
 
     <div class="flex flex-col gap-2 text-sm">
-      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">{t('footer.visitUs')}</h2>
-      <address>{contact.street}<br />{contact.city}</address>
-      <a href={links.maps} class="link inline-flex items-center gap-2 self-start" rel="noopener" target="_blank">
+      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">
+        {t("footer.visitUs")}
+      </h2>
+      <address>
+        {contact.street}
+        <br />
+        {contact.city}
+      </address>
+      <a
+        href={links.maps}
+        class="link inline-flex items-center gap-2 self-start"
+        rel="noopener"
+        target="_blank"
+      >
         <Icon name="mapPin" />
-        {t('footer.howToArrive')}
+        {t("footer.howToArrive")}
       </a>
     </div>
 
     <div class="flex flex-col gap-2 text-sm">
-      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">{t('footer.hours')}</h2>
-      <p>{t('contact.hoursText')}</p>
-      <p class="text-crema/70">{t('contact.kitchenUntil')}</p>
+      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">
+        {t("footer.hours")}
+      </h2>
+      <p>{t("contact.hoursText")}</p>
+      <p class="text-crema/70">{t("contact.kitchenUntil")}</p>
     </div>
 
     <div class="flex flex-col gap-2 text-sm">
-      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">{t('footer.contact')}</h2>
-      <a href={links.phone} class="link inline-flex items-center gap-2 self-start">
+      <h2 class="font-sans text-xs tracking-widest text-crema/50 uppercase">
+        {t("footer.contact")}
+      </h2>
+      <a
+        href={links.phone}
+        class="link inline-flex items-center gap-2 self-start"
+      >
         <Icon name="phone" />
         {contact.phone}
       </a>
-      <a href={links.email} class="link inline-flex items-center gap-2 self-start">
+      <a
+        href={links.email}
+        class="link inline-flex items-center gap-2 self-start"
+      >
         <Icon name="envelope" />
         {contact.email}
       </a>
-      <a href={links.instagram} class="link inline-flex items-center gap-2 self-start" rel="noopener" target="_blank">
+      <a
+        href={links.instagram}
+        class="link inline-flex items-center gap-2 self-start"
+        rel="noopener"
+        target="_blank"
+      >
         <Icon name="instagram" />
         {contact.instagram}
       </a>
@@ -66,20 +91,20 @@ const year = new Date().getFullYear();
   </div>
 
   <div class="mt-16 flex flex-col gap-4 pt-8 text-xs text-crema/50 md:flex-row md:items-center md:justify-between">
-    <p>{t('footer.rights', { year })}</p>
+    <p>{t("footer.rights", { year })}</p>
     <ul class="flex flex-wrap gap-x-6 gap-y-2">
       <li>
-        <a href={localizedPathname('/login/', locale)} class="link">{t('footer.login')}</a>
+        <a href={localizedPathname("/login/", locale)} class="link">
+          {t("footer.login")}
+        </a>
       </li>
-      {
-        legal.map((item) => (
-          <li>
-            <a href={localizedPathname(item.href, locale)} class="link">
-              {t(`legal.${item.id}`)}
-            </a>
-          </li>
-        ))
-      }
+      {legal.map((item) => (
+        <li>
+          <a href={localizedPathname(item.href, locale)} class="link">
+            {t(`legal.${item.id}`)}
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </footer>

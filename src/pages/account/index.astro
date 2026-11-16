@@ -1,6 +1,6 @@
 ---
-import Layout from '@/app/layout.astro';
-import AccountPage from '@/features/account/account-page.astro';
+import Layout from "@/app/layout.astro";
+import AccountPage from "@/features/account/account-page.astro";
 import {
   getAccountOrders,
   getAccountProfile,
@@ -8,21 +8,27 @@ import {
   type AccountOrdersResult,
   type AccountProfile,
   type AccountReservationsResult,
-} from '@/features/account/account-data';
-import { getMemberSession, requestIsSecure } from '@/shared/auth/session';
-import { getT, type Locale } from '@/shared/i18n/t';
-import { localizedPathname } from '@/shared/i18n/routing';
+} from "@/features/account/account-data";
+import { getMemberSession, requestIsSecure } from "@/shared/auth/session";
+import { getT, type Locale } from "@/shared/i18n/t";
+import { localizedPathname } from "@/shared/i18n/routing";
 
 const locale = Astro.currentLocale as Locale;
 const t = getT(locale);
 
-const accountPath = localizedPathname('/account/', locale);
-const loginPath = localizedPathname('/login/', locale);
-const session = await getMemberSession(Astro.cookies, requestIsSecure(Astro.request));
-if (!session) return Astro.redirect(`${loginPath}?returnTo=${encodeURIComponent(accountPath)}`);
+const accountPath = localizedPathname("/account/", locale);
+const loginPath = localizedPathname("/login/", locale);
+const session = await getMemberSession(
+  Astro.cookies,
+  requestIsSecure(Astro.request),
+);
+if (!session)
+  return Astro.redirect(
+    `${loginPath}?returnTo=${encodeURIComponent(accountPath)}`,
+  );
 
 const params = Astro.url.searchParams;
-let ordersError = params.get('orders') === 'error';
+let ordersError = params.get("orders") === "error";
 
 let profile: AccountProfile | null = null;
 let orders: AccountOrdersResult | null = null;
@@ -44,9 +50,14 @@ try {
 ---
 
 <Layout
-  title={t('seo.account.title')}
-  description={t('seo.account.description')}
+  title={t("seo.account.title")}
+  description={t("seo.account.description")}
   noindex
 >
-  <AccountPage profile={profile} orders={orders} ordersError={ordersError} reservations={reservations} />
+  <AccountPage
+    profile={profile}
+    orders={orders}
+    ordersError={ordersError}
+    reservations={reservations}
+  />
 </Layout>
