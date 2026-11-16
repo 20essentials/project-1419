@@ -1,4 +1,4 @@
-import type { Locale } from "@/shared/i18n/t";
+import type { Locale, TFunc } from "@/shared/i18n/t";
 import {
   mapWixMenu,
   staticMenu,
@@ -20,7 +20,7 @@ export function invalidateMenuCache(): void {
   cache = null;
 }
 
-export async function getMenuData(locale: Locale): Promise<MenuData> {
+export async function getMenuData(locale: Locale, t: TFunc): Promise<MenuData> {
   if (cache && cache.expiresAt > Date.now()) return cache.data;
   const payload = await getWixMenu();
   if (payload) {
@@ -33,5 +33,5 @@ export async function getMenuData(locale: Locale): Promise<MenuData> {
       return cache.data;
     }
   }
-  return { source: "static", menu: staticMenu(locale) };
+  return { source: "static", menu: staticMenu(locale, t) };
 }

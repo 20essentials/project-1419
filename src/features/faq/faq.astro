@@ -4,7 +4,7 @@ import Pending from "@/shared/ui/pending.astro";
 import { getT } from "@/shared/i18n/t";
 import { contact, faqIds, links, pendingFaqs } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 ---
 
 <section

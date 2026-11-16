@@ -12,7 +12,14 @@
       "binding": "SESSION",
       "id": "c427c19f2d9b4e198200952223b34268",
     },
+    {
+      "binding": "TRANSLATIONS",
+      "id": "ae043c95e089456ba60b69c341bccc0f",
+    },
   ],
+  "cache": {
+    "enabled": true,
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

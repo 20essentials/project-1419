@@ -1,19 +1,18 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from "@/app/layout.astro";
 import Reserve from "@/features/reserve/wizard.astro";
 import { getT, type Locale } from "@/shared/i18n/t";
 import { reserveStructuredData } from "@/features/reserve/reserve-schema";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const site = Astro.site;
 if (!site) throw new Error("Falta site en astro.config.mjs");
 const locale = Astro.currentLocale as Locale;
-const jsonLd = JSON.stringify(reserveStructuredData(site, locale)).replaceAll(
-  "<",
-  "\\u003c",
-);
+const jsonLd = JSON.stringify(
+  reserveStructuredData(site, locale, t),
+).replaceAll("<", "\\u003c");
 ---
 
 <Layout

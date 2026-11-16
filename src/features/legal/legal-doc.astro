@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { id } = Astro.props;
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const doc = legalDocs[id];
 const homeHref = localizedPathname("/", locale);

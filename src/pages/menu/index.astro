@@ -3,7 +3,7 @@ import Layout from "@/app/layout.astro";
 import MenuPage from "@/features/menu/menu-page.astro";
 import { getT } from "@/shared/i18n/t";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 ---
 
 <Layout title={t("seo.menu.title")} description={t("seo.menu.description")}>

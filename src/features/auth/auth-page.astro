@@ -13,7 +13,7 @@ interface Props {
 
 const { mode, returnTo } = Astro.props;
 const locale = Astro.currentLocale as Locale;
-const t = getT(locale);
+const t = await getT(locale);
 
 const params = Astro.url.searchParams;
 const error = params.get("error");

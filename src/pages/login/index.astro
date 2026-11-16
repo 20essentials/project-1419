@@ -8,7 +8,7 @@ import {
 } from "@/shared/auth/session";
 import { getT } from "@/shared/i18n/t";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const returnTo = safeReturnTo(Astro.url.searchParams.get("returnTo"));
 const session = await getMemberSession(
   Astro.cookies,

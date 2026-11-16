@@ -1,11 +1,11 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from "@/app/layout.astro";
 import LegalDoc from "@/features/legal/legal-doc.astro";
 import { getT } from "@/shared/i18n/t";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 ---
 
 <Layout

@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+export const prerender = false;
 
 import Layout from "@/app/layout.astro";
 import ScrollWorld from "@/features/home/scroll-world.astro";
@@ -13,12 +13,14 @@ import FinalCta from "@/features/final-cta/final-cta.astro";
 import { getT, type Locale } from "@/shared/i18n/t";
 import { structuredData } from "@/shared/seo/schema";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const site = Astro.site;
 if (!site) throw new Error("Falta site en astro.config.mjs");
-const jsonLd = JSON.stringify(
-  structuredData(site, Astro.currentLocale as Locale),
-).replaceAll("<", "\\u003c");
+const locale = Astro.currentLocale as Locale;
+const jsonLd = JSON.stringify(structuredData(site, locale, t)).replaceAll(
+  "<",
+  "\\u003c",
+);
 ---
 
 <Layout title={t("seo.title")} description={t("seo.description")}>

@@ -3,7 +3,7 @@ import Icon from "@/shared/ui/icon.astro";
 import { getT } from "@/shared/i18n/t";
 import { press, googleReviews } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const ratingLabel = googleReviews.rating.toLocaleString(
   Astro.currentLocale === "en" ? "en-GB" : "es-ES",
 );

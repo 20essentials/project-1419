@@ -5,7 +5,7 @@ import { localizedPathname } from "@/shared/i18n/routing";
 import { getWixConfig } from "@/shared/wix/env";
 
 const locale = Astro.currentLocale as Locale;
-const t = getT(locale);
+const t = await getT(locale);
 
 const payload = JSON.stringify({
   clientId: getWixConfig().clientId,

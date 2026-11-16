@@ -10,9 +10,9 @@ import {
 
 export const prerender = true;
 
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   if (!site) throw new Error("Falta site en astro.config.mjs");
-  const t = getT();
+  const t = await getT();
   const home = new URL("/", site).href;
   const experienceLines = experiences
     .map(

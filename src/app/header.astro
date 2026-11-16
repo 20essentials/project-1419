@@ -7,7 +7,7 @@ import { getT, type Locale } from "@/shared/i18n/t";
 import { localizedPathname } from "@/shared/i18n/routing";
 import { contact, links, nav } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const homeHref = localizedPathname("/", locale);
 const loginHref = localizedPathname("/login/", locale);

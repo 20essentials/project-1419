@@ -4,7 +4,7 @@ import { Picture } from "astro:assets";
 import { getT } from "@/shared/i18n/t";
 import { links, dishes } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 ---
 
 <section

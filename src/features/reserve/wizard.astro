@@ -7,7 +7,7 @@ import { contact, links } from "@/shared/site/nami";
 import { MAX_ADVANCE_DAYS } from "./site-time";
 
 const locale = Astro.currentLocale as Locale;
-const t = getT(locale);
+const t = await getT(locale);
 const homeHref = localizedPathname("/", locale);
 const faqHref = `${homeHref}#questions`;
 

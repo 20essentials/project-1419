@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { locale, mobile = false, index = 0 } = Astro.props;
-const t = getT(locale);
+const t = await getT(locale);
 const accountHref = localizedPathname("/account/", locale);
 const loginHref = localizedPathname("/login/", locale);
 const session = await getMemberSession(

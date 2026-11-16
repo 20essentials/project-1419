@@ -12,7 +12,7 @@ interface Props {
 }
 
 const { product } = Astro.props;
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const termsHref = localizedPathname("/purchase-terms/", locale);
 const emailHref = `mailto:${contact.email}?subject=${encodeURIComponent(t("gift.landing.emailSubject"))}`;

@@ -2,10 +2,11 @@
 import { defineConfig, fontProviders } from "astro/config";
 
 import cloudflare from "@astrojs/cloudflare";
+import { cacheCloudflare } from "@astrojs/cloudflare/cache";
 import tailwindcss from "@tailwindcss/vite";
 import sitemap from "@astrojs/sitemap";
 import { publicPhotos, ogImage } from "./src/shared/site/imagenes.ts";
-import { getT, locales, defaultLocale } from "./src/shared/i18n/t.ts";
+import { getTFromBuild, locales, defaultLocale } from "./src/shared/i18n/t.ts";
 
 // https://astro.build/config
 export default defineConfig({
@@ -31,6 +32,28 @@ export default defineConfig({
     "/it/reservar": "/it/reserve/",
   },
 
+  cache: { provider: cacheCloudflare() },
+
+  routeRules: {
+    ...Object.fromEntries(
+      ["", "es", "it"].flatMap((prefix) =>
+        [
+          "menu",
+          "reserve",
+          "gift",
+          "legal",
+          "privacy",
+          "cookies",
+          "purchase-terms",
+        ].map((path) => [`${prefix}/${path}`, { maxAge: 300, swr: 60 }]),
+      ),
+    ),
+    ...Object.fromEntries(
+      ["es", "it"].map((locale) => [`/${locale}`, { maxAge: 300, swr: 60 }]),
+    ),
+    "/": { maxAge: 300, swr: 60 },
+  },
+
   // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
   integrations: [
     sitemap({
@@ -41,7 +64,7 @@ export default defineConfig({
       // La portada lleva sus imágenes en el sitemap: la de redes y las fotos del local.
       serialize(item) {
         if (new URL(item.url).pathname !== "/") return item;
-        const t = getT();
+        const t = getTFromBuild();
         const images = [
           { src: ogImage.src, title: t("og.title"), caption: t("og.imageAlt") },
           ...publicPhotos.map((foto) => ({

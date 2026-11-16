@@ -1,6 +1,6 @@
 import { dishes } from "./nami";
 import { photosForMenuItem } from "./dish-photos";
-import { getT, type Locale } from "@/shared/i18n/t";
+import type { Locale, TFunc } from "@/shared/i18n/t";
 import type { ImageMetadata } from "astro";
 import type { WixMenuPayload } from "@/shared/wix/menu-client";
 
@@ -81,8 +81,7 @@ export function mapWixMenu(payload: WixMenuPayload): MenuDataShape {
   return { title: payload.menu.name ?? "", sections };
 }
 
-export function staticMenu(locale: Locale): MenuDataShape {
-  const t = getT(locale);
+export function staticMenu(locale: Locale, t: TFunc): MenuDataShape {
   return {
     title: t("menu.title"),
     sections: [

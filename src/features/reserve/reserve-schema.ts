@@ -1,9 +1,8 @@
-import { getT, type Locale } from "@/shared/i18n/t";
+import { type Locale, type TFunc } from "@/shared/i18n/t";
 import { localizedPathname } from "@/shared/i18n/routing";
 import { links } from "@/shared/site/nami";
 
-export function reserveStructuredData(site: URL, locale: Locale) {
-  const t = getT(locale);
+export function reserveStructuredData(site: URL, locale: Locale, t: TFunc) {
   const home = localizedPathname("/", locale);
   const page = new URL(localizedPathname("/reserve/", locale), site).href;
   const restaurantId = new URL(`${home}#restaurant`, site).href;

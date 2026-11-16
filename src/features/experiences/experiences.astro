@@ -3,7 +3,7 @@ import { Picture } from "astro:assets";
 import { getT, formatPrice, formatPairing } from "@/shared/i18n/t";
 import { experiences, links, pairing, photos } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 ---
 
 <section

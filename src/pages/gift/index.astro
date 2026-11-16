@@ -7,11 +7,11 @@ import { getT, type Locale } from "@/shared/i18n/t";
 import { giftStructuredData } from "@/features/gift/gift-schema";
 import { getGiftProduct } from "@/features/gift/gift-product";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const site = Astro.site;
 if (!site) throw new Error("Falta site en astro.config.mjs");
 const jsonLd = JSON.stringify(
-  giftStructuredData(site, Astro.currentLocale as Locale),
+  giftStructuredData(site, Astro.currentLocale as Locale, t),
 ).replaceAll("<", "\\u003c");
 const product = await getGiftProduct();
 ---

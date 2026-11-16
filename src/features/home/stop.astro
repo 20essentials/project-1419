@@ -2,7 +2,7 @@
 import { getT } from "@/shared/i18n/t";
 import { tour } from "@/shared/site/nami";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 
 // A tour stop. The article marks the scroll distance; the text stays at the bottom left
 // while the camera advances and gets pushed out by the next stop.

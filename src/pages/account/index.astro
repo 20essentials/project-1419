@@ -14,7 +14,7 @@ import { getT, type Locale } from "@/shared/i18n/t";
 import { localizedPathname } from "@/shared/i18n/routing";
 
 const locale = Astro.currentLocale as Locale;
-const t = getT(locale);
+const t = await getT(locale);
 
 const accountPath = localizedPathname("/account/", locale);
 const loginPath = localizedPathname("/login/", locale);

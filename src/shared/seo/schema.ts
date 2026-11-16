@@ -1,4 +1,9 @@
-import { getT, formatPrice, defaultLocale, type Locale } from "@/shared/i18n/t";
+import {
+  formatPrice,
+  defaultLocale,
+  type Locale,
+  type TFunc,
+} from "@/shared/i18n/t";
 import { localizedPathname } from "@/shared/i18n/routing";
 import {
   contact,
@@ -30,8 +35,7 @@ function abs(site: URL, path: string) {
   return new URL(path, site).href;
 }
 
-export function pageImages(site: URL): PageImage[] {
-  const t = getT();
+export function pageImages(site: URL, t: TFunc): PageImage[] {
   return publicPhotos.map((photo) => ({
     loc: abs(site, photo.src),
     title: `${t(`photos.${photo.id}.label`)} · Nami`,
@@ -39,8 +43,11 @@ export function pageImages(site: URL): PageImage[] {
   }));
 }
 
-export function structuredData(site: URL, locale: Locale = defaultLocale) {
-  const t = getT(locale);
+export function structuredData(
+  site: URL,
+  locale: Locale = defaultLocale,
+  t: TFunc,
+) {
   const localizedHome = localizedPathname("/", locale);
   const home = new URL(localizedHome, site).href;
   const restaurantId = new URL(`${localizedHome}#restaurant`, site).href;
@@ -68,7 +75,7 @@ export function structuredData(site: URL, locale: Locale = defaultLocale) {
         url: home,
         image: [
           shareImage,
-          ...pageImages(site)
+          ...pageImages(site, t)
             .slice(0, 4)
             .map((photo) => ({
               "@type": "ImageObject",

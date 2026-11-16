@@ -21,10 +21,32 @@ export type TFunc = (
   params?: Record<string, string | number>,
 ) => string;
 
-export function getT(locale?: string): TFunc {
-  const dictionary = locales.includes(locale as Locale)
-    ? dictionaries[locale as Locale]
-    : dictionaries[defaultLocale];
+type DictionaryLoader = (locale: Locale) => Promise<Dictionary>;
+
+let dictionaryLoader: DictionaryLoader | null = null;
+
+export const setDictionaryLoader = (loader: DictionaryLoader): void => {
+  dictionaryLoader = loader;
+};
+
+export async function getT(locale?: string): Promise<TFunc> {
+  const target = locales.includes(locale as Locale)
+    ? (locale as Locale)
+    : defaultLocale;
+  const dictionary = dictionaryLoader
+    ? await dictionaryLoader(target)
+    : dictionaries[target];
+  return makeT(dictionary);
+}
+
+export function getTFromBuild(locale?: string): TFunc {
+  const target = locales.includes(locale as Locale)
+    ? (locale as Locale)
+    : defaultLocale;
+  return makeT(dictionaries[target]);
+}
+
+function makeT(dictionary: Dictionary): TFunc {
   return (key, params = {}) => {
     let value = dictionary[key] ?? dictionaries[defaultLocale][key] ?? key;
     for (const [name, param] of Object.entries(params)) {

@@ -5,7 +5,7 @@ import { links } from "@/shared/site/nami";
 import { formatEuPrice } from "@/shared/site/menu-mapper";
 import { getMenuData } from "@/features/menu/menu-data";
 
-const t = getT(Astro.currentLocale);
+const t = await getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const { menu } = await getMenuData(locale);
 ---

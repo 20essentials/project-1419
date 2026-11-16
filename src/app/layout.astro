@@ -17,7 +17,7 @@ interface Props {
 
 const { title, description, noindex = false, header = true } = Astro.props;
 const locale: Locale = Astro.currentLocale as Locale;
-const t = getT(locale);
+const t = await getT(locale);
 const ogLocales: Record<Locale, string> = {
   en: "en_US",
   es: "es_ES",
