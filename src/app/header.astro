@@ -73,7 +73,7 @@ const anchor = (href: string) =>
         type="button"
         class="menu-toggle relative size-9 rounded-full text-crema transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 lg:hidden"
         aria-expanded="false"
-        aria-controls="menu"
+        aria-controls="mobile-menu"
         aria-label={t("common.openMenu")}
         data-label-open={t("common.openMenu")}
         data-label-close={t("common.closeMenu")}
@@ -86,7 +86,7 @@ const anchor = (href: string) =>
 </header>
 
 <div
-  id="menu"
+  id="mobile-menu"
   class="menu invisible fixed inset-0 z-40 flex flex-col justify-between bg-bg/80 px-4 pt-32 pb-12 opacity-0 backdrop-blur-3xl transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] lg:hidden"
   inert
 >
@@ -205,7 +205,7 @@ const anchor = (href: string) =>
 
 <script>
   const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
-  const menu = document.getElementById("menu");
+  const menu = document.getElementById("mobile-menu");
   const main = document.getElementById("contenido");
   const footer = document.querySelector("footer");
 

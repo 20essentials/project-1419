@@ -56,7 +56,7 @@ de `.opencode/commands/step-24-auth-allowlist.md`).
 En incognito sobre `https://nami-sushi.nami-sushi.workers.dev`:
 
 1. **Login real**: Google con `d3m0ns300@gmail.com` (o un miembro email/password con
-   password conocida, creado a mano) -> volver a `/account/` con sesion y nombre en el header.
+   password conocida, creado a mano) -> volver a `/account/` con sesion y nombre en el header. ✅
 2. **Logout** desde el header -> vuelta a home + cookies limpias.
 3. **Signup** con un email nuevo de prueba -> verificar por el codigo de email -> entrar
    -> borrar el miembro de prueba al terminar.
