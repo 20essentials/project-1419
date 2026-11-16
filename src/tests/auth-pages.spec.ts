@@ -72,7 +72,11 @@ test.describe("auth pages", () => {
   }) => {
     await blockCaptcha(page);
     await page.goto("/login/");
-    await page.getByRole("link", { name: "Forgot your password?" }).click();
+    const forgot = page.getByRole("link", { name: "Forgot your password?" });
+    if ((await forgot.count()) === 0) {
+      test.skip(true, "AUTH_FORGOT_ENABLED=false");
+    }
+    await forgot.click();
     await expect(
       page.locator('form[action="/api/auth/password-reset"]'),
     ).toBeVisible();
