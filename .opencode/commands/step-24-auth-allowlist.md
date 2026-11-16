@@ -1,15 +1,15 @@
 ---
-name: "Step 101 — Auth en producción (allow-list workers.dev, sin dominio propio)"
+name: "Step 24 — Auth en producción (allow-list workers.dev, sin dominio propio)"
 goal: "Dejar el roundtrip de auth (login, signup, password reset, logout) funcionando en https://nami-sushi.nami-sushi.workers.dev sin dominio propio, registrando la URL real en la allow-list del OAuth app de Wix."
 ---
 
-# Step 101 — Auth en producción (allow-list workers.dev)
+# Step 24 — Auth en producción (allow-list workers.dev)
 
-Paso **pendiente**: se ejecuta tras step-100. **Decisión cerrada:** no habrá dominio propio; la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/`. Este step sustituye al antiguo “dominio propio”: lo único que queda por cerrar es que Wix acepte los redirects de auth en esa URL.
+Paso **pendiente**: se ejecuta tras step-23. **Decisión cerrada:** no habrá dominio propio; la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/`. Este step sustituye al antiguo “dominio propio”: lo único que queda por cerrar es que Wix acepte los redirects de auth en esa URL.
 
 ## Precondiciones
 
-- Step-100 hecho: Worker publicado y sirviendo el sitio con canonical/hreflang/sitemap en la URL de workers.dev.
+- Step-23 hecho: Worker publicado y sirviendo el sitio con canonical/hreflang/sitemap en la URL de workers.dev.
 - Acceso al OAuth app de Wix usado en step-02/12 (dashboard del app o API de app instance) para editar `allowedRedirectUris`/`allowedRedirectDomains`.
 - Miembro de prueba disponible (email verificado) para probar signup/password reset.
 - Navegador en incógnito para no arrastrar sesión local.
@@ -44,7 +44,7 @@ Paso **pendiente**: se ejecuta tras step-100. **Decisión cerrada:** no habrá d
    - `src/shared/site/nami.ts`: decidir si email/Instagram siguen en `namicrestaurant.com` (marca) — no es un requisito de este step, pero anotar la decisión.
 6. **Cierre**
    - Documentar `## Resultado` con la allow-list final y las pruebas.
-   - ROADMAP: fila 101 → ✅; README con la URL de producción y la nota de que no hay dominio propio.
+   - ROADMAP: fila 24 → ✅; README con la URL de producción y la nota de que no hay dominio propio.
    - Cerrar navegador/puertas: no dejar servidores ni puertos abiertos (AGENTS.md).
 
 ## Criterios de aceptación

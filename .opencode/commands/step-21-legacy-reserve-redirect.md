@@ -5,11 +5,11 @@ goal: "Redirigir 301 el slug histórico en español /reservar/ (y sus versiones 
 
 # Step 21 — Redirect legacy /reservar/
 
-Paso **deferido (parket)**: se ejecuta solo cuando el propietario lo pida. No bloquea nada; conviene hacerlo junto con (o después de) el deploy real del step-100 para que el 301 viva en la URL pública.
+Paso **deferido (parket)**: se ejecuta solo cuando el propietario lo pida. No bloquea nada; conviene hacerlo junto con (o después de) el deploy real del step-23 para que el 301 viva en la URL pública.
 
 ## Precondiciones
 
-- Sitio construible (`pnpm build` verde) y, preferiblemente, deploy del step-100 hecho (el 301 se valida con `curl` sobre la URL real).
+- Sitio construible (`pnpm build` verde) y, preferiblemente, deploy del step-23 hecho (el 301 se valida con `curl` sobre la URL real).
 - Owner confirma que `/reservar/` fue el slug histórico público (enlaces en redes/impresos/email) y que quiere 301 permanente.
 - Sin middleware en el proyecto todavía (`src/middleware.ts` no existe): este step lo crea.
 
@@ -38,7 +38,7 @@ Paso **deferido (parket)**: se ejecuta solo cuando el propietario lo pida. No bl
      - `/reservar/?experience=<id>&utm_source=x` → `location` conserva `?experience=<id>&utm_source=x`;
      - control negativo: `/reservas/` y `/reservar-x/` → 404.
    - Verificar que el target responde 200 sin cadena de redirecciones (`curl -sI`).
-4. **Validación post-deploy (si step-100 ya está live)**
+4. **Validación post-deploy (si step-23 ya está live)**
    - `curl -sI https://namicrestaurant.com/reservar/` → `301` + `location: https://namicrestaurant.com/reserve/`.
    - Repetir en `/es/` y `/it/`; comprobar que el `location` conserva query string.
    - Confirmar que no hay redirección en cadena (un solo salto) y que el destino responde 200.

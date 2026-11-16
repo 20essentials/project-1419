@@ -1,9 +1,9 @@
 ---
-name: "Step 100 — Deploy a Cloudflare (publish del sitio)"
+name: "Step 23 — Deploy a Cloudflare (publish del sitio)"
 goal: "Publicar el sitio en Cloudflare: wrangler login + wrangler deploy, validar la URL real y (a futuro) el dominio namicrestaurant.com."
 ---
 
-# Step 100 — Deploy a Cloudflare (publish del sitio)
+# Step 23 — Deploy a Cloudflare (publish del sitio)
 
 Paso **deferido**: se ejecuta cuando el owner quiera publicar; no bloquea steps 02–15. Puede repetirse tras cualquier cambio o cada vez que se despliega contenido nuevo (es el único "deploy" del proyecto).
 
@@ -64,4 +64,4 @@ URL pública real servida por Workers: obtener el subdominio workers.dev (o domi
 - `WIX_CLIENT_ID` como var pública en `wrangler.jsonc#vars`; `WIX_API_KEY`, `WIX_SITE_ID` y `WIX_CLIENT_SECRET` subidos con `wrangler secret bulk` (fichero temporal borrado).
 - Validación: `/`, `/menu/`, `/reserve/`, `/legal/`, `/robots.txt`, `/sitemap-index.xml` 200; ruta inexistente 404. Canonical `https://nami-sushi.nami-sushi.workers.dev/` y hreflang en/es/it/x-default correctos.
 - **Decisión del owner (2026-11-15):** no habrá dominio propio; la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/` (`site` actualizado y re-deploy, Version ID `8e3731e8-4a68-4480-80a3-1622aa5b5b7f`).
-- Pendiente para step-101: añadir esa URL a la allow-list de redirects de Wix antes de probar login en producción.
+- Pendiente para step-24: añadir esa URL a la allow-list de redirects de Wix antes de probar login en producción.

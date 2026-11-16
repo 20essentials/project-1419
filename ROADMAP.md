@@ -16,7 +16,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 🅿️ deferido (parket) | 1 |
 | **Total pasos** | **24** |
 
-**Siguiente:** step-101 auth en producción (allow-list de la URL workers.dev) y después step-22 traducciones runtime + `Astro.cache`. Sin dominio propio: la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/`. Backlog: migrar a plan premium para pagos reales (las reservas online ya funcionan).
+**Siguiente:** step-24 auth en producción (allow-list de la URL workers.dev) y después step-22 traducciones runtime + `Astro.cache`. Sin dominio propio: la URL pública y canónica es `https://nami-sushi.nami-sushi.workers.dev/`. Backlog: migrar a plan premium para pagos reales (las reservas online ya funcionan).
 
 | Paso | Estado | Paso | Notas |
 |:--|:--|:--|:--|
@@ -42,10 +42,8 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 | 20 · Política de cancelación | ✅ done | `step-20-cancellation-policy.md` | FAQ `cancel` (24 h gratis, sin pago previo, mesa 15 min) en 3 idiomas (push+seed+pull); nota en wizard panel 4 con enlace al FAQ; `pending.faqCancel` cerrado (push+pull, 0 en 3 locales); E2E 33/1 skipped verdes |
 | 21 · Redirect legacy `/reservar/` | ✅ done | `step-21-legacy-reserve-redirect.md` | 301 a `/reserve/` en en/es/it, con y sin slash, query preservado; vía `redirects` de astro → `_redirects` de Cloudflare (el adapter sirve 404.html antes del worker, así que el middleware no aplica) |
 | 22 · Traducciones runtime | 🅿️ parket | `step-22-runtime-translations.md` | API Wix + caché 5 min + `Astro.cache`; sustituye al cron (Riesgo 4) |
-
-# future
-| 100 · Deploy | ✅ done | `step-100-deploy.md` | Worker `nami-sushi` en `https://nami-sushi.nami-sushi.workers.dev`; KV SESSION fijado; secretos Wix; canonical/hreflang/sitemap ya en esa URL |
-| 101 · Auth en producción | ⏳ pendiente | `step-101-auth-allowlist.md` | allow-list del OAuth de Wix para la URL workers.dev + smoke de login/signup/logout (sin dominio propio) |
+| 23 · Deploy | ✅ done | `step-23-deploy.md` | Worker `nami-sushi` en `https://nami-sushi.nami-sushi.workers.dev`; KV SESSION fijado; secretos Wix; canonical/hreflang/sitemap ya en esa URL |
+| 24 · Auth en producción | ⏳ pendiente | `step-24-auth-allowlist.md` | allow-list del OAuth de Wix para la URL workers.dev + smoke de login/signup/logout (sin dominio propio) |
 
 ## Fases
 
@@ -57,7 +55,7 @@ Modelo: **Wix Headless self-managed** (SDK `@wix/sdk`, sin `@wix/astro`) + **Clo
 - **Fase 5 — Regalar / pagos**: step-15 → ✅ 1/1 (pago real pendiente de premium, igual que reservas)
 - **Fase 6 — Pendings de contenido del propietario**: step-17 ✅, step-18 ✅, step-19 ✅, step-20 ✅ → 4/4
 - **Extras futuros** (parket, no ejecutar por iniciativa propia):
-  - 🅿️ step-22 · Traducciones runtime (API Wix + caché 5 min + `Astro.cache`) tras step-101 (Riesgo 4)
+  - 🅿️ step-22 · Traducciones runtime (API Wix + caché 5 min + `Astro.cache`) tras step-24 (Riesgo 4)
 
 Estados: `pending` (existe su step file, sin ejecutar) → `✅ done` (ejecutado y verificado).
 `parket` solo se ejecuta cuando el propietario lo pida explícitamente.

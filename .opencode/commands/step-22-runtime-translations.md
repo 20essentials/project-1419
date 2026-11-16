@@ -5,14 +5,14 @@ goal: "Leer las traducciones es/it de Wix en runtime (con caché de 5 min en KV)
 
 # Step 22 — Traducciones runtime + Astro.cache
 
-Paso **deferido (parket)**: se ejecuta cuando el propietario lo pida, después de step-100 (Worker publicado) y de step-101 (auth en producción). Ataca el **Riesgo 4** del ROADMAP: hoy el copy es/it vive en `.wix/multilingual/translations/*.json` importado en build, así que cada edición del dashboard exige `wix translation pull` + build + deploy manual.
+Paso **deferido (parket)**: se ejecuta cuando el propietario lo pida, después de step-23 (Worker publicado) y de step-24 (auth en producción). Ataca el **Riesgo 4** del ROADMAP: hoy el copy es/it vive en `.wix/multilingual/translations/*.json` importado en build, así que cada edición del dashboard exige `wix translation pull` + build + deploy manual.
 
 **Decisión cerrada:** no hay cron ni deploy hook. Las locales se leen en runtime con caché corta; el JSON del build queda como fallback y para el sitemap.
 
 ## Precondiciones
 
 - Step-100 hecho: Worker `nami-sushi` publicado y `wrangler deploy` operativo.
-- Step-04/05 hechos: locales es/it y claves en Wix Multilingual; `WIX_API_KEY`/`WIX_SITE_ID` ya son secretos del Worker (step-100).
+- Step-04/05 hechos: locales es/it y claves en Wix Multilingual; `WIX_API_KEY`/`WIX_SITE_ID` ya son secretos del Worker (step-23).
 - Cuenta Wix con permiso de lectura de traducciones para esa API key (si el scope falla, crear una key dedicada y rotarla).
 - `wix@1.2.9` y `wrangler@4.158.0` exactos; Node >= 24.22.1; pnpm.
 
@@ -73,7 +73,7 @@ Paso **deferido (parket)**: se ejecuta cuando el propietario lo pida, después d
 - API caída o key inválida: páginas 200 con JSON del build; nunca 500 por traducciones.
 - `/menu/` y `/gift/` (SSR) y las páginas antes prerenderizadas sirven copy actualizado.
 - `/account/`, login, signup, callback y `/api/*` no se cachean; sesión y cookies intactas.
-- Sitemap/canonical/hreflang sin cambios respecto a step-100.
+- Sitemap/canonical/hreflang sin cambios respecto a step-23.
 - `pnpm build`, `pnpm deploy` y `pnpm test:e2e` verdes; sin secretos en el repo.
 
 ## Notas
