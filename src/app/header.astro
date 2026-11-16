@@ -2,23 +2,17 @@
 import Logo from './logo.astro';
 import Icon from '@/shared/ui/icon.astro';
 import LanguageSwitcher from './language-switcher.astro';
+import HeaderAccount from './header-account.astro';
 import { getT, type Locale } from '@/shared/i18n/t';
 import { localizedPathname } from '@/shared/i18n/routing';
 import { contact, links, nav } from '@/shared/site/nami';
 
-interface Props {
-  session?: { name: string } | null;
-}
-
-const { session = null } = Astro.props;
 const t = getT(Astro.currentLocale);
 const locale = Astro.currentLocale as Locale;
 const homeHref = localizedPathname('/', locale);
-const accountHref = localizedPathname('/account/', locale);
 const loginHref = localizedPathname('/login/', locale);
 const onHome = Astro.url.pathname === homeHref;
 const anchor = (href: string) => (href.startsWith('#') && !onHome ? `${homeHref}${href}` : href);
-const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(0, 13)}…` : session.name) : '';
 ---
 
 <a
@@ -64,24 +58,11 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
       <a href={links.reserve} class="btn btn-primary btn-sm px-4">
         <span>{t('common.reserve')}</span>
       </a>
-      {
-        session ? (
-          <>
-            <a href={accountHref} class="btn btn-ghost btn-sm hidden px-3 sm:inline-flex">
-              <span class="max-w-24 truncate">{sessionName || t('account.nav')}</span>
-            </a>
-            <form method="post" action="/api/auth/logout" class="hidden sm:block">
-              <button type="submit" class="btn btn-sm px-3 text-crema/70 transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 hover:text-crema">
-                <span>{t('account.logout')}</span>
-              </button>
-            </form>
-          </>
-        ) : (
-          <a href={loginHref} class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex">
-            <span>{t('footer.login')}</span>
-          </a>
-        )
-      }
+      <HeaderAccount locale={locale} server:defer>
+        <a slot="fallback" href={loginHref} class="btn btn-ghost btn-sm hidden px-4 sm:inline-flex">
+          <span>{t('footer.login')}</span>
+        </a>
+      </HeaderAccount>
       <button
         type="button"
         class="menu-toggle relative size-9 rounded-full text-crema transition-colors duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-crema/10 lg:hidden"
@@ -120,26 +101,13 @@ const sessionName = session ? (session.name.length > 14 ? `${session.name.slice(
       <li class="menu-item" style={`--i:${nav.length + 1}`}>
         <LanguageSwitcher />
       </li>
-      {
-        session ? (
-          <li class="menu-item flex flex-col items-center gap-4" style={`--i:${nav.length + 2}`}>
-            <a href={accountHref} class="font-display text-2xl text-crema">
-              {sessionName || t('account.nav')}
-            </a>
-            <form method="post" action="/api/auth/logout">
-              <button type="submit" class="link text-sm text-crema/70">
-                {t('account.logout')}
-              </button>
-            </form>
-          </li>
-        ) : (
-          <li class="menu-item" style={`--i:${nav.length + 2}`}>
-            <a href={loginHref} class="font-display text-2xl text-crema">
-              {t('footer.login')}
-            </a>
-          </li>
-        )
-      }
+      <HeaderAccount locale={locale} mobile index={nav.length + 2} server:defer>
+        <li slot="fallback" class="menu-item" style={`--i:${nav.length + 2}`}>
+          <a href={loginHref} class="font-display text-2xl text-crema">
+            {t('footer.login')}
+          </a>
+        </li>
+      </HeaderAccount>
     </ul>
   </nav>
 

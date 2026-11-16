@@ -47,7 +47,6 @@ try {
   title={t('seo.account.title')}
   description={t('seo.account.description')}
   noindex
-  session={profile ? { name: profile.firstName || profile.nickname } : null}
 >
   <AccountPage profile={profile} orders={orders} ordersError={ordersError} reservations={reservations} />
 </Layout>
